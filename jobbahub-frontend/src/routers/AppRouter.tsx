@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/authContext';
 
 // --- Tijdelijke Pagina Componenten (vervang deze later door echte files in src/pages) ---
 
