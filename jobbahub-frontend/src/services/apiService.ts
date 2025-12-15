@@ -11,7 +11,7 @@ export const apiService = {
     try {
       // We gebruiken nu weer de absolute URL uit de environment variable.
       // Dit is nodig als je frontend en backend op verschillende domeinen draaien (zoals in Azure).
-      const response = await fetch(`${API_URL}/api/keuzemodules`);
+      const response = await fetch(`${API_URL}/api/modules`);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
