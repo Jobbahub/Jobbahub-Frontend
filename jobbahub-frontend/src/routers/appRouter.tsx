@@ -1,37 +1,17 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
+import MainLayout from '../pages/mainLayout';
 
-// Importeer je nieuwe onderdelen
-import MainLayout from '../pages/layouts/mainLayout';
+// Pagina imports (zorg dat deze bestanden bestaan in src/pages)
 import Home from '../pages/home';
+import Login from '../pages/loginPage';
+import Dashboard from '../pages/dashboard';
+import Modules from '../pages/modules';
 
-// --- Tijdelijke Pagina's (Verplaats deze ook naar src/pages voor een schone structuur!) ---
-const Login = () => {
-  const { login } = useAuth();
-  return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
-      <h2 className="text-2xl font-bold mb-4">Inloggen</h2>
-      <button onClick={() => login("test@user.com", "123")} className="bg-blue-600 text-white px-4 py-2 rounded w-full">
-        Simuleer Login
-      </button>
-    </div>
-  );
-};
-
-const Dashboard = () => {
-  const { user } = useAuth();
-  return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold">Dashboard</h2>
-      <p>Welkom, {user?.name}!</p>
-    </div>
-  );
-};
-
-// Beveiligde Route Component
+// Beveiligde Route Component (Functie in PascalCase)
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth(); // Variabele in camelCase
   if (!isAuthenticated) return <Navigate to="/login" replace />;
   return <>{children}</>;
 };
@@ -40,13 +20,12 @@ const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* De MainLayout wikkelt zich om alle routes hierbinnen */}
         <Route path="/" element={<MainLayout />}>
           
           {/* Publieke Routes */}
-          <Route index element={<Home />} /> {/* 'index' betekent: dit is de default voor path="/" */}
+          <Route index element={<Home />} />
           <Route path="login" element={<Login />} />
-
+          <Route path="modules" element={<Modules />} />
           {/* Beschermde Routes */}
           <Route
             path="dashboard"

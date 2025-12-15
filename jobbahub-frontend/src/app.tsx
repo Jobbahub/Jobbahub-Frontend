@@ -1,4 +1,3 @@
-// src/App.tsx
 import React from 'react';
 import { AuthProvider } from './context/authContext';
 import AppRouter from './routers/appRouter';
