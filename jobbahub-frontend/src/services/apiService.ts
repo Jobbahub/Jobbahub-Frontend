@@ -9,6 +9,8 @@ export const apiService = {
    */
   getModules: async (): Promise<IChoiceModule[]> => {
     try {
+      console.log("Huidige API URL:", API_URL);
+      console.log("Volledige fetch URL:", `${API_URL}/api/modules`);
       // We gebruiken nu weer de absolute URL uit de environment variable.
       // Dit is nodig als je frontend en backend op verschillende domeinen draaien (zoals in Azure).
       const response = await fetch(`${API_URL}/api/modules`);
