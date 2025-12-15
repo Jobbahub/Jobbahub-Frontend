@@ -1,65 +1,38 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 
-// --- Tijdelijke Pagina Componenten (vervang deze later door echte files in src/pages) ---
+// Importeer je nieuwe onderdelen
+import MainLayout from '../pages/layouts/mainLayout';
+import Home from '../pages/home';
 
-const Home = () => (
-  <div className="p-8">
-    <h1 className="text-2xl font-bold text-primary mb-4">Welkom bij Jobbahub</h1>
-    <p>Dit is de homepagina.</p>
-    <nav className="mt-4 gap-4 flex text-blue-600 underline">
-      <LinkDN to="/login">Login</LinkDN>
-      <LinkDN to="/dashboard">Dashboard (Prive)</LinkDN>
-    </nav>
-  </div>
-);
-
+// --- Tijdelijke Pagina's (Verplaats deze ook naar src/pages voor een schone structuur!) ---
 const Login = () => {
   const { login } = useAuth();
-  const handleLogin = () => login("test@jobbahub.nl", "wachtwoord123");
-
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Inloggen</h1>
-      <button 
-        onClick={handleLogin} 
-        className="bg-primary text-white px-4 py-2 rounded hover:bg-red-700 transition"
-      >
-        Simuleer Inloggen
+    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
+      <h2 className="text-2xl font-bold mb-4">Inloggen</h2>
+      <button onClick={() => login("test@user.com", "123")} className="bg-blue-600 text-white px-4 py-2 rounded w-full">
+        Simuleer Login
       </button>
     </div>
   );
 };
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-      <p>Welkom terug, {user?.name}!</p>
-      <button 
-        onClick={logout} 
-        className="mt-4 bg-secondary text-white px-4 py-2 rounded hover:bg-gray-700"
-      >
-        Uitloggen
-      </button>
+    <div className="p-4">
+      <h2 className="text-2xl font-bold">Dashboard</h2>
+      <p>Welkom, {user?.name}!</p>
     </div>
   );
 };
 
-// Helper component voor links (om TypeScript errors in dit voorbeeld te voorkomen)
-const LinkDN: React.FC<{to: string, children: React.ReactNode}> = ({to, children}) => <Link to={to}>{children}</Link>;
-
-// --- Einde Tijdelijke Componenten ---
-
-
-// Component om routes te beschermen
+// Beveiligde Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated } = useAuth();
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
   return <>{children}</>;
 };
 
@@ -67,22 +40,26 @@ const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Publieke Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
+        {/* De MainLayout wikkelt zich om alle routes hierbinnen */}
+        <Route path="/" element={<MainLayout />}>
+          
+          {/* Publieke Routes */}
+          <Route index element={<Home />} /> {/* 'index' betekent: dit is de default voor path="/" */}
+          <Route path="login" element={<Login />} />
 
-        {/* Beschermde Routes (alleen toegankelijk als je ingelogd bent) */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Fallback voor onbekende routes */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+          {/* Beschermde Routes */}
+          <Route
+            path="dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* 404 Route */}
+          <Route path="*" element={<div className="text-center mt-10">Pagina niet gevonden</div>} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
