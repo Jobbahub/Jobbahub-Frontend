@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth } from '../context/authContext.tsx';
+import { useAuth } from '../context/authContext';
 import { useNavigate } from 'react-router-dom';
 
 const Login: React.FC = () => {
@@ -8,16 +8,17 @@ const Login: React.FC = () => {
 
   const handleLogin = async () => {
     await login("gebruiker@voorbeeld.nl", "geheim");
-    navigate('/dashboard'); // Stuur gebruiker door na inloggen
+    navigate('/dashboard');
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow border border-gray-100">
-      <h2 className="text-2xl font-bold mb-4 text-secondary">Inloggen</h2>
-      <p className="mb-4 text-sm text-gray-500">Klik op de knop om in te loggen (simulatie).</p>
+    <div className="form-container">
+      <h2 style={{ marginBottom: '20px', color: 'var(--secondary-color)' }}>Inloggen</h2>
+      <p style={{ marginBottom: '20px', color: 'var(--text-muted)' }}>Klik op de knop om in te loggen (simulatie).</p>
       <button 
         onClick={handleLogin} 
-        className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        className="btn btn-primary"
+        style={{ width: '100%' }}
       >
         Inloggen
       </button>

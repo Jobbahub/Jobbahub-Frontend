@@ -3,15 +3,12 @@ import { Link } from 'react-router-dom';
 
 const Home: React.FC = () => {
   return (
-    <div className="bg-white p-8 rounded shadow-sm">
-      <h1 className="text-3xl font-bold text-primary mb-4">Welkom bij Jobbahub</h1>
-      <p className="mb-4 text-gray-700">
-        Dit is de homepagina.
+    <div style={{ background: 'white', padding: '40px', borderRadius: '8px', boxShadow: 'var(--shadow)' }}>
+      <h1 style={{ color: 'var(--primary-color)', marginBottom: '20px' }}>Welkom bij Jobbahub</h1>
+      <p style={{ marginBottom: '30px' }}>
+        Dit is de homepagina. We gebruiken nu standaard CSS in plaats van Tailwind!
       </p>
-      <Link 
-        to="/login" 
-        className="bg-primary text-white px-6 py-2 rounded hover:bg-opacity-90 transition inline-block"
-      >
+      <Link to="/login" className="btn btn-primary">
         Naar Login
       </Link>
     </div>

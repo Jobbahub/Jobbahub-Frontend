@@ -3,28 +3,24 @@ import { Outlet, Link } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 
 const MainLayout: React.FC = () => {
-  const { user, logout } = useAuth(); // Variabelen in camelCase
+  const { user, logout } = useAuth();
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-md p-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-xl font-bold text-primary">Jobbahub</h1>
+    <div className="main-layout">
+      <header className="site-header">
+        <div className="container header-inner">
+          <h1 className="logo">Jobbahub</h1>
           
-          <nav className="flex gap-4">
-            <Link to="/" className="text-blue-600 hover:underline">Home</Link>
-            <Link to="/modules" className="text-blue-600 hover:underline">Modules</Link>
+          <nav className="nav-links">
+            <Link to="/" className="nav-link">Home</Link>
+            <Link to="/modules" className="nav-link">Modules</Link> 
             
             {!user ? (
-              <Link to="/login" className="text-blue-600 hover:underline">Login</Link>
+              <Link to="/login" className="nav-link">Login</Link>
             ) : (
               <>
-                <Link to="/dashboard" className="text-blue-600 hover:underline">Dashboard</Link>
-                <button 
-                  onClick={logout} 
-                  className="text-red-500 hover:text-red-700 font-semibold ml-4"
-                >
+                <Link to="/dashboard" className="nav-link">Dashboard</Link>
+                <button onClick={logout} className="btn btn-logout">
                   Uitloggen
                 </button>
               </>
@@ -33,14 +29,15 @@ const MainLayout: React.FC = () => {
         </div>
       </header>
 
-      {/* Pagina Inhoud */}
-      <main className="flex-grow container mx-auto p-4">
+      <main className="page-content container">
         <Outlet />
       </main>
 
-      {/* Footer */}
-      <footer className="bg-gray-200 p-4 text-center text-sm text-gray-600">
-        &copy; {new Date().getFullYear()} Jobbahub
+      {/* AANGEPAST: Footer inhoud zit nu in een container */}
+      <footer className="footer">
+        <div className="container footer-inner">
+          &copy; {new Date().getFullYear()} Jobbahub
+        </div>
       </footer>
     </div>
   );
