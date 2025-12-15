@@ -10,7 +10,7 @@ export const apiService = {
   getModules: async (): Promise<IChoiceModule[]> => {
     try {
       // GEBRUIK HIER EEN RELATIEF PAD
-      const response = await fetch('/api/keuzemodules');
+      const response = await fetch('/api/modules');
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
