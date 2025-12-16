@@ -1,6 +1,6 @@
 :root {
   /* Kleuren (Avans Stijl) */
-  --primary-color: #C8102E;
+  --primary-color: #c8102e;
   --primary-hover: #a00d25;
   --secondary-color: #333333;
   --bg-color: #f9fafb;
@@ -13,7 +13,8 @@
   --container-width: 1200px;
   --header-height: 70px;
   --radius: 8px;
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 /* --- Algemene Reset --- */
@@ -24,7 +25,7 @@
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--bg-color);
   color: var(--text-color);
   line-height: 1.6;
@@ -144,7 +145,7 @@ ul {
 .grid-container {
   display: grid;
   /* AANGEPAST: 1fr zorgt voor 1 kolom die de volledige breedte pakt */
-  grid-template-columns: 1fr; 
+  grid-template-columns: 1fr;
   gap: 24px;
   margin-top: 20px;
 }
@@ -157,9 +158,9 @@ ul {
   box-shadow: var(--shadow);
   transition: transform 0.2s, box-shadow 0.2s;
   display: flex;
-  
+
   /* AANGEPAST: Zet op 'row' om plaatje links en tekst rechts te krijgen (balk-stijl) */
-  flex-direction: row; 
+  flex-direction: row;
   min-height: 200px; /* Zorgt voor een goede basishoogte */
 }
 
@@ -170,7 +171,7 @@ ul {
 
 .card-image {
   /* AANGEPAST: Vaste breedte voor het plaatje, in plaats van 100% breedte */
-  width: 300px; 
+  width: 300px;
   height: auto; /* Past zich aan de hoogte van de kaart aan */
   object-fit: cover;
   flex-shrink: 0; /* Voorkomt dat het plaatje geplet wordt */
@@ -182,6 +183,86 @@ ul {
   flex-direction: column;
   flex-grow: 1;
   justify-content: center; /* Centreert de inhoud verticaal */
+}
+
+/* Search */
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 15px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow);
+}
+
+.search-results-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  background: white;
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(0px) !important; /* Overschrijft de card class */
+  min-height: auto !important; /* Overschrijft de card class */
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 15px;
+  cursor: pointer;
+  height: 45px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.search-result-item:hover {
+  transform: translateY(-5px);
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:hover {
+  background-color: #f8f9fa;
+}
+
+.search-thumb {
+  width: 25px;
+  height: 25px;
+  border-radius: 4px;
+  object-fit: cover;
+  margin-right: 12px;
+}
+
+.search-title {
+  font-size: 0.95rem;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+}
+
+.btn-load-more {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  padding: 10px;
+  width: 100%;
+  font-size: 0.85rem;
+  background-color: #fff;
+  color: var(--primary-color);
+  cursor: pointer;
 }
 
 /* Responsive: Op mobiel toch weer onder elkaar */
