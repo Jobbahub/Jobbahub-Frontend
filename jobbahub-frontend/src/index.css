@@ -8,6 +8,7 @@
   --text-muted: #6b7280;
   --white: #ffffff;
   --border-color: #e5e7eb;
+  --purple-link: #a855f7; /* Specifiek voor jouw navigatie */
 
   /* Spacing & Layout */
   --container-width: 1200px;
@@ -69,27 +70,41 @@ ul {
   z-index: 100;
 }
 
-.site-header .header-inner {
-  display: flex;
-  justify-content: space-between;
+/* Nieuw: Grid voor header layout */
+.header-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   width: 100%;
 }
 
-.logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--primary-color);
+/* Nieuw: Navigatie groepen */
+.nav-group-left {
+  display: flex;
+  gap: 30px;
+  justify-content: flex-start;
 }
 
-.nav-links {
+.nav-group-right {
   display: flex;
-  gap: 20px;
+  gap: 30px;
   align-items: center;
+  justify-content: flex-end;
+}
+
+.logo-container {
+  text-decoration: none;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--primary-color); /* Was al zo, maar inline override weggehaald */
+  text-align: center;
 }
 
 .nav-link {
-  color: var(--text-color);
+  color: var(--purple-link); /* Verplaatst van inline style naar hier */
   font-weight: 500;
   transition: color 0.2s;
 }
@@ -140,11 +155,14 @@ ul {
   color: var(--white);
 }
 
+.w-full {
+  width: 100%;
+}
+
 /* --- Kaarten (Cards) --- */
 .grid-container {
   display: grid;
-  /* AANGEPAST: 1fr zorgt voor 1 kolom die de volledige breedte pakt */
-  grid-template-columns: 1fr; 
+  grid-template-columns: 1fr;
   gap: 24px;
   margin-top: 20px;
 }
@@ -157,10 +175,8 @@ ul {
   box-shadow: var(--shadow);
   transition: transform 0.2s, box-shadow 0.2s;
   display: flex;
-  
-  /* AANGEPAST: Zet op 'row' om plaatje links en tekst rechts te krijgen (balk-stijl) */
-  flex-direction: row; 
-  min-height: 200px; /* Zorgt voor een goede basishoogte */
+  flex-direction: row;
+  min-height: 200px;
 }
 
 .card:hover {
@@ -169,11 +185,10 @@ ul {
 }
 
 .card-image {
-  /* AANGEPAST: Vaste breedte voor het plaatje, in plaats van 100% breedte */
-  width: 300px; 
-  height: auto; /* Past zich aan de hoogte van de kaart aan */
+  width: 300px;
+  height: auto;
   object-fit: cover;
-  flex-shrink: 0; /* Voorkomt dat het plaatje geplet wordt */
+  flex-shrink: 0;
 }
 
 .card-body {
@@ -181,10 +196,16 @@ ul {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  justify-content: center; /* Centreert de inhoud verticaal */
+  justify-content: center;
 }
 
-/* Responsive: Op mobiel toch weer onder elkaar */
+/* Nieuw: Meta info in card (tags + credits) */
+.card-meta {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
 @media (max-width: 768px) {
   .card {
     flex-direction: column;
@@ -205,7 +226,7 @@ ul {
   color: var(--text-muted);
   font-size: 0.95rem;
   margin-bottom: 20px;
-  flex-grow: 1; /* Duwt de knop naar beneden */
+  flex-grow: 1;
 }
 
 /* --- Badges & Tags --- */
@@ -229,10 +250,14 @@ ul {
   font-weight: bold;
   color: var(--primary-color);
   font-size: 0.9rem;
-  margin-left: auto; /* Duwt credits naar rechts */
+  margin-left: auto;
 }
 
-/* --- Forms --- */
+/* --- Forms (Login) --- */
+.form-wrapper {
+  margin-top: 60px; /* Specifiek voor login pagina */
+}
+
 .form-container {
   background: var(--white);
   padding: 40px;
@@ -243,10 +268,163 @@ ul {
   text-align: center;
 }
 
+.form-title {
+  margin-bottom: 20px;
+  color: var(--secondary-color);
+  font-size: 1.8rem;
+}
+
+.form-description {
+  margin-bottom: 20px;
+  color: var(--text-muted);
+}
+
+.form-error {
+  background-color: #fee2e2;
+  color: #dc2626;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border: 1px solid #fca5a5;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  text-align: left;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 1rem;
+}
+
+.btn-disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* --- Home Page Styles --- */
+.home-wrapper {
+  margin: 0 -20px;
+  padding: 0;
+}
+
+.home-hero {
+  background: var(--white);
+  padding: 80px 40px;
+  margin-bottom: 0;
+  text-align: center;
+  min-height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.home-hero-title {
+  font-size: 3rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.home-subtitle-container {
+  text-align: center;
+  margin: 40px 0;
+  padding: 0 20px;
+}
+
+.home-subtitle {
+  font-size: 1.5rem;
+  color: var(--text-muted);
+  font-weight: normal;
+}
+
+.home-content {
+  background: var(--white);
+  padding: 40px;
+  margin: 0 20px 30px 20px;
+}
+
+.text-paragraph {
+  margin-bottom: 20px;
+  line-height: 1.8;
+}
+
+/* --- About Page Styles --- */
+.tab-container {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid var(--border-color);
+  margin-bottom: 30px;
+}
+
+.tab-btn {
+  padding: 15px 30px;
+  background: #f3f4f6;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: normal;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  background: var(--white);
+  border-bottom: 3px solid var(--primary-color);
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.about-content-box {
+  background: var(--white);
+  padding: 40px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  min-height: 400px;
+}
+
+.about-heading {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: var(--text-color);
+}
+
+.about-text {
+  line-height: 1.8;
+  margin-bottom: 15px;
+}
+
+/* --- Modules Page --- */
+.page-header {
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+.page-intro {
+  margin-bottom: 2rem;
+  color: var(--text-muted);
+}
+
 /* --- Footer --- */
 .footer {
   background-color: #e5e7eb;
-  margin-top: auto; /* Zorgt dat footer altijd onderaan plakt */
+  margin-top: auto;
   width: 100%;
 }
 
@@ -255,14 +433,4 @@ ul {
   text-align: center;
   font-size: 0.9rem;
   color: var(--text-muted);
-}
-
-@media (max-width: 768px) {
-  .card {
-    flex-direction: column;
-  }
-  .card-image {
-    width: 100%;
-    height: 200px;
-  }
 }

@@ -3,13 +3,12 @@ import { IChoiceModule } from '../types';
 
 interface ModuleCardProps {
   module: IChoiceModule;
-  onViewDetails?: (moduleId: string) => void; // Optionele klik-actie
+  onViewDetails?: (moduleId: string) => void;
 }
 
 const ModuleCard: React.FC<ModuleCardProps> = ({ module, onViewDetails }) => {
   return (
     <div className="card">
-      {/* Afbeelding (indien aanwezig, anders placeholder) */}
       <img 
         src={module.image || 'https://placehold.co/300x200?text=Geen+Afbeelding'} 
         alt={module.name} 
@@ -17,7 +16,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ module, onViewDetails }) => {
       />
       
       <div className="card-body">
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+        <div className="card-meta">
           <div className="badge-container">
             {module.tags && module.tags.map(tag => (
               <span key={tag.id} className="badge">
@@ -37,8 +36,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ module, onViewDetails }) => {
         </p>
 
         <button 
-          className="btn btn-secondary" 
-          style={{ width: '100%' }}
+          className="btn btn-secondary w-full" 
           onClick={() => onViewDetails && onViewDetails(module._id)}
         >
           Bekijk Details

@@ -30,17 +30,15 @@ const ElectiveModules: React.FC = () => {
 
   const handleDetailsClick = (id: string) => {
     console.log("Klik op module:", id);
-    // Navigatie logica komt later hier
   };
 
   return (
     <div>
-      <h1 style={{ marginBottom: '1rem', color: 'var(--primary-color)' }}>Beschikbare Keuzemodules</h1>
-      <p style={{ marginBottom: '2rem', color: 'var(--text-muted)' }}>
+      <h1 className="page-header">Beschikbare Keuzemodules</h1>
+      <p className="page-intro">
         Kies uit een breed aanbod van modules om je skills te verbeteren.
       </p>
 
-      {/* De pagina delegeert nu alles aan het Grid component */}
       <ModuleGrid 
         modules={modules} 
         loading={loading} 
