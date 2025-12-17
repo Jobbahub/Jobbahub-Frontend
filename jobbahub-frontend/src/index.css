@@ -530,3 +530,87 @@ button {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+.pagination-nav {
+    display: flex;
+    justify-content: center;
+    padding: 30px 0 10px; /* Meer verticale ruimte boven, minder onder */
+    margin-top: 25px;
+}
+
+/* De ongeordende lijst (ul) */
+.pagination-nav ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    /* Gebruik een schaduw voor een subtiel 'zwevend' effect */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); 
+    border-radius: 10px; /* Meer afgeronde hoeken */
+    overflow: hidden; 
+}
+
+/* Algemene stijl voor alle knoppen (standaard staat) */
+.pagination-nav button {
+    cursor: pointer;
+    padding: 10px 18px;
+    font-size: 16px;
+    font-weight: 500;
+    min-width: 48px;
+    height: 48px;
+    border: none; /* Verwijder de randen voor een strakker uiterlijk */
+    background-color: #f8f8f8; /* Zeer lichte grijze achtergrond */
+    color: #444;
+    transition: all 0.25s ease-in-out;
+    margin: 0;
+    outline: none;
+}
+
+/* Visuele separator tussen elementen */
+.pagination-nav li:not(:last-child) button {
+    border-right: 1px solid #eee; 
+}
+
+/* Hover-effect op niet-actieve knoppen */
+.pagination-nav button:not(.disabled):hover {
+    background-color: #eef; /* Lichte blauwe gloed bij hover */
+    color: #007bff; 
+}
+
+/* Actieve pagina (huidige pagina) */
+.pagination-nav button.active {
+    background-color: #007bff; /* Hoofdkleur */
+    color: #fff;
+    cursor: default;
+    /* Een lichte schaduw om de actieve knop te benadrukken */
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); 
+}
+
+/* Uitgeschakelde knoppen (Vorige/Volgende) */
+.pagination-nav button:disabled,
+.pagination-nav button.disabled {
+    cursor: not-allowed;
+    background-color: #fff;
+    color: #bbb;
+}
+
+/* Randen afronden van de eerste en laatste knop in de lijst */
+.pagination-nav li:first-child button {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+.pagination-nav li:last-child button {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-right: none; /* De laatste knop heeft geen rechterrand nodig */
+}
+
+/* Stijl voor de '...' (ellips) tussenliggende items */
+.pagination-nav li.px-2 {
+    display: flex;
+    align-items: center;
+    color: #777;
+    font-size: 16px;
+    padding: 0 10px;
+    background-color: #f8f8f8;
+    border-right: 1px solid #eee;
+}
