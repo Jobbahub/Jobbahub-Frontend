@@ -126,13 +126,9 @@ const ModuleDetail: React.FC = () => {
                 </li>
                 <li>
                   <strong>Moeilijkheidsgraad:</strong> 
-                  <span>{module.estimated_difficulty ? `${module.estimated_difficulty}/10` : '-'}</span>
+                  <span>{module.estimated_difficulty ? `${module.estimated_difficulty}/5` : '-'}</span>
                 </li>
               </ul>
-              
-              <button className="btn btn-primary w-full" style={{marginTop: '20px'}}>
-                Inschrijven
-              </button>
             </div>
           </div>
         </div>
