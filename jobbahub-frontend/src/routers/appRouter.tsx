@@ -1,51 +1,49 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from '../context/authContext';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import MainLayout from '../pages/mainLayout';
-
-// Pagina imports (zorg dat deze bestanden bestaan in src/pages)
 import Home from '../pages/home';
+import About from '../pages/about';
 import Login from '../pages/loginPage';
 import Dashboard from '../pages/dashboard';
-import Modules from '../pages/modules';
+import ElectiveModules from '../pages/modules';
 import ModuleDetail from '../pages/moduleDetail';
-import About from '../pages/about';
+import Favorites from '../pages/favorites';
+import { AuthProvider, useAuth } from '../context/authContext';
 
-// Beveiligde Route Component (Functie in PascalCase)
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated } = useAuth(); // Variabele in camelCase
-  if (!isAuthenticated) return <Navigate to="/login" replace />;
-  return <>{children}</>;
+// --- INLINE PROTECTED ROUTE ---
+// Dit componentje checkt of je bent ingelogd. 
+// Zo niet? Dan stuurt hij je direct naar /login.
+const ProtectedRoute = () => {
+  const { isAuthenticated } = useAuth();
+  
+  // Als wel ingelogd: toon de opgevraagde pagina (Outlet)
+  // Als niet ingelogd: navigeer naar login
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 const AppRouter: React.FC = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainLayout />}>
-          
-          {/* Publieke Routes */}
-          <Route index element={<Home />} />
-          <Route path="login" element={<Login />} />
-          <Route path="modules" element={<Modules />} />
-          <Route path="modules/:id" element={<ModuleDetail />} />
-          <Route path="about" element={<About />} />
-          
-          {/* Beschermde Routes */}
-          <Route
-            path="dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          
-          {/* 404 Route */}
-          <Route path="*" element={<div className="text-center mt-10">Pagina niet gevonden</div>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <Router>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<MainLayout />}>
+            {/* Openbare Routes */}
+            <Route index element={<Home />} />
+            <Route path="about" element={<About />} />
+            <Route path="login" element={<Login />} />
+            <Route path="modules" element={<ElectiveModules />} />
+            <Route path="modules/:id" element={<ModuleDetail />} />
+            
+            {/* Beveiligde Routes */}
+            {/* Alles hierbinnen wordt beschermd door de inline ProtectedRoute */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="favorites" element={<Favorites />} />
+            </Route>
+          </Route>
+        </Routes>
+      </AuthProvider>
+    </Router>
   );
 };
 
