@@ -10,7 +10,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ module, onViewDetails }) => {
   return (
     <div className="card">
       <img 
-        src={module.image || 'https://placehold.co/300x200?text=Geen+Afbeelding'} 
+        src='https://placehold.co/300x200?text=Geen+Afbeelding'
         alt={module.name} 
         className="card-image"
       />
@@ -37,7 +37,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ module, onViewDetails }) => {
 
         <button 
           className="btn btn-secondary w-full" 
-          onClick={() => onViewDetails && onViewDetails(module._id)}
+          onClick={() => onViewDetails && onViewDetails(module.id.toString())}
         >
           Bekijk Details
         </button>

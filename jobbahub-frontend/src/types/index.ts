@@ -5,16 +5,21 @@ export interface ITag {
 }
 
 export interface IChoiceModule {
-  _id: string;       // Unieke string ID
-  id?: number;       // Optioneel numeriek ID
-  name: string;      // Naam van de module
+  _id: string;
+  id: number;
+  name: string;
+  shortdescription: string;
   description: string;
-  shortdescription?: string;
-  content?: string;
+  content?: string;        
   studycredit: number;
-  location?: string;
-  level?: string;
+  location?: string;        
+  level?: string;           
   learningoutcomes?: string;
-  tags: ITag[];
-  image?: string;    // Optioneel: voor de weergave in de app
+  // Let op: In je JSON is dit een string die eruit ziet als een array "['a', 'b']"
+  module_tags?: string;   
+  tags?: ITag[];  
+  available_spots?: number; 
+  start_date?: string;      
+  estimated_difficulty?: number;
+  
 }

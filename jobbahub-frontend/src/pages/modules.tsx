@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { IChoiceModule } from '../types';
 import { apiService } from '../services/apiService';
 import ModuleGrid from '../components/moduleGrid';
+import { useNavigate } from 'react-router-dom'; // Import toevoegen
 
 const ElectiveModules: React.FC = () => {
   const [modules, setModules] = useState<IChoiceModule[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate(); // Hook gebruiken
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,7 +31,7 @@ const ElectiveModules: React.FC = () => {
   }, []);
 
   const handleDetailsClick = (id: string) => {
-    console.log("Klik op module:", id);
+    navigate(`/modules/${id}`); // Navigeer naar de detailpagina
   };
 
   return (

@@ -26,7 +26,18 @@ export const apiService = {
       throw error;
     }
   },
-
+  getModuleById: async (id: string): Promise<IChoiceModule> => {
+    try {
+      const response = await fetch(`${API_URL}/api/modules/${id}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error(`Fout bij ophalen module ${id}:`, error);
+      throw error;
+    }
+  },
   /**
    * Logt de gebruiker in en ontvangt een token + user data.
    */

@@ -8,6 +8,7 @@ import Home from '../pages/home';
 import Login from '../pages/loginPage';
 import Dashboard from '../pages/dashboard';
 import Modules from '../pages/modules';
+import ModuleDetail from '../pages/moduleDetail';
 import About from '../pages/about';
 
 // Beveiligde Route Component (Functie in PascalCase)
@@ -27,6 +28,7 @@ const AppRouter: React.FC = () => {
           <Route index element={<Home />} />
           <Route path="login" element={<Login />} />
           <Route path="modules" element={<Modules />} />
+          <Route path="modules/:id" element={<ModuleDetail />} />
           <Route path="about" element={<About />} />
           
           {/* Beschermde Routes */}
