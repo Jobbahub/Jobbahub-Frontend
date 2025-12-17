@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { IChoiceModule } from "../types";
 import ModuleCard from "./moduleCard";
 import ModuleSearch from "./moduleSearch";
@@ -16,6 +16,16 @@ const ModuleGrid: React.FC<ModuleGridProps> = ({
   error,
   onViewDetails,
 }) => {
+  // Search
+  const [searchTerm, setSearchTerm] = useState("");
+  const filteredModules = useMemo(() => {
+    if (!searchTerm) return modules;
+
+    return modules.filter((module) =>
+      module.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [searchTerm, modules]);
+
   // 1. Laad status
   if (loading) {
     return (
@@ -43,15 +53,24 @@ const ModuleGrid: React.FC<ModuleGridProps> = ({
 
   // 4. Het Grid
   return (
-    <div className="grid-container">
-      <ModuleSearch modules={modules} onViewDetails={onViewDetails} />
-      {modules.map((module) => (
-        <ModuleCard
-          key={module._id}
-          module={module}
-          onViewDetails={onViewDetails}
-        />
-      ))}
+    <div className="container">
+      <ModuleSearch searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+
+      <div className="grid-container">
+        {filteredModules.length > 0 ? (
+          filteredModules.map((module) => (
+            <ModuleCard
+              key={module._id}
+              module={module}
+              onViewDetails={onViewDetails}
+            />
+          ))
+        ) : (
+          <div className="text-center text-gray-500 mt-8 w-full">
+            Geen modules gevonden voor "{searchTerm}".
+          </div>
+        )}
+      </div>
     </div>
   );
 };
