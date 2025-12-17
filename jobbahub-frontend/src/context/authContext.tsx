@@ -1,4 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
+import { apiService } from '../services/apiService';
 
 // Definieer hoe een Gebruiker eruit ziet
 interface User {
@@ -13,31 +14,42 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  error: string | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  // Dummy login functie (hier zou je later je API call naar de backend maken)
+  // Optioneel: Je zou hier een useEffect kunnen toevoegen die bij het opstarten
+  // kijkt of er nog een token in localStorage zit om de user te herstellen.
+
   const login = async (email: string, password: string) => {
-    console.log("Inloggen met:", email, password);
-    // Simuleer een API request
-    return new Promise<void>((resolve) => {
-      setTimeout(() => {
-        setUser({ id: '1', name: 'Gebruiker', email: email });
-        resolve();
-      }, 500);
-    });
+    setError(null);
+    try {
+      const data = await apiService.login(email, password);
+      
+      // 1. Sla token op (voor latere authenticated requests)
+      localStorage.setItem('token', data.token);
+      
+      // 2. Zet de gebruiker in de state
+      setUser(data.user);
+    } catch (err: any) {
+      console.error("Login error:", err);
+      setError(err.message || "Er is een fout opgetreden bij het inloggen.");
+      throw err; // Gooi door zodat de Login pagina dit ook weet
+    }
   };
 
   const logout = () => {
+    localStorage.removeItem('token');
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, logout, error }}>
       {children}
     </AuthContext.Provider>
   );

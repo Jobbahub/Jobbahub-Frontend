@@ -1,29 +1,68 @@
 import { IChoiceModule } from '../types';
 
-// Haal de URL op uit de omgevingsvariabelen (.env lokaal, of Azure App Settings in productie)
 const API_URL = import.meta.env.VITE_BACKEND_URI;
+
+// Nieuwe interfaces voor Auth
+export interface LoginResponse {
+  token: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+  };
+}
 
 export const apiService = {
   /**
-   * Haalt alle keuzemodules op van de backend.
+   * Haalt alle keuzemodules op.
    */
   getModules: async (): Promise<IChoiceModule[]> => {
     try {
-      console.log("Huidige API URL:", API_URL);
-      console.log("Volledige fetch URL:", `${API_URL}/api/modules`);
-      // We gebruiken nu weer de absolute URL uit de environment variable.
-      // Dit is nodig als je frontend en backend op verschillende domeinen draaien (zoals in Azure).
       const response = await fetch(`${API_URL}/api/modules`);
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data;
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      return await response.json();
     } catch (error) {
       console.error("Fout bij ophalen modules:", error);
       throw error;
     }
+  },
+  getModuleById: async (id: string): Promise<IChoiceModule> => {
+    try {
+      const response = await fetch(`${API_URL}/api/modules/${id}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error(`Fout bij ophalen module ${id}:`, error);
+      throw error;
+    }
+  },
+  /**
+   * Logt de gebruiker in en ontvangt een token + user data.
+   */
+  login: async (email: string, password: string): Promise<LoginResponse> => {
+    // Let op: controleer of jouw backend endpoint exact '/api/auth/login' is
+    const response = await fetch(`${API_URL}/api/auth/login`, { 
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      // Probeer de foutmelding van de backend te lezen, anders een standaard melding
+      let errorMessage = 'Inloggen mislukt';
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorMessage;
+      } catch {
+        // Geen json error body
+      }
+      throw new Error(errorMessage);
+    }
+
+    return await response.json();
   }
 };

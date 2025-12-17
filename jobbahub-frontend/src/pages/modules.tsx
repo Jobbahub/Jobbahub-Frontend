@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { IChoiceModule } from '../types';
 import { apiService } from '../services/apiService';
 import ModuleGrid from '../components/moduleGrid';
+import { useNavigate } from 'react-router-dom'; // Import toevoegen
 
 const ElectiveModules: React.FC = () => {
   const [modules, setModules] = useState<IChoiceModule[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate(); // Hook gebruiken
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,18 +31,16 @@ const ElectiveModules: React.FC = () => {
   }, []);
 
   const handleDetailsClick = (id: string) => {
-    console.log("Klik op module:", id);
-    // Navigatie logica komt later hier
+    navigate(`/modules/${id}`); // Navigeer naar de detailpagina
   };
 
   return (
     <div>
-      <h1 style={{ marginBottom: '1rem', color: 'var(--primary-color)' }}>Beschikbare Keuzemodules</h1>
-      <p style={{ marginBottom: '2rem', color: 'var(--text-muted)' }}>
+      <h1 className="page-header">Beschikbare Keuzemodules</h1>
+      <p className="page-intro">
         Kies uit een breed aanbod van modules om je skills te verbeteren.
       </p>
 
-      {/* De pagina delegeert nu alles aan het Grid component */}
       <ModuleGrid 
         modules={modules} 
         loading={loading} 

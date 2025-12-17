@@ -49,6 +49,16 @@ const MainLayout: React.FC = () => {
             >
               Jobbahub
             </h1>
+        <div className="container header-inner header-grid">
+          {/* Left Navigation */}
+          <nav className="nav-links nav-group-left">
+            <Link to="/modules" className="nav-link">Keuzemodules</Link>
+            <Link to="/about" className="nav-link">About</Link>
+          </nav>
+
+          {/* Center Logo */}
+          <Link to="/" className="logo-container">
+            <h1 className="logo">Jobbahub</h1>
           </Link>
 
           {/* Right Navigation */}
@@ -80,6 +90,14 @@ const MainLayout: React.FC = () => {
                 >
                   Dashboard
                 </Link>
+          <nav className="nav-links nav-group-right">
+            {!user ? (
+              <>
+                <Link to="/login" className="nav-link">Login</Link>
+              </>
+            ) : (
+              <>
+                <Link to="/dashboard" className="nav-link">Dashboard</Link>
                 <button onClick={logout} className="btn btn-logout">
                   Uitloggen
                 </button>
