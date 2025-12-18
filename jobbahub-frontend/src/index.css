@@ -104,14 +104,17 @@ ul {
 }
 
 .nav-link {
-  color: var(--purple-link); /* Verplaatst van inline style naar hier */
+  color: var(--text-color); /* Verplaatst van inline style naar hier */
   font-weight: 500;
-  transition: color 0.2s;
+  transition: color 0.1s;
+}
+
+.nav-link:visited {
+  color: var(--text-color); /* Prevents purple/blue visited link color */
 }
 
 .nav-link:hover {
   color: var(--primary-color);
-  text-decoration: underline;
 }
 
 /* --- Knoppen --- */
@@ -373,6 +376,7 @@ ul {
 }
 
 .tab-btn {
+  flex: 1;
   padding: 15px 30px;
   background: #f3f4f6;
   border: none;

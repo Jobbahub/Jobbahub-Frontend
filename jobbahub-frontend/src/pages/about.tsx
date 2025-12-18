@@ -19,9 +19,7 @@ const About: React.FC = () => {
         {renderTabButton('about', 'About')}
         {renderTabButton('casus', 'Casus')}
         {renderTabButton('userstories', 'User stories')}
-        {renderTabButton('wireframe1', 'Wireframe 1')}
-        {renderTabButton('wireframe2', 'Wireframe 2')}
-        {renderTabButton('wireframe3', 'Wireframe 3')}
+        {renderTabButton('wireframes', 'Wireframes')}
       </div>
 
       {/* Content Area */}
@@ -56,16 +54,13 @@ const About: React.FC = () => {
           </div>
         )}
 
-        {activeTab.startsWith('wireframe') && (
+        {activeTab === 'wireframes' && (
           <div>
-            <h2 className="about-heading">
-              {activeTab === 'wireframe1' ? 'Wireframe 1' : 
-               activeTab === 'wireframe2' ? 'Wireframe 2' : 'Wireframe 3'}
-            </h2>
+            <h2 className="about-heading">Wireframes</h2>
             <p className="about-text">
-              Hier komt {activeTab === 'wireframe1' ? 'Wireframe 1' : 
-                          activeTab === 'wireframe2' ? 'Wireframe 2' : 'Wireframe 3'}.
+              Hier komen de wireframes voor het project.
             </p>
+            {/* You can add images or multiple wireframes here later */}
           </div>
         )}
       </div>
