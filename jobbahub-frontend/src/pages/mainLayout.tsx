@@ -12,7 +12,7 @@ const MainLayout: React.FC = () => {
           {/* Left Navigation */}
           <nav className="nav-links nav-group-left">
             <Link to="/modules" className="nav-link">Keuzemodules</Link>
-            <Link to="/about" className="nav-link">About</Link>
+            <Link to="/favorites" className="nav-link">Favorieten</Link>
           </nav>
 
           {/* Center Logo */}
@@ -22,16 +22,13 @@ const MainLayout: React.FC = () => {
           
           {/* Right Navigation */}
           <nav className="nav-links nav-group-right">
+            <Link to="/about" className="nav-link">About</Link>
             {!user ? (
               <>
                 <Link to="/login" className="nav-link">Login</Link>
               </>
             ) : (
               <>
-                {/* Nieuwe link naar favorieten */}
-                <Link to="/favorites" className="nav-link">Favorieten</Link>
-                
-                <Link to="/dashboard" className="nav-link">Dashboard</Link>
                 <button onClick={logout} className="btn btn-logout">
                   Uitloggen
                 </button>

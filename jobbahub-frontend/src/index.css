@@ -48,9 +48,11 @@ button {
 
 /* --- Layout Classes --- */
 .container {
+  width: 100%; /* ADD THIS */
   max-width: var(--container-width);
   margin: 0 auto;
   padding: 0 20px;
+  box-sizing: border-box; /* ADD THIS TOO */
 }
 
 .main-layout {
@@ -455,14 +457,14 @@ button {
 
 /* --- About Page Styles --- */
 .tab-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 equal columns */
   gap: 0;
   border-bottom: 2px solid var(--border-color);
   margin-bottom: 30px;
 }
 
 .tab-btn {
-  flex: 1;
   padding: 15px 30px;
   background: #f3f4f6;
   border: none;
@@ -472,6 +474,7 @@ button {
   font-weight: normal;
   color: var(--text-muted);
   transition: all 0.2s;
+  text-align: center;
 }
 
 .tab-btn.active {
@@ -487,17 +490,23 @@ button {
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   min-height: 400px;
+  width: 100%; /* Force it to container width */
+  max-width: 100%; /* Don't exceed container */
+  overflow-wrap: break-word; /* Break long words */
+  word-wrap: break-word; /* Older browser support */
 }
 
 .about-heading {
   font-size: 2rem;
   margin-bottom: 20px;
   color: var(--text-color);
+  overflow-wrap: break-word;
 }
 
 .about-text {
   line-height: 1.8;
   margin-bottom: 15px;
+  overflow-wrap: break-word;
 }
 
 /* --- Modules Page --- */

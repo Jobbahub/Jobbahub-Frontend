@@ -13,7 +13,7 @@ const About: React.FC = () => {
   );
 
   return (
-    <div>
+    <div className="about-wrapper">
       {/* Tab Navigation */}
       <div className="tab-container">
         {renderTabButton('about', 'About')}
@@ -60,7 +60,6 @@ const About: React.FC = () => {
             <p className="about-text">
               Hier komen de wireframes voor het project.
             </p>
-            {/* You can add images or multiple wireframes here later */}
           </div>
         )}
       </div>
