@@ -8,12 +8,14 @@
   --text-muted: #6b7280;
   --white: #ffffff;
   --border-color: #e5e7eb;
-  --purple-link: #a855f7; /* Specifiek voor jouw navigatie */
+  --purple-link: #a855f7;
 
+  /* VORMGEVING: Blokkerig / Vierkant */
+  --radius: 20px; 
+  
   /* Spacing & Layout */
   --container-width: 1200px;
   --header-height: 70px;
-  --radius: 8px;
   --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
@@ -38,6 +40,10 @@ a {
 
 ul {
   list-style: none;
+}
+
+button {
+  font-family: inherit;
 }
 
 /* --- Layout Classes --- */
@@ -70,7 +76,6 @@ ul {
   z-index: 100;
 }
 
-/* Nieuw: Grid voor header layout */
 .header-grid {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -78,7 +83,6 @@ ul {
   width: 100%;
 }
 
-/* Nieuw: Navigatie groepen */
 .nav-group-left {
   display: flex;
   gap: 30px;
@@ -99,7 +103,7 @@ ul {
 .logo {
   font-size: 1.8rem;
   font-weight: bold;
-  color: var(--primary-color); /* Was al zo, maar inline override weggehaald */
+  color: var(--primary-color);
   text-align: center;
 }
 
@@ -151,6 +155,7 @@ ul {
   border: 1px solid var(--primary-color);
   color: var(--primary-color);
   padding: 6px 12px;
+  cursor: pointer;
 }
 
 .btn-logout:hover {
@@ -160,6 +165,85 @@ ul {
 
 .w-full {
   width: 100%;
+}
+
+/* --- Favoriet Knoppen (NIEUW) --- */
+.btn-favorite-card {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #ddd;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  font-size: 1.2rem;
+  color: #ccc;
+  transition: all 0.2s;
+  border-radius: var(--radius);
+}
+
+.btn-favorite-card:hover {
+  background: var(--white);
+  border-color: #bbb;
+}
+
+.btn-favorite-card.active {
+  color: #e11d48;
+  border-color: #e11d48;
+}
+
+.btn-favorite-detail {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: var(--white);
+  border: none;
+  color: #9ca3af;
+  font-size: 2rem;
+  padding: 10px 20px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+  z-index: 20;
+  transition: all 0.2s;
+  border-radius: var(--radius);
+}
+
+.btn-favorite-detail:hover {
+  transform: scale(1.05);
+}
+
+.btn-favorite-detail.active {
+  color: #e11d48;
+}
+
+/* --- Zoekbalk --- */
+.search-wrapper {
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 600px;
+  padding: 15px 20px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius); /* 0px */
+  font-size: 1rem;
+  background-color: var(--white);
+  box-shadow: var(--shadow);
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.1);
 }
 
 /* --- Kaarten (Cards) --- */
@@ -180,6 +264,7 @@ ul {
   display: flex;
   flex-direction: row;
   min-height: 200px;
+  position: relative; /* Nodig voor positionering fav knop */
 }
 
 .card:hover {
@@ -202,11 +287,12 @@ ul {
   justify-content: center;
 }
 
-/* Nieuw: Meta info in card (tags + credits) */
 .card-meta {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
+  /* NIEUW: Zorgt dat de tekst onder de favoriet-knop zakt */
+  margin-top: 30px; 
 }
 
 @media (max-width: 768px) {
@@ -232,7 +318,7 @@ ul {
   flex-grow: 1;
 }
 
-/* --- Badges & Tags --- */
+/* --- Badges --- */
 .badge-container {
   display: flex;
   gap: 8px;
@@ -244,7 +330,7 @@ ul {
   background-color: #eff6ff;
   color: #1e40af;
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: var(--radius);
   font-size: 0.75rem;
   font-weight: bold;
 }
@@ -258,7 +344,7 @@ ul {
 
 /* --- Forms (Login) --- */
 .form-wrapper {
-  margin-top: 60px; /* Specifiek voor login pagina */
+  margin-top: 60px;
 }
 
 .form-container {
@@ -286,7 +372,7 @@ ul {
   background-color: #fee2e2;
   color: #dc2626;
   padding: 10px;
-  border-radius: 4px;
+  border-radius: var(--radius);
   margin-bottom: 20px;
   border: 1px solid #fca5a5;
 }
@@ -310,7 +396,7 @@ ul {
 .form-input {
   width: 100%;
   padding: 10px;
-  border-radius: 6px;
+  border-radius: var(--radius);
   border: 1px solid #d1d5db;
   font-size: 1rem;
 }
@@ -475,13 +561,13 @@ ul {
 
 .detail-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr; /* Links breed, rechts smal */
+  grid-template-columns: 2fr 1fr;
   gap: 30px;
 }
 
 @media (max-width: 768px) {
   .detail-grid {
-    grid-template-columns: 1fr; /* Onder elkaar op mobiel */
+    grid-template-columns: 1fr;
   }
 }
 
@@ -491,6 +577,13 @@ ul {
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   height: fit-content;
+}
+
+.detail-intro-text {
+  font-size: 1.2rem;
+  color: #4b5563;
+  margin-bottom: 30px;
+  font-style: italic;
 }
 
 .detail-section {
@@ -511,7 +604,7 @@ ul {
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   position: sticky;
-  top: 100px; /* Blijft plakken als je scrollt */
+  top: 100px;
 }
 
 .sidebar-card h4 {
@@ -531,74 +624,117 @@ ul {
   border-bottom: none;
 }
 
-/* Simpele animatie */
+/* --- Modules Page Specific --- */
+.page-header {
+  margin-top: 40px;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+.page-intro {
+  margin-bottom: 2rem;
+  color: var(--text-muted);
+}
+
+/* --- Footer --- */
+.footer {
+  background-color: #e5e7eb;
+  margin-top: auto;
+  width: 100%;
+}
+
+.footer-inner {
+  padding: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
-/* --- Search Bar Styles --- */
-.search-wrapper {
-  margin-bottom: 30px;
-  display: flex;
-  justify-content: center;
+.pagination-nav {
+    display: flex;
+    justify-content: center;
+    padding: 30px 0 10px; /* Meer verticale ruimte boven, minder onder */
+    margin-top: 25px;
 }
 
-.search-input {
-  width: 100%;
-  max-width: 600px;
-  /* Aangepaste padding: overal 15px, geen extra ruimte voor iconen */
-  padding: 15px 20px; 
-  border: 1px solid var(--border-color);
-  border-radius: 50px;
-  font-size: 1rem;
-  background-color: var(--white);
-  box-shadow: var(--shadow);
-  transition: all 0.3s ease;
+/* De ongeordende lijst (ul) */
+.pagination-nav ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    /* Gebruik een schaduw voor een subtiel 'zwevend' effect */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); 
+    border-radius: 10px; /* Meer afgeronde hoeken */
+    overflow: hidden; 
 }
 
-.search-input:focus {
-  outline: none;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.1);
+/* Algemene stijl voor alle knoppen (standaard staat) */
+.pagination-nav button {
+    cursor: pointer;
+    padding: 10px 18px;
+    font-size: 16px;
+    font-weight: 500;
+    min-width: 48px;
+    height: 48px;
+    border: none; /* Verwijder de randen voor een strakker uiterlijk */
+    background-color: #f8f8f8; /* Zeer lichte grijze achtergrond */
+    color: #444;
+    transition: all 0.25s ease-in-out;
+    margin: 0;
+    outline: none;
 }
 
-
-.search-container {
-  position: relative;
-  width: 100%;
-  max-width: 600px; /* Niet te breed op grote schermen */
+/* Visuele separator tussen elementen */
+.pagination-nav li:not(:last-child) button {
+    border-right: 1px solid #eee; 
 }
 
-
-
-
-.search-icon {
-  position: absolute;
-  left: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-  pointer-events: none; /* Klik gaat er doorheen naar input */
+/* Hover-effect op niet-actieve knoppen */
+.pagination-nav button:not(.disabled):hover {
+    background-color: #eef; /* Lichte blauwe gloed bij hover */
+    color: #007bff; 
 }
 
-.search-clear-btn {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 5px;
-  line-height: 1;
-  border-radius: 50%;
-  transition: background 0.2s;
+/* Actieve pagina (huidige pagina) */
+.pagination-nav button.active {
+    background-color: #007bff; /* Hoofdkleur */
+    color: #fff;
+    cursor: default;
+    /* Een lichte schaduw om de actieve knop te benadrukken */
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1); 
 }
 
-.search-clear-btn:hover {
-  background-color: #f3f4f6;
-  color: var(--text-color);
+/* Uitgeschakelde knoppen (Vorige/Volgende) */
+.pagination-nav button:disabled,
+.pagination-nav button.disabled {
+    cursor: not-allowed;
+    background-color: #fff;
+    color: #bbb;
+}
+
+/* Randen afronden van de eerste en laatste knop in de lijst */
+.pagination-nav li:first-child button {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+.pagination-nav li:last-child button {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-right: none; /* De laatste knop heeft geen rechterrand nodig */
+}
+
+/* Stijl voor de '...' (ellips) tussenliggende items */
+.pagination-nav li.px-2 {
+    display: flex;
+    align-items: center;
+    color: #777;
+    font-size: 16px;
+    padding: 0 10px;
+    background-color: #f8f8f8;
+    border-right: 1px solid #eee;
 }

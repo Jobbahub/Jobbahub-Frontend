@@ -4,27 +4,54 @@ import { IChoiceModule } from '../types';
 interface ModuleCardProps {
   module: IChoiceModule;
   onViewDetails?: (moduleId: string) => void;
+  isFavorite?: boolean;
+  onToggleFavorite?: (id: string) => void;
+  isAuthenticated?: boolean;
 }
 
-// Hulpfunctie om een consistente Picsum URL te genereren op basis van het ID
-// We gebruiken 300x200 voor de cards
 const getCardImageUrl = (id: number) => {
-  // Gebruik modulo (%) 1084 (aantal picsum images) om te zorgen dat we altijd een geldig ID hebben.
   const picsumId = id % 1084; 
   return `https://picsum.photos/id/${picsumId}/300/200`;
 };
 
-const ModuleCard: React.FC<ModuleCardProps> = ({ module, onViewDetails }) => {
-  // Genereer de afbeelding URL
+const parseTags = (tagString?: string): string[] => {
+  if (!tagString) return [];
+  try {
+    return tagString.replace(/[\[\]']/g, '').split(',').map(t => t.trim()).filter(t => t !== "");
+  } catch {
+    return [];
+  }
+};
+
+const ModuleCard: React.FC<ModuleCardProps> = ({ 
+  module, 
+  onViewDetails, 
+  isFavorite = false, 
+  onToggleFavorite, 
+  isAuthenticated = false 
+}) => {
   const imageUrl = getCardImageUrl(module.id);
 
   return (
     <div className="card">
+      {/* Favoriet Knop */}
+      {isAuthenticated && (
+        <button 
+          className={`btn-favorite-card ${isFavorite ? 'active' : ''}`}
+          onClick={(e) => {
+            e.stopPropagation(); 
+            onToggleFavorite && onToggleFavorite(module._id);
+          }}
+          title={isFavorite ? "Verwijder uit favorieten" : "Voeg toe aan favorieten"}
+        >
+          {isFavorite ? '♥' : '♡'}
+        </button>
+      )}
+
       <img 
         src={imageUrl} 
         alt={module.name} 
         className="card-image"
-        // 'lazy' loading zorgt dat afbeeldingen pas laden als ze bijna in beeld komen
         loading="lazy" 
       />
       
@@ -57,16 +84,6 @@ const ModuleCard: React.FC<ModuleCardProps> = ({ module, onViewDetails }) => {
       </div>
     </div>
   );
-};
-
-// (Kopie van de parseTags functie die je al eerder had, voor de zekerheid)
-const parseTags = (tagString?: string): string[] => {
-  if (!tagString) return [];
-  try {
-    return tagString.replace(/[\[\]']/g, '').split(',').map(t => t.trim()).filter(t => t !== "");
-  } catch {
-    return [];
-  }
 };
 
 export default ModuleCard;

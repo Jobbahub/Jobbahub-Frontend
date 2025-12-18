@@ -2,7 +2,6 @@ import { IChoiceModule } from '../types';
 
 const API_URL = import.meta.env.VITE_BACKEND_URI;
 
-// Nieuwe interfaces voor Auth
 export interface LoginResponse {
   token: string;
   user: {
@@ -12,57 +11,72 @@ export interface LoginResponse {
   };
 }
 
+// Hulpfunctie voor headers met token
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token');
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': token ? `Bearer ${token}` : ''
+  };
+};
+
 export const apiService = {
-  /**
-   * Haalt alle keuzemodules op.
-   */
   getModules: async (): Promise<IChoiceModule[]> => {
-    try {
-      const response = await fetch(`${API_URL}/api/modules`);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      return await response.json();
-    } catch (error) {
-      console.error("Fout bij ophalen modules:", error);
-      throw error;
-    }
+    const response = await fetch(`${API_URL}/api/modules`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return await response.json();
   },
+
   getModuleById: async (id: string): Promise<IChoiceModule> => {
-    try {
-      const response = await fetch(`${API_URL}/api/modules/${id}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return await response.json();
-    } catch (error) {
-      console.error(`Fout bij ophalen module ${id}:`, error);
-      throw error;
-    }
+    const response = await fetch(`${API_URL}/api/modules/${id}`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return await response.json();
   },
-  /**
-   * Logt de gebruiker in en ontvangt een token + user data.
-   */
+
   login: async (email: string, password: string): Promise<LoginResponse> => {
-    // Let op: controleer of jouw backend endpoint exact '/api/auth/login' is
     const response = await fetch(`${API_URL}/api/auth/login`, { 
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
     });
 
     if (!response.ok) {
-      // Probeer de foutmelding van de backend te lezen, anders een standaard melding
       let errorMessage = 'Inloggen mislukt';
       try {
         const errorData = await response.json();
-        errorMessage = errorData.message || errorMessage;
-      } catch {
-        // Geen json error body
-      }
+        errorMessage = errorData.message || errorData.error || errorMessage;
+      } catch {}
       throw new Error(errorMessage);
     }
-
     return await response.json();
+  },
+
+  // --- Nieuwe functies voor favorieten ---
+
+  getFavorites: async (): Promise<string[]> => {
+    const response = await fetch(`${API_URL}/api/favorites`, {
+      headers: getAuthHeaders()
+    });
+    if (!response.ok) return []; // Bij fout (bv niet ingelogd) lege lijst teruggeven
+    const data = await response.json();
+    // De backend stuurt waarschijnlijk objecten, wij willen alleen de module ID's
+    return data.map((fav: any) => fav.module_id);
+  },
+
+  addFavorite: async (moduleId: string) => {
+    const response = await fetch(`${API_URL}/api/favorites`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify({ module_id: moduleId })
+    });
+    if (!response.ok) throw new Error('Kon favoriet niet toevoegen');
+  },
+
+  removeFavorite: async (moduleId: string) => {
+    const response = await fetch(`${API_URL}/api/favorites/${moduleId}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders()
+    });
+    if (!response.ok) throw new Error('Kon favoriet niet verwijderen');
   }
 };

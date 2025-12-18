@@ -28,6 +28,9 @@ const MainLayout: React.FC = () => {
               </>
             ) : (
               <>
+                {/* Nieuwe link naar favorieten */}
+                <Link to="/favorites" className="nav-link">Favorieten</Link>
+                
                 <Link to="/dashboard" className="nav-link">Dashboard</Link>
                 <button onClick={logout} className="btn btn-logout">
                   Uitloggen
