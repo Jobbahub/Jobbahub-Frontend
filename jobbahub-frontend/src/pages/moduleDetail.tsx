@@ -75,18 +75,18 @@ const ModuleDetail: React.FC = () => {
 
   return (
     <div className="container">
+      {/* AANGEPASTE TERUG KNOP: navigate(-1) gaat terug naar vorige pagina */}
       <button 
-        onClick={() => navigate('/modules')} 
+        onClick={() => navigate(-1)} 
         className="btn btn-secondary"
         style={{ marginBottom: '20px', marginTop: '20px' }}
       >
-        ← Terug naar overzicht
+        ← Terug
       </button>
 
       <div className="detail-wrapper">
         <div className="detail-header">
            
-           {/* Favoriet Knop */}
            {isAuthenticated && (
              <button
                onClick={handleToggleFavorite}
@@ -139,8 +139,12 @@ const ModuleDetail: React.FC = () => {
                 <li><strong>Locatie:</strong> <span>{module.location || 'Niet opgegeven'}</span></li>
                 <li><strong>Startdatum:</strong> <span>{formatDate(module.start_date)}</span></li>
                 <li><strong>Beschikbare plaatsen:</strong> <span>{module.available_spots ?? '-'}</span></li>
-                <li><strong>Moeilijkheidsgraad:</strong> <span>{module.estimated_difficulty ? `${module.estimated_difficulty}/5` : '-'}</span></li>
+                <li><strong>Moeilijkheidsgraad:</strong> <span>{module.estimated_difficulty ? `${module.estimated_difficulty}/10` : '-'}</span></li>
               </ul>
+              
+              <button className="btn btn-primary w-full" style={{marginTop: '20px'}}>
+                Inschrijven
+              </button>
             </div>
           </div>
         </div>

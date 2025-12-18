@@ -12,6 +12,7 @@ const MainLayout: React.FC = () => {
           {/* Left Navigation */}
           <nav className="nav-links nav-group-left">
             <Link to="/modules" className="nav-link">Keuzemodules</Link>
+            <Link to="/vragenlijst" className="nav-link">Help Mij Kiezen</Link>
             <Link to="/favorites" className="nav-link">Favorieten</Link>
           </nav>
 

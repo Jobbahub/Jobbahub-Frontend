@@ -8,6 +8,7 @@ import Dashboard from '../pages/dashboard';
 import ElectiveModules from '../pages/modules';
 import ModuleDetail from '../pages/moduleDetail';
 import Favorites from '../pages/favorites';
+import Vragenlijst from '../pages/vragenlijst';
 import { AuthProvider, useAuth } from '../context/authContext';
 
 // --- INLINE PROTECTED ROUTE ---
@@ -52,6 +53,7 @@ const AppRouter: React.FC = () => {
             <Route element={<ProtectedRoute />}>
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="favorites" element={<Favorites />} />
+              <Route path="vragenlijst" element={<Vragenlijst />} />
             </Route>
             
             {/* 404 Route */}

@@ -11,7 +11,33 @@ export interface LoginResponse {
   };
 }
 
-// Hulpfunctie voor headers met token
+// De structuur die we naar de AI sturen
+export interface VragenlijstData {
+  keuze_taal: string | null;
+  keuze_locatie: string | null;
+  keuze_punten: number | null;
+  open_antwoord: string;
+  knoppen_input: {
+    [key: string]: {
+      score: number;
+      weight: number;
+    };
+  };
+}
+
+// De structuur die we terugkrijgen van de AI
+export interface AIRecommendation {
+  name: string;
+  match_percentage: number;
+  waarom: string;
+  studycredit: number;
+}
+
+export interface AIResponse {
+  aanbevelingen: AIRecommendation[];
+  cluster_suggesties: any[];
+}
+
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');
   return {
@@ -44,22 +70,19 @@ export const apiService = {
       let errorMessage = 'Inloggen mislukt';
       try {
         const errorData = await response.json();
-        errorMessage = errorData.message || errorData.error || errorMessage;
+        errorMessage = errorData.message || errorMessage;
       } catch {}
       throw new Error(errorMessage);
     }
     return await response.json();
   },
 
-  // --- Nieuwe functies voor favorieten ---
-
   getFavorites: async (): Promise<string[]> => {
     const response = await fetch(`${API_URL}/api/favorites`, {
       headers: getAuthHeaders()
     });
-    if (!response.ok) return []; // Bij fout (bv niet ingelogd) lege lijst teruggeven
+    if (!response.ok) return [];
     const data = await response.json();
-    // De backend stuurt waarschijnlijk objecten, wij willen alleen de module ID's
     return data.map((fav: any) => fav.module_id);
   },
 
@@ -78,5 +101,22 @@ export const apiService = {
       headers: getAuthHeaders()
     });
     if (!response.ok) throw new Error('Kon favoriet niet verwijderen');
+  },
+
+  // Update: Retourneert nu AIResponse
+  verstuurVragenlijst: async (data: VragenlijstData): Promise<AIResponse> => {
+    console.log("Versturen naar AI:", JSON.stringify(data, null, 2));
+    
+    const response = await fetch(`${API_URL}/api/ai/recommend`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error('Kon geen aanbevelingen ophalen van de server.');
+    }
+
+    return await response.json();
   }
 };
