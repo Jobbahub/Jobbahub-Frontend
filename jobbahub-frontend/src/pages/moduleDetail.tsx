@@ -144,12 +144,8 @@ const ModuleDetail: React.FC = () => {
                   <li><strong>Locatie:</strong> <span>{module.location || 'Niet opgegeven'}</span></li>
                   <li><strong>Startdatum:</strong> <span>{formatDate(module.start_date)}</span></li>
                   <li><strong>Beschikbare plaatsen:</strong> <span>{module.available_spots ?? '-'}</span></li>
-                  <li><strong>Moeilijkheidsgraad:</strong> <span>{module.estimated_difficulty ? `${module.estimated_difficulty}/10` : '-'}</span></li>
+                  <li><strong>Moeilijkheidsgraad:</strong> <span>{module.estimated_difficulty ? `${module.estimated_difficulty}/5` : '-'}</span></li>
                 </ul>
-                
-                <button className="btn btn-primary w-full" style={{marginTop: '20px'}}>
-                  Inschrijven
-                </button>
               </div>
             </div>
           </div>

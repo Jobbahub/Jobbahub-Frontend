@@ -19,7 +19,7 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, d
 
   const getRealId = (name: string) => {
     const found = dbModules.find(m => m.name.toLowerCase().includes(name.toLowerCase()));
-    return found?._id;
+    return found?.id;
   };
 
   return (
