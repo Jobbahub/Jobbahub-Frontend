@@ -33,6 +33,102 @@
   --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
 }
 
+/* Dark mode specific adjustments */
+[data-theme="dark"] .tab-btn {
+  background: #374151;
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .tab-btn.active {
+  background: var(--white);
+  color: var(--primary-color);
+}
+
+[data-theme="dark"] .footer {
+  background-color: #0f172a;
+}
+
+[data-theme="dark"] .form-input {
+  background-color: #374151;
+  border-color: #4b5563;
+  color: var(--text-color);
+}
+
+[data-theme="dark"] .form-input:focus {
+  background-color: #1f2937;
+}
+
+[data-theme="dark"] .search-input {
+  background-color: #374151;
+  border-color: #4b5563;
+  color: var(--text-color);
+}
+
+[data-theme="dark"] .badge {
+  background-color: #1e3a8a;
+  color: #93c5fd;
+}
+
+[data-theme="dark"] .btn-favorite-card {
+  background: rgba(31, 41, 55, 0.95);
+  border-color: #4b5563;
+}
+
+[data-theme="dark"] .btn-favorite-detail {
+  background-color: var(--white);
+}
+
+/* Dark mode button adjustments */
+[data-theme="dark"] .btn-primary {
+  background-color: #37513b;
+  color: var(--text-color);
+  border: 1px solid #4b5563;
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  background-color: #4b6356;
+  border-color: #6b7280;
+}
+
+[data-theme="dark"] .btn-secondary {
+  background-color: #5c6678;
+  color: var(--text-color);
+  border: 1px solid #4b5563;
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  background-color: #4e5763;
+}
+
+/* Dark mode pagination adjustments */
+[data-theme="dark"] .pagination-nav button {
+  background-color: #374151;
+  color: var(--text-color);
+  border-right-color: #4b5563 !important;
+}
+
+[data-theme="dark"] .pagination-nav button:not(.disabled):hover {
+  background-color: #4b5563;
+  color: #60a5fa;
+}
+
+[data-theme="dark"] .pagination-nav button.active {
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+[data-theme="dark"] .pagination-nav button:disabled,
+[data-theme="dark"] .pagination-nav button.disabled {
+  background-color: #1f2937;
+  color: #6b7280;
+}
+
+[data-theme="dark"] .pagination-nav li.px-2 {
+  background-color: #374151;
+  border-right-color: #4b5563;
+  color: var(--text-muted);
+}
+
 /* --- Algemene Reset --- */
 * {
   box-sizing: border-box;
