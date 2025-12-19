@@ -1,5 +1,5 @@
 :root {
-  /* Kleuren (Avans Stijl) */
+  /* Kleuren (Avans Stijl) - LIGHT MODE */
   --primary-color: #C8102E;
   --primary-hover: #a00d25;
   --secondary-color: #333333;
@@ -17,6 +17,20 @@
   --container-width: 1200px;
   --header-height: 70px;
   --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* DARK MODE VARIABLES */
+[data-theme="dark"] {
+  --primary-color: #ff2f54;
+  --primary-hover: #ff1a42;
+  --secondary-color: #e5e7eb;
+  --bg-color: #111827;
+  --text-color: #f3f4f6;
+  --text-muted: #9ca3af;
+  --white: #1f2937;
+  --border-color: #374151;
+  --purple-link: #c084fc;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
 }
 
 /* --- Algemene Reset --- */
@@ -892,4 +906,30 @@ textarea.form-input {
 .credits-block {
   margin-bottom: 15px;
   display: block;
+}
+
+/* --- Theme Toggle Button --- */
+.theme-toggle {
+  background: none;
+  border: 2px solid var(--border-color);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.theme-toggle:hover {
+  transform: rotate(15deg) scale(1.1);
+  border-color: var(--primary-color);
+  background-color: var(--bg-color);
+}
+
+.theme-toggle:active {
+  transform: rotate(15deg) scale(0.95);
 }

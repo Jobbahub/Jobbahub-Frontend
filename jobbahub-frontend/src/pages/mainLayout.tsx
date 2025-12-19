@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
+import ThemeToggle from '../components/ThemeToggle';
 
 const MainLayout: React.FC = () => {
   const { user, logout } = useAuth();
@@ -35,6 +36,7 @@ const MainLayout: React.FC = () => {
                 </button>
               </>
             )}
+            <ThemeToggle />
           </nav>
         </div>
       </header>
