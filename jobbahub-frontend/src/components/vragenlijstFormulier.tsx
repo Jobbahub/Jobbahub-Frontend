@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { apiService, VragenlijstData, AIRecommendation } from '../services/apiService';
 import { IChoiceModule } from '../types';
 
-const TOPICS = [
+// VOEG 'export' TOE HIERONDER ZODAT WE DEZE LIJST KUNNEN GEBRUIKEN IN DE RESULTATEN
+export const TOPICS = [
   { id: 'q_tech', label: 'Technologie & IT', question: "Vind je het leuk om te leren hoe technologie de wereld verandert en hoe je IT-oplossingen kunt toepassen?" },
   { id: 'q_health', label: 'Gezondheid & Zorg', question: "Heb je interesse in zorg, welzijn en innovaties die mensen gezonder maken?" },
   { id: 'q_social', label: 'Sociaal & Maatschappij', question: "Ben je betrokken bij maatschappelijke vraagstukken en wil je begrijpen wat mensen beweegt?" },
@@ -22,7 +23,8 @@ const TOPICS = [
 ];
 
 interface VragenlijstFormulierProps {
-  onComplete: (aiRecs: AIRecommendation[], dbModules: IChoiceModule[]) => void;
+  // AANGEPAST: formData toegevoegd aan callback
+  onComplete: (aiRecs: AIRecommendation[], dbModules: IChoiceModule[], formData: VragenlijstData) => void;
 }
 
 const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete }) => {
@@ -78,9 +80,10 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
       const aiResponse = await apiService.verstuurVragenlijst(formData);
 
       if (aiResponse && aiResponse.aanbevelingen) {
-        onComplete(aiResponse.aanbevelingen, modules);
+        // AANGEPAST: formData meegeven
+        onComplete(aiResponse.aanbevelingen, modules, formData);
       } else {
-        onComplete([], modules);
+        onComplete([], modules, formData);
       }
     } catch (error) {
       console.error(error);
