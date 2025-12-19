@@ -16,7 +16,6 @@ const Favorites: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      // Als niet ingelogd, stuur weg of toon niets
       if (!isAuthenticated) {
         setLoading(false);
         return;
@@ -24,18 +23,11 @@ const Favorites: React.FC = () => {
 
       try {
         setLoading(true);
-        // 1. Haal alle modules op (voor de data/plaatjes/tekst)
         const allModules = await apiService.getModules();
-        
-        // 2. Haal de lijst met favoriete ID's op
         const favIds = await apiService.getFavorites();
         setFavoriteIds(favIds);
-
-        // 3. Filter: Bewaar alleen modules die in de favorietenlijst staan
-        // We vergelijken module._id (de database string) met de opgeslagen favIds
         const filtered = allModules.filter(mod => favIds.includes(mod._id));
         setFavoriteModules(filtered);
-
       } catch (err) {
         console.error(err);
         setError("Kon favorieten niet laden.");
@@ -51,18 +43,11 @@ const Favorites: React.FC = () => {
     navigate(`/modules/${id}`);
   };
 
-  // Deze functie zorgt dat als je op de pagina zelf een hartje uitklikt,
-  // de module direct uit de lijst verdwijnt.
   const handleToggleFavorite = async (moduleId: string) => {
     try {
-      // We gaan er hier vanuit dat we op deze pagina alleen VERWIJDEREN
-      // want ze staan al in de favorieten.
       await apiService.removeFavorite(moduleId);
-      
-      // Update de state direct (optimistic UI update)
       setFavoriteIds(prev => prev.filter(id => id !== moduleId));
       setFavoriteModules(prev => prev.filter(mod => mod._id !== moduleId));
-      
     } catch (error) {
       console.error("Fout bij verwijderen favoriet:", error);
     }
@@ -70,22 +55,30 @@ const Favorites: React.FC = () => {
 
   if (!isAuthenticated) {
     return (
-        <div className="container" style={{textAlign: 'center', marginTop: '50px'}}>
-            <p>Je moet ingelogd zijn om favorieten te bekijken.</p>
+      <div className="page-wrapper">
+        <div className="page-hero">
+          <h1 className="page-hero-title">Mijn Favorieten</h1>
         </div>
+        <div className="container" style={{textAlign: 'center', marginTop: '50px'}}>
+          <p>Je moet ingelogd zijn om favorieten te bekijken.</p>
+        </div>
+      </div>
     );
   }
 
   return (
-    <div>
-      <div className="container">
-        <h1 className="page-header">Mijn Favorieten</h1>
+    <div className="page-wrapper">
+      {/* Hero Section */}
+      <div className="page-hero">
+        <h1 className="page-hero-title">Mijn Favorieten</h1>
+      </div>
+
+      <div className="container" style={{ marginTop: '40px' }}>
         <p className="page-intro">
           Hier vind je een overzicht van de modules die jij hebt bewaard.
         </p>
       </div>
 
-      {/* We hergebruiken hier de ModuleGrid component! */}
       <ModuleGrid 
         modules={favoriteModules} 
         loading={loading} 

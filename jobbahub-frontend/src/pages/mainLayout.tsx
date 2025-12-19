@@ -39,7 +39,7 @@ const MainLayout: React.FC = () => {
         </div>
       </header>
 
-      <main className="page-content container">
+      <main className="page-content">
         <Outlet />
       </main>
 

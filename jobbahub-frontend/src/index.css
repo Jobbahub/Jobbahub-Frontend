@@ -66,6 +66,31 @@ button {
   padding: 40px 0;
 }
 
+/* Universal Page Styles - for all pages with hero sections */
+.page-wrapper {
+  margin: -40px 0 0 0; /* Remove top padding from page-content */
+  padding: 0;
+}
+
+.page-hero {
+  background: var(--white);
+  padding: 60px 40px;
+  margin-bottom: 0;
+  text-align: center;
+  min-height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.page-hero-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: var(--text-color);
+}
+
 /* --- Header & Navigatie --- */
 .site-header {
   background-color: var(--white);
@@ -408,8 +433,9 @@ button {
 }
 
 /* --- Home Page Styles --- */
+/* Home Page Styles */
 .home-wrapper {
-  margin: 0 -20px;
+  margin: -40px 0 0 0; /* Only remove top padding */
   padding: 0;
 }
 
@@ -446,7 +472,8 @@ button {
 .home-content {
   background: var(--white);
   padding: 40px;
-  margin: 0 20px 30px 20px;
+  margin: 0 auto 30px auto;
+  max-width: var(--container-width); /* Center the text content */
 }
 
 .text-paragraph {
