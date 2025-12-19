@@ -20,6 +20,18 @@ export interface IChoiceModule {
   tags?: ITag[];  
   available_spots?: number; 
   start_date?: string;      
-  estimated_difficulty?: number;
-  
+  estimated_difficulty?: number; 
+}
+
+export interface AIRecommendation {
+  name: string;
+  match_percentage: number;
+  waarom: string;
+  studycredit: number;
+}
+
+export interface ClusterRecommendation {
+  name: string;
+  popularity_score: number;
+  waarom: string;
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { apiService, VragenlijstData, AIRecommendation } from '../services/apiService';
-import { IChoiceModule } from '../types';
+import { IChoiceModule, ClusterRecommendation } from '../types';
 
 // VOEG 'export' TOE HIERONDER ZODAT WE DEZE LIJST KUNNEN GEBRUIKEN IN DE RESULTATEN
 export const TOPICS = [
@@ -23,8 +23,13 @@ export const TOPICS = [
 ];
 
 interface VragenlijstFormulierProps {
-  // AANGEPAST: formData toegevoegd aan callback
-  onComplete: (aiRecs: AIRecommendation[], dbModules: IChoiceModule[], formData: VragenlijstData) => void;
+  // AANGEPAST: clusterRecs toegevoegd (optioneel gemaakt voor backwards compatibility)
+  onComplete: (
+    aiRecs: AIRecommendation[], 
+    dbModules: IChoiceModule[], 
+    formData: VragenlijstData,
+    clusterRecs?: ClusterRecommendation[] // NIEUW
+  ) => void;
 }
 
 const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete }) => {
@@ -73,17 +78,22 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
     }
   };
 
-  const handleSubmit = async () => {
+const handleSubmit = async () => {
     setLoading(true);
     try {
       const modules = await apiService.getModules();
       const aiResponse = await apiService.verstuurVragenlijst(formData);
 
       if (aiResponse && aiResponse.aanbevelingen) {
-        // AANGEPAST: formData meegeven
-        onComplete(aiResponse.aanbevelingen, modules, formData);
+        // AANGEPAST: We geven nu ook cluster_suggesties mee
+        onComplete(
+            aiResponse.aanbevelingen, 
+            modules, 
+            formData, 
+            aiResponse.cluster_suggesties
+        );
       } else {
-        onComplete([], modules, formData);
+        onComplete([], modules, formData, []);
       }
     } catch (error) {
       console.error(error);

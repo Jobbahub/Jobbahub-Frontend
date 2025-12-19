@@ -1,26 +1,30 @@
 import React, { useState } from 'react';
 import VragenlijstFormulier from '../components/vragenlijstFormulier';
 import VragenlijstResultaten from '../components/vragenlijstResultaten';
-import { AIRecommendation, VragenlijstData } from '../services/apiService';
+import { AIRecommendation, ClusterRecommendation, AIResponse, VragenlijstData } from '../services/apiService';
 import { IChoiceModule } from '../types';
 
 const Vragenlijst: React.FC = () => {
   const [showResults, setShowResults] = useState(false);
   const [aiRecs, setAiRecs] = useState<AIRecommendation[]>([]);
+  // NIEUW: State voor clusters
+  const [clusterRecs, setClusterRecs] = useState<ClusterRecommendation[]>([]);
   const [dbModules, setDbModules] = useState<IChoiceModule[]>([]);
-  // State voor opgeslagen antwoorden
   const [userAnswers, setUserAnswers] = useState<VragenlijstData | null>(null);
 
-  // Aangepaste callback: ontvangt nu ook formData
-  const handleFormComplete = (aiData: AIRecommendation[], moduleData: IChoiceModule[], formData: VragenlijstData) => {
-    setAiRecs(aiData);
-    setDbModules(moduleData);
-    setUserAnswers(formData); // Opslaan in state
+  // Callback functie: let op dat we hier nu het hele AI response object gebruiken of opsplitsen
+  const handleFormComplete = (aiRecsData: AIRecommendation[], dbModulesData: IChoiceModule[], formData: VragenlijstData, clusterData?: ClusterRecommendation[]) => {
+    setAiRecs(aiRecsData);
+    // Als cluster data is meegegeven, sla op, anders lege lijst
+    setClusterRecs(clusterData || []);
+    setDbModules(dbModulesData);
+    setUserAnswers(formData);
     setShowResults(true);
   };
 
   const handleRetry = () => {
     setAiRecs([]);
+    setClusterRecs([]);
     setUserAnswers(null);
     setShowResults(false);
   };
@@ -28,12 +32,15 @@ const Vragenlijst: React.FC = () => {
   return (
     <div className="page-content">
       {!showResults ? (
+        // We moeten de VragenlijstFormulier component ook vertellen dat hij cluster data moet doorgeven. 
+        // Zie stap 2b hieronder voor de aanpassing in VragenlijstFormulier.
         <VragenlijstFormulier onComplete={handleFormComplete} />
       ) : (
         <VragenlijstResultaten 
           aiRecs={aiRecs} 
+          clusterRecs={clusterRecs} // NIEUW: Doorgeven
           dbModules={dbModules} 
-          userAnswers={userAnswers} // Doorgeven aan resultaten
+          userAnswers={userAnswers} 
           onRetry={handleRetry} 
         />
       )}

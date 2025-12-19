@@ -11,7 +11,6 @@ export interface LoginResponse {
   };
 }
 
-// De structuur die we naar de AI sturen
 export interface VragenlijstData {
   keuze_taal: string | null;
   keuze_locatie: string | null;
@@ -25,7 +24,6 @@ export interface VragenlijstData {
   };
 }
 
-// De structuur die we terugkrijgen van de AI
 export interface AIRecommendation {
   name: string;
   match_percentage: number;
@@ -33,9 +31,16 @@ export interface AIRecommendation {
   studycredit: number;
 }
 
+// NIEUW: Type voor cluster suggesties
+export interface ClusterRecommendation {
+  name: string;
+  popularity_score: number;
+  waarom: string;
+}
+
 export interface AIResponse {
   aanbevelingen: AIRecommendation[];
-  cluster_suggesties: any[];
+  cluster_suggesties: ClusterRecommendation[]; // AANGEPAST
 }
 
 const getAuthHeaders = () => {
@@ -103,7 +108,6 @@ export const apiService = {
     if (!response.ok) throw new Error('Kon favoriet niet verwijderen');
   },
 
-  // Update: Retourneert nu AIResponse
   verstuurVragenlijst: async (data: VragenlijstData): Promise<AIResponse> => {
     console.log("Versturen naar AI:", JSON.stringify(data, null, 2));
     
