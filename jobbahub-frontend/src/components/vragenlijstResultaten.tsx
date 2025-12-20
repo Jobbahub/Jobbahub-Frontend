@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AIRecommendation, ClusterRecommendation, VragenlijstData } from '../services/apiService';
 import { IChoiceModule } from '../types';
 import { TOPICS } from './vragenlijstFormulier';
-import ModuleCard from './moduleCard'; // Importeer de kaart
+import ModuleCard from './moduleCard';
 
 interface VragenlijstResultatenProps {
   aiRecs: AIRecommendation[];
@@ -16,7 +16,6 @@ interface VragenlijstResultatenProps {
 const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, clusterRecs, dbModules, userAnswers, onRetry }) => {
   const navigate = useNavigate();
 
-  // Navigatie functie (doorsturen naar detail)
   const handleViewDetails = (id: string) => {
     navigate(`/modules/${id}`);
   };
@@ -49,13 +48,13 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
     if (!userAnswers) return null;
     const filteredTopics = TOPICS.filter(t => ids.includes(t.id));
     return (
-      <ul className="detail-list" style={{border: 'none'}}>
+      <ul className="detail-list detail-list-clean">
         {filteredTopics.map((topic) => {
           const score = userAnswers.knoppen_input[topic.id]?.score;
           return (
-            <li key={topic.id} style={{padding: '8px 0', borderBottom: '1px solid #eee'}}>
-              <span style={{fontSize: '0.9rem'}}>{topic.label}</span>
-              <span className={getScoreClass(score)} style={{fontSize: '0.9rem'}}>
+            <li key={topic.id}>
+              <span className="detail-list-label">{topic.label}</span>
+              <span className={`detail-list-value ${getScoreClass(score)}`}>
                 {getScoreLabel(score)}
               </span>
             </li>
@@ -69,50 +68,44 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
     <div className="container">
       <h1 className="page-header center-text">Jouw Resultaten</h1>
       
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '30px' }}>
+      <div className="centered-btn-container">
         <button className="btn btn-secondary" onClick={onRetry}>
           Opnieuw invullen
         </button>
       </div>
 
       {aiRecs.length === 0 ? (
-        <div className="form-container" style={{ textAlign: 'center', padding: '40px', marginBottom: '40px' }}>
+        <div className="form-container no-matches-box">
           <h3 className="form-title">Geen matches gevonden</h3>
           <p>Helaas heeft de AI geen modules kunnen vinden.</p>
         </div>
       ) : (
         <>
-          {/* SECTIE 1: Directe Matches */}
           <p className="page-intro center-text">
             Op basis van jouw antwoorden passen deze modules het beste bij jou.
           </p>
-          <div className="grid-container" style={{ marginBottom: '60px' }}>
+          <div className="grid-container grid-container-margin-bottom">
             {aiRecs.map((rec, index) => {
-              // Zoek de volledige module in de database lijst
               const foundModule = dbModules.find(m => m.name.toLowerCase().includes(rec.name.toLowerCase()));
-              
-              if (!foundModule) return null; // Veiligheid
+              if (!foundModule) return null;
 
               return (
                 <ModuleCard 
                   key={`rec-${index}`}
                   module={foundModule}
                   onClick={handleViewDetails}
-                  // Extra AI props:
                   matchPercentage={rec.match_percentage}
                   explanation={rec.waarom}
                   isCluster={false}
-                  // We geven geen favorites/auth mee hier, tenzij je dat wilt
                 />
               );
             })}
           </div>
 
-          {/* SECTIE 2: Cluster Suggesties */}
           {clusterRecs.length > 0 && (
-            <div style={{ marginTop: '60px', marginBottom: '60px', borderTop: '1px solid #e5e7eb', paddingTop: '40px' }}>
-              <h2 className="form-title center-text" style={{fontSize: '1.8rem'}}>Ook interessant voor jou</h2>
-              <div style={{ maxWidth: '800px', margin: '0 auto 30px auto', textAlign: 'center', color: '#555', lineHeight: '1.6' }}>
+            <div className="section-divider">
+              <h2 className="form-title center-text section-title-large">Ook interessant voor jou</h2>
+              <div className="section-intro-text">
                 <p>
                   Naast je directe matches hebben we ook gekeken naar je <strong>nummer 1 match</strong>. 
                   De onderstaande modules vallen binnen hetzelfde vakgebied (cluster) als die match. 
@@ -123,7 +116,6 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
               <div className="grid-container">
                 {clusterRecs.map((rec, index) => {
                   const foundModule = dbModules.find(m => m.name.toLowerCase().includes(rec.name.toLowerCase()));
-                  
                   if (!foundModule) return null;
 
                   return (
@@ -131,10 +123,8 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
                       key={`cluster-${index}`}
                       module={foundModule}
                       onClick={handleViewDetails}
-                      // Extra AI props:
                       explanation={rec.waarom}
                       isCluster={true}
-                      // Match percentage is null bij clusters
                     />
                   );
                 })}
@@ -144,34 +134,33 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
         </>
       )}
 
-      {/* SECTIE 3: Profiel Samenvatting (Ongewijzigd) */}
       {userAnswers && (
-        <div style={{marginTop: '40px', marginBottom: '60px', borderTop: '1px solid #e5e7eb', paddingTop: '40px'}}>
-          <h2 className="form-title center-text" style={{ fontSize: '1.8rem', marginBottom: '30px' }}>
+        <div className="profile-section-container">
+          <h2 className="form-title center-text section-title-large">
             Jouw Profiel
           </h2>
           
           <div className="results-summary-grid">
             <div className="result-column">
               <h4>Algemeen & Voorkeuren</h4>
-              <ul className="detail-list" style={{border: 'none'}}>
-                <li style={{padding: '8px 0', borderBottom: '1px solid #eee'}}>
+              <ul className="detail-list detail-list-clean">
+                <li>
                   <strong>Taal</strong>
                   <span>{userAnswers.keuze_taal || "Geen voorkeur"}</span>
                 </li>
-                <li style={{padding: '8px 0', borderBottom: '1px solid #eee'}}>
+                <li>
                   <strong>Locatie</strong>
                   <span>{userAnswers.keuze_locatie || "Geen voorkeur"}</span>
                 </li>
-                <li style={{padding: '8px 0', borderBottom: '1px solid #eee'}}>
+                <li>
                   <strong>Studiepunten</strong>
                   <span>{userAnswers.keuze_punten ? `${userAnswers.keuze_punten} EC` : "Geen voorkeur"}</span>
                 </li>
               </ul>
               {userAnswers.open_antwoord && (
-                <div style={{ marginTop: '20px' }}>
-                  <strong style={{ display: 'block', marginBottom: '5px', color: 'var(--secondary-color)' }}>Jouw Toelichting:</strong>
-                  <div style={{ fontSize: '0.9rem', fontStyle: 'italic', color: '#555' }}>
+                <div className="profile-answer-block">
+                  <span className="profile-answer-label">Jouw Toelichting:</span>
+                  <div className="profile-answer-text">
                     "{userAnswers.open_antwoord}"
                   </div>
                 </div>
@@ -185,9 +174,9 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
 
             <div className="result-column">
               <h4>Waarden & Doelen</h4>
-              <h5 style={{fontSize: '0.95rem', color: '#666', marginTop: '10px', marginBottom: '5px', textTransform: 'uppercase', letterSpacing: '1px'}}>Waarden</h5>
+              <h5 className="topic-category-header">Waarden</h5>
               {renderTopicList(categories.waarden)}
-              <h5 style={{fontSize: '0.95rem', color: '#666', marginTop: '20px', marginBottom: '5px', textTransform: 'uppercase', letterSpacing: '1px'}}>Doelen</h5>
+              <h5 className="topic-category-header">Doelen</h5>
               {renderTopicList(categories.doelen)}
             </div>
           </div>

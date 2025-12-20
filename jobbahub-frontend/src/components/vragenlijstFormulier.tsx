@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { apiService, VragenlijstData, AIRecommendation } from '../services/apiService';
 import { IChoiceModule, ClusterRecommendation } from '../types';
 
-// VOEG 'export' TOE HIERONDER ZODAT WE DEZE LIJST KUNNEN GEBRUIKEN IN DE RESULTATEN
 export const TOPICS = [
   { id: 'q_tech', label: 'Technologie & IT', question: "Vind je het leuk om te leren hoe technologie de wereld verandert en hoe je IT-oplossingen kunt toepassen?" },
   { id: 'q_health', label: 'Gezondheid & Zorg', question: "Heb je interesse in zorg, welzijn en innovaties die mensen gezonder maken?" },
@@ -23,12 +22,11 @@ export const TOPICS = [
 ];
 
 interface VragenlijstFormulierProps {
-  // AANGEPAST: clusterRecs toegevoegd (optioneel gemaakt voor backwards compatibility)
   onComplete: (
     aiRecs: AIRecommendation[], 
     dbModules: IChoiceModule[], 
     formData: VragenlijstData,
-    clusterRecs?: ClusterRecommendation[] // NIEUW
+    clusterRecs?: ClusterRecommendation[]
   ) => void;
 }
 
@@ -78,14 +76,13 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
     }
   };
 
-const handleSubmit = async () => {
+  const handleSubmit = async () => {
     setLoading(true);
     try {
       const modules = await apiService.getModules();
       const aiResponse = await apiService.verstuurVragenlijst(formData);
 
       if (aiResponse && aiResponse.aanbevelingen) {
-        // AANGEPAST: We geven nu ook cluster_suggesties mee
         onComplete(
             aiResponse.aanbevelingen, 
             modules, 
@@ -105,19 +102,10 @@ const handleSubmit = async () => {
 
   if (loading) {
     return (
-      <div className="container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
-        <div style={{
-          border: '6px solid #f3f3f3',
-          borderTop: '6px solid var(--primary-color)',
-          borderRadius: '50%',
-          width: '60px',
-          height: '60px',
-          animation: 'spin 1.5s linear infinite',
-          marginBottom: '30px'
-        }}></div>
-        <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+      <div className="container loading-container">
+        <div className="loading-spinner"></div>
         <h2 className="form-title">Even geduld...</h2>
-        <p className="form-description" style={{ maxWidth: '500px', margin: '0 auto' }}>
+        <p className="form-description loading-text">
           De AI is jouw antwoorden aan het analyseren om de beste matches te vinden.
         </p>
       </div>
@@ -220,7 +208,7 @@ const handleSubmit = async () => {
           />
         </div>
         <div className="nav-buttons-container">
-          <button className="btn btn-secondary w-full" style={{ marginRight: '20px' }} onClick={() => setStep(2)}>← Terug</button>
+          <button className="btn btn-secondary w-full btn-margin-right" onClick={() => setStep(2)}>← Terug</button>
           <button className="btn btn-primary w-full" onClick={handleSubmit}>Bekijk Mijn Matches</button>
         </div>
       </div>

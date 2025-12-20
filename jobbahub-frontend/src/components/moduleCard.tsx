@@ -46,15 +46,12 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
   };
 
   const tags = parseTags(module.tags_list);
-
-  // Gebruik module.image als die bestaat, anders de picsum fallback o.b.v. ID
   const imageUrl = `https://picsum.photos/id/${module.id % 1084}/600/400`;
 
   return (
     <div className="card clickable-card" onClick={() => onClick(String(module.id))}>
       
       <div className="result-card-image-wrapper">
-        {/* Favorieten knop RECHTSBOVEN */}
         {isAuthenticated && onToggleFavorite && (
           <button 
             className={`btn-favorite-card ${isFavorite ? 'active' : ''}`}
@@ -71,7 +68,6 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
           className="card-image" 
         />
 
-        {/* AI Match Badges LINKSBOVEN */}
         {matchPercentage !== undefined && matchPercentage !== null && (
           <span className="match-badge">
             {matchPercentage}% Match
@@ -79,7 +75,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
         )}
         
         {isCluster && (
-           <span className="match-badge" style={{backgroundColor: '#eab308'}}>
+           <span className="match-badge badge-cluster-color">
              Populair in Cluster
            </span>
         )}
@@ -88,14 +84,11 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
       <div className="card-body">
         <h3 className="card-title">{module.name}</h3>
         
-        {/* TAGS SECTIE */}
         <div className="card-tags-container">
-          {/* 1. Main Filter */}
           {module.main_filter && (
             <span className="tag-main">{module.main_filter}</span>
           )}
 
-          {/* 2. Toggle Knop (alleen als er tags zijn) */}
           {tags.length > 0 && (
             <button 
               className={`tag-toggle-btn ${tagsExpanded ? 'expanded' : ''}`} 
@@ -106,24 +99,18 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
             </button>
           )}
 
-          {/* 3. De overige tags */}
           {tagsExpanded && tags.map((tag, index) => (
             <span key={index} className="tag-secondary">{tag}</span>
           ))}
         </div>
 
-        {/* AI uitleg (indien aanwezig) */}
         {explanation && (
-          <div 
-            className="why-box" 
-            style={isCluster ? { borderLeftColor: '#eab308', backgroundColor: '#fefce8', color: '#854d0e', marginBottom: '15px' } : { marginBottom: '15px' }}
-          >
+          <div className={`why-box ${isCluster ? 'why-box-cluster' : ''}`}>
             <strong>Waarom:</strong> {explanation}
           </div>
         )}
 
-        {/* KORTE BESCHRIJVING (Teruggeplaatst) */}
-        <p className="card-text" style={{fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '15px'}}>
+        <p className="card-text">
           {module.shortdescription || (module.description ? module.description.substring(0, 100) + '...' : '')}
         </p>
         

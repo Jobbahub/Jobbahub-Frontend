@@ -4,9 +4,8 @@ import { IChoiceModule } from '../types';
 import { apiService } from '../services/apiService';
 import { useAuth } from '../context/authContext';
 
-// Deze logica moet matchen met ModuleCard (maar dan hogere resolutie)
 const getHeroImageUrl = (id: number) => {
-    const picsumId = id % 1084; 
+    const picsumId = id % 1084;
     return `https://picsum.photos/id/${picsumId}/1200/400`;
 };
 
@@ -68,90 +67,88 @@ const ModuleDetail: React.FC = () => {
     return new Date(dateString).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
   };
 
-  if (loading) return <div className="container" style={{padding: '40px'}}>Laden...</div>;
+  if (loading) return <div className="container loading-simple">Laden...</div>;
   if (error || !module) return <div className="container form-error">{error || "Module niet gevonden"}</div>;
 
-  const tags = parseTags(module.tags_list); 
-  const heroImageUrl = getHeroImageUrl(module.id); // Gebruik module.image of de gegenereerde
+  const tags = parseTags(module.tags_list);
+  const heroImageUrl = getHeroImageUrl(module.id);
 
   return (
-    <div className="container">
-      <button 
-        onClick={() => navigate(-1)} 
-        className="btn btn-secondary"
-        style={{ marginBottom: '20px', marginTop: '20px' }}
-      >
-        ← Terug
-      </button>
+    <div className="page-wrapper">
+      <div className="page-hero" style={{ 
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${heroImageUrl})`,
+      }}>
+        <h1 className="page-hero-title hero-title-shadow">
+          {module.name}
+        </h1>
+      </div>
 
-      <div className="detail-wrapper">
-        <div className="detail-header">
-           
-           {isAuthenticated && (
-             <button
-               onClick={handleToggleFavorite}
-               className={`btn-favorite-detail ${isFavorite ? 'active' : ''}`}
-             >
-               {isFavorite ? '♥' : '♡'}
-             </button>
-           )}
+      <div className="container detail-container-offset">
+        <button 
+          onClick={() => navigate(-1)} 
+          className="btn btn-secondary btn-margin-bottom"
+        >
+          ← Terug
+        </button>
 
-           <img 
-            src={heroImageUrl}
-            alt={module.name} 
-            className="detail-hero-image"
-          />
-          <div className="detail-title-box">
-            <h1 className="detail-title">{module.name}</h1>
-            <div className="badge-container">
-              {/* Main Filter ook hier tonen */}
-              {module.main_filter && (
-                 <span className="badge" style={{background: '#dbeafe', color: '#1e40af', border: '1px solid #bfdbfe'}}>
-                   {module.main_filter}
-                 </span>
-              )}
-              
-              {tags.map((tag, index) => (
-                <span key={index} className="badge">{tag}</span>
-              ))}
-              {module.level && <span className="badge" style={{background: '#e0e7ff', color: '#3730a3'}}>{module.level}</span>}
+        <div className="detail-wrapper">
+          <div className="detail-header">
+            {isAuthenticated && (
+              <button
+                onClick={handleToggleFavorite}
+                className={`btn-favorite-detail ${isFavorite ? 'active' : ''}`}
+              >
+                {isFavorite ? '♥' : '♡'}
+              </button>
+            )}
+
+            <div className="detail-title-box">
+              <h1 className="detail-title">{module.name}</h1>
+              <div className="badge-container">
+                {module.main_filter && (
+                   <span className="badge" style={{background: '#dbeafe', color: '#1e40af', border: '1px solid #bfdbfe'}}>
+                     {module.main_filter}
+                   </span>
+                )}
+                {tags.map((tag, index) => (
+                  <span key={index} className="badge">{tag}</span>
+                ))}
+                {module.level && <span className="badge badge-level">{module.level}</span>}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="detail-grid">
-          <div className="detail-main">
-            <p className="detail-intro-text">
+          <div className="detail-grid">
+            <div className="detail-main">
+              <p className="detail-intro-text">
                 {module.shortdescription}
-            </p>
+              </p>
 
-            <section className="detail-section">
-              <h3>Inhoud</h3>
-              <p>{module.content || module.description}</p>
-            </section>
-
-            {module.learningoutcomes && (
               <section className="detail-section">
-                <h3>Leeruitkomsten</h3>
-                <p>{module.learningoutcomes}</p>
+                <h3>Inhoud</h3>
+                <p>{module.content || module.description}</p>
               </section>
-            )}
-          </div>
 
-          <div className="detail-sidebar">
-            <div className="sidebar-card">
-              <h4>Module Details</h4>
-              <ul className="detail-list">
-                <li><strong>Studiepunten:</strong> <span>{module.studycredit} EC</span></li>
-                <li><strong>Locatie:</strong> <span>{module.location || 'Niet opgegeven'}</span></li>
-                <li><strong>Startdatum:</strong> <span>{formatDate(module.start_date)}</span></li>
-                <li><strong>Beschikbare plaatsen:</strong> <span>{module.available_spots ?? '-'}</span></li>
-                <li><strong>Moeilijkheidsgraad:</strong> <span>{module.estimated_difficulty ? `${module.estimated_difficulty}/10` : '-'}</span></li>
-              </ul>
-              
-              <button className="btn btn-primary w-full" style={{marginTop: '20px'}}>
-                Inschrijven
-              </button>
+              {module.learningoutcomes && (
+                <section className="detail-section">
+                  <h3>Leeruitkomsten</h3>
+                  <p>{module.learningoutcomes}</p>
+                </section>
+              )}
+            </div>
+
+            <div className="detail-sidebar">
+              <div className="sidebar-card">
+                <h4>Module Details</h4>
+                <ul className="detail-list">
+                  <li><strong>Studiepunten:</strong> <span>{module.studycredit} EC</span></li>
+                  <li><strong>Locatie:</strong> <span>{module.location || 'Niet opgegeven'}</span></li>
+                  <li><strong>Startdatum:</strong> <span>{formatDate(module.start_date)}</span></li>
+                  <li><strong>Beschikbare plaatsen:</strong> <span>{module.available_spots ?? '-'}</span></li>
+                  <li><strong>Moeilijkheidsgraad:</strong> <span>{module.estimated_difficulty ? `${module.estimated_difficulty}/5` : '-'}</span></li>
+                </ul>
+
+              </div>
             </div>
           </div>
         </div>
