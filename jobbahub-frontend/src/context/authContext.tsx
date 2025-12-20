@@ -6,14 +6,16 @@ interface User {
   id: string;
   name: string;
   email: string;
+  vragenlijst_resultaten?: any;
 }
 
 // Definieer wat er in de Context beschikbaar is
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   logout: () => void;
+  updateUser: (user: User | null) => void;
   error: string | null;
 }
 
@@ -30,12 +32,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setError(null);
     try {
       const data = await apiService.login(email, password);
-      
+
       // 1. Sla token op (voor latere authenticated requests)
       localStorage.setItem('token', data.token);
-      
+
       // 2. Zet de gebruiker in de state
       setUser(data.user);
+      return data.user;
     } catch (err: any) {
       console.error("Login error:", err);
       setError(err.message || "Er is een fout opgetreden bij het inloggen.");
@@ -49,7 +52,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, logout, error }}>
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, logout, updateUser: setUser, error }}>
       {children}
     </AuthContext.Provider>
   );

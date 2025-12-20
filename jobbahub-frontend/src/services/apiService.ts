@@ -8,6 +8,7 @@ export interface LoginResponse {
     id: string;
     name: string;
     email: string;
+    vragenlijst_resultaten?: any;
   };
 }
 
@@ -65,7 +66,7 @@ export const apiService = {
   },
 
   login: async (email: string, password: string): Promise<LoginResponse> => {
-    const response = await fetch(`${API_URL}/api/auth/login`, { 
+    const response = await fetch(`${API_URL}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -76,7 +77,7 @@ export const apiService = {
       try {
         const errorData = await response.json();
         errorMessage = errorData.message || errorMessage;
-      } catch {}
+      } catch { }
       throw new Error(errorMessage);
     }
     return await response.json();
@@ -110,7 +111,7 @@ export const apiService = {
 
   verstuurVragenlijst: async (data: VragenlijstData): Promise<AIResponse> => {
     console.log("Versturen naar AI:", JSON.stringify(data, null, 2));
-    
+
     const response = await fetch(`${API_URL}/api/ai/recommend`, {
       method: 'POST',
       headers: getAuthHeaders(),
@@ -121,6 +122,25 @@ export const apiService = {
       throw new Error('Kon geen aanbevelingen ophalen van de server.');
     }
 
+    return await response.json();
+  },
+
+  saveQuestionnaireResults: async (data: any) => {
+    const response = await fetch(`${API_URL}/api/auth/questionnaire`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data)
+    });
+    if (!response.ok) throw new Error('Kon vragenlijst resultaten niet opslaan');
+    return await response.json();
+  },
+
+  deleteQuestionnaireResults: async () => {
+    const response = await fetch(`${API_URL}/api/auth/questionnaire`, {
+      method: 'DELETE',
+      headers: getAuthHeaders()
+    });
+    if (!response.ok) throw new Error('Kon vragenlijst resultaten niet resetten');
     return await response.json();
   }
 };

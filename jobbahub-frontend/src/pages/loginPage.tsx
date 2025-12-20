@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const Login: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
-  
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -17,8 +17,16 @@ const Login: React.FC = () => {
     setFormError(null);
 
     try {
-      await login(email, password);
-      navigate('/dashboard');
+      const loggedInUser = await login(email, password);
+
+      // Check of er opgeslagen resultaten zijn
+      if (loggedInUser.vragenlijst_resultaten &&
+        loggedInUser.vragenlijst_resultaten.aanbevelingen &&
+        loggedInUser.vragenlijst_resultaten.aanbevelingen.length > 0) {
+        navigate('/vragenlijst');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err: any) {
       setFormError(err.message || "Inloggen mislukt. Controleer je gegevens.");
     } finally {
@@ -30,7 +38,7 @@ const Login: React.FC = () => {
     <div className="form-wrapper">
       <div className="form-container">
         <h2 className="form-title">Inloggen</h2>
-        
+
         <p className="form-description">
           Vul je gegevens in om toegang te krijgen tot je dashboard.
         </p>
@@ -72,8 +80,8 @@ const Login: React.FC = () => {
             />
           </div>
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className={`btn btn-primary w-full ${loading ? 'btn-disabled' : ''}`}
             disabled={loading}
           >
