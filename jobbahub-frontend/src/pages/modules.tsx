@@ -7,7 +7,7 @@ import ModuleSearch from '../components/moduleSearch';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 
-const ITEMS_PER_PAGE = 8; 
+const ITEMS_PER_PAGE = 9; 
 
 const ElectiveModules: React.FC = () => {
   const [allModules, setAllModules] = useState<IChoiceModule[]>([]);
