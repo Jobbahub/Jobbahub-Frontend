@@ -1,26 +1,20 @@
-export interface ITag {
-  id: string;
-  name: string;
-  color?: string; // Optioneel voor UI styling
-}
-
 export interface IChoiceModule {
-  _id: string;
   id: number;
+  _id: string;
   name: string;
-  shortdescription: string;
   description: string;
-  content?: string;        
   studycredit: number;
-  location?: string;        
-  level?: string;           
+  shortdescription?: string;
+  level?: string;
+  start_date?: string;
+  location?: string;
+  tags_list?: string;   // Hernaamd van module_tags
+  main_filter?: string; // Nieuw veld
   learningoutcomes?: string;
-  // Let op: In je JSON is dit een string die eruit ziet als een array "['a', 'b']"
-  module_tags?: string;   
-  tags?: ITag[];  
-  available_spots?: number; 
-  start_date?: string;      
-  estimated_difficulty?: number; 
+  content?: string;
+  available_spots?: number;
+  estimated_difficulty?: number;
+  target_audience?: string;
 }
 
 export interface AIRecommendation {

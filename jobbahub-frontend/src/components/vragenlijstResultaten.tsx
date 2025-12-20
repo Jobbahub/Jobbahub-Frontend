@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AIRecommendation, ClusterRecommendation, VragenlijstData } from '../services/apiService';
 import { IChoiceModule } from '../types';
 import { TOPICS } from './vragenlijstFormulier';
+import ModuleCard from './moduleCard'; // Importeer de kaart
 
 interface VragenlijstResultatenProps {
   aiRecs: AIRecommendation[];
@@ -15,10 +16,9 @@ interface VragenlijstResultatenProps {
 const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, clusterRecs, dbModules, userAnswers, onRetry }) => {
   const navigate = useNavigate();
 
-  // Helper om plaatje te zoeken (of placeholder)
-  const getImage = (name: string) => {
-    const found = dbModules.find(m => m.name.toLowerCase().includes(name.toLowerCase()));
-    return `https://picsum.photos/seed/${name.length}/300/200`;
+  // Navigatie functie (doorsturen naar detail)
+  const handleViewDetails = (id: string) => {
+    navigate(`/modules/${id}`);
   };
 
   const getScoreLabel = (score: number) => {
@@ -39,7 +39,6 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
     }
   };
 
-  // Categorie indeling
   const categories = {
     vakgebieden: ['q_tech', 'q_health', 'q_law', 'q_edu', 'q_econ', 'q_comm', 'q_eng', 'q_sport', 'q_creative', 'q_biz'],
     waarden: ['q_social', 'q_sustain', 'q_intl'],
@@ -66,63 +65,6 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
     );
   };
 
-  // Render functie voor een kaart (Verbeterd: zoekt zelf studiepunten op)
-  const renderCard = (name: string, reason: string, percentage: number | null, isCluster: boolean, studyCreditFromAI?: number) => {
-    // 1. Zoek de echte module in de database lijst op basis van naam
-    const foundModule = dbModules.find(m => m.name.toLowerCase().includes(name.toLowerCase()));
-    
-    // 2. Bepaal ID en Studiepunten (Gebruik AI data als aanwezig, anders fallback naar DB module)
-    const realId = foundModule?.id;
-    const finalCredits = studyCreditFromAI || foundModule?.studycredit;
-
-    return (
-      <div className="card" style={{ flexDirection: 'column' }}>
-        <div className="result-card-image-wrapper">
-          <img
-            src={getImage(name)}
-            alt={name}
-            className="result-card-image"
-          />
-          {percentage !== null && (
-            <span className="match-badge">
-              {percentage}% Match
-            </span>
-          )}
-          {isCluster && (
-             <span className="match-badge" style={{backgroundColor: '#eab308'}}>
-               Populair in Cluster
-             </span>
-          )}
-        </div>
-
-        <div className="card-body">
-          <h3 className="card-title">{name}</h3>
-
-          <div className="why-box" style={isCluster ? { borderLeftColor: '#eab308', backgroundColor: '#fefce8', color: '#854d0e' } : {}}>
-            <strong>Waarom:</strong> {reason}
-          </div>
-
-          <span className="credits credits-block">
-            {finalCredits ? `${finalCredits} EC` : 'Punten n.t.b.'}
-          </span>
-
-          {realId ? (
-            <button
-              className="btn btn-secondary w-full"
-              onClick={() => navigate(`/modules/${realId}`)}
-            >
-              Bekijk Details
-            </button>
-          ) : (
-            <button className="btn btn-disabled w-full" disabled>
-              Details niet beschikbaar
-            </button>
-          )}
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="container">
       <h1 className="page-header center-text">Jouw Resultaten</h1>
@@ -145,11 +87,25 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
             Op basis van jouw antwoorden passen deze modules het beste bij jou.
           </p>
           <div className="grid-container" style={{ marginBottom: '60px' }}>
-            {aiRecs.map((rec, index) => (
-              <div key={`rec-${index}`}>
-                {renderCard(rec.name, rec.waarom, rec.match_percentage, false, rec.studycredit)}
-              </div>
-            ))}
+            {aiRecs.map((rec, index) => {
+              // Zoek de volledige module in de database lijst
+              const foundModule = dbModules.find(m => m.name.toLowerCase().includes(rec.name.toLowerCase()));
+              
+              if (!foundModule) return null; // Veiligheid
+
+              return (
+                <ModuleCard 
+                  key={`rec-${index}`}
+                  module={foundModule}
+                  onClick={handleViewDetails}
+                  // Extra AI props:
+                  matchPercentage={rec.match_percentage}
+                  explanation={rec.waarom}
+                  isCluster={false}
+                  // We geven geen favorites/auth mee hier, tenzij je dat wilt
+                />
+              );
+            })}
           </div>
 
           {/* SECTIE 2: Cluster Suggesties */}
@@ -165,19 +121,30 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
               </div>
 
               <div className="grid-container">
-                {clusterRecs.map((rec, index) => (
-                  <div key={`cluster-${index}`}>
-                    {/* Voor clusters geven we 'null' mee als percentage en studiepunten (de functie zoekt ze nu zelf op) */}
-                    {renderCard(rec.name, rec.waarom, null, true)} 
-                  </div>
-                ))}
+                {clusterRecs.map((rec, index) => {
+                  const foundModule = dbModules.find(m => m.name.toLowerCase().includes(rec.name.toLowerCase()));
+                  
+                  if (!foundModule) return null;
+
+                  return (
+                    <ModuleCard 
+                      key={`cluster-${index}`}
+                      module={foundModule}
+                      onClick={handleViewDetails}
+                      // Extra AI props:
+                      explanation={rec.waarom}
+                      isCluster={true}
+                      // Match percentage is null bij clusters
+                    />
+                  );
+                })}
               </div>
             </div>
           )}
         </>
       )}
 
-      {/* SECTIE 3: Samenvatting van antwoorden (Profiel) */}
+      {/* SECTIE 3: Profiel Samenvatting (Ongewijzigd) */}
       {userAnswers && (
         <div style={{marginTop: '40px', marginBottom: '60px', borderTop: '1px solid #e5e7eb', paddingTop: '40px'}}>
           <h2 className="form-title center-text" style={{ fontSize: '1.8rem', marginBottom: '30px' }}>
@@ -185,7 +152,6 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
           </h2>
           
           <div className="results-summary-grid">
-            {/* Kolom 1 */}
             <div className="result-column">
               <h4>Algemeen & Voorkeuren</h4>
               <ul className="detail-list" style={{border: 'none'}}>
@@ -212,13 +178,11 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
               )}
             </div>
 
-            {/* Kolom 2 */}
             <div className="result-column">
               <h4>Interesses (Vakgebieden)</h4>
               {renderTopicList(categories.vakgebieden)}
             </div>
 
-            {/* Kolom 3 */}
             <div className="result-column">
               <h4>Waarden & Doelen</h4>
               <h5 style={{fontSize: '0.95rem', color: '#666', marginTop: '10px', marginBottom: '5px', textTransform: 'uppercase', letterSpacing: '1px'}}>Waarden</h5>
