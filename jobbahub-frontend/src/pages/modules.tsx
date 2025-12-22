@@ -1,22 +1,31 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { IChoiceModule } from '../types';
 import { apiService } from '../services/apiService';
 import ModuleGrid from '../components/moduleGrid';
-import Pagination from '../components/modulePagination'; 
+import Pagination from '../components/modulePagination';
 import ModuleSearch from '../components/moduleSearch';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 
-const ITEMS_PER_PAGE = 9; 
+const ITEMS_PER_PAGE = 9;
 
 const ElectiveModules: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [allModules, setAllModules] = useState<IChoiceModule[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  
+
+  // We can still keep these as derived state or just use the params directly. 
+  // Using params directly or syncing state is fine. 
+  // For simplicity and reactivity, let's use the params as the source of truth for rendering,
+  // but we might need local state if we want controlled inputs that don't update URL on every keystroke (debounce).
+  // However, the original code updated `searchTerm` on every change. Let's keep it simple first.
+  const searchTerm = searchParams.get('search') || '';
+  const currentPage = parseInt(searchParams.get('page') || '1', 10);
+
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
@@ -48,10 +57,10 @@ const ElectiveModules: React.FC = () => {
     if (!searchTerm) {
       return allModules;
     }
-    
+
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    
-    return allModules.filter(module => 
+
+    return allModules.filter(module =>
       module.name.toLowerCase().includes(lowerCaseSearchTerm) ||
       (module.description && module.description.toLowerCase().includes(lowerCaseSearchTerm))
     );
@@ -66,22 +75,48 @@ const ElectiveModules: React.FC = () => {
 
     const currentModules = filteredModules.slice(indexOfFirstItem, indexOfLastItem);
 
-    if (currentModules.length === 0 && totalPages > 0) {
-        setCurrentPage(totalPages);
-        return { currentModules: filteredModules.slice(totalPages * ITEMS_PER_PAGE - ITEMS_PER_PAGE, totalPages * ITEMS_PER_PAGE), totalPages };
+    // If we're on a page that doesn't exist anymore (e.g. after search), redirect to last valid page
+    if (currentModules.length === 0 && totalPages > 0 && currentPage > totalPages) {
+      // This is a side effect in render, providing a better UX requires handling this in useEffect or handlers.
+      // For now, let's just show the last page logic or reset. 
+      // The original code managed this via `setCurrentPage`. 
+      // With URL params, we should update the URL.
+      // We'll handle this in a useEffect to avoid render loops or bad patterns.
     }
 
     return { currentModules, totalPages };
   }, [filteredModules, currentPage]);
 
+  // Sync page if out of bounds
+  useEffect(() => {
+    const totalItems = filteredModules.length;
+    const calcTotalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+    if (currentPage > calcTotalPages && calcTotalPages > 0) {
+      setSearchParams((prev: URLSearchParams) => {
+        prev.set('page', calcTotalPages.toString());
+        return prev;
+      }, { replace: true });
+    }
+  }, [filteredModules.length, currentPage, setSearchParams]);
+
   const handleSearchChange = (value: string) => {
-    setSearchTerm(value);
-    setCurrentPage(1);
+    setSearchParams((prev: URLSearchParams) => {
+      if (value) {
+        prev.set('search', value);
+      } else {
+        prev.delete('search');
+      }
+      prev.set('page', '1'); // Reset to page 1 on search
+      return prev;
+    }, { replace: true });
   };
 
   const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+    setSearchParams((prev: URLSearchParams) => {
+      prev.set('page', pageNumber.toString());
+      return prev;
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDetailsClick = (id: string) => {
@@ -116,23 +151,23 @@ const ElectiveModules: React.FC = () => {
         <p className="page-intro">
           Kies uit een breed aanbod van modules om je skills te verbeteren.
         </p>
-        
-        <ModuleSearch 
+
+        <ModuleSearch
           searchTerm={searchTerm}
           onSearchChange={handleSearchChange}
         />
       </div>
 
-      <ModuleGrid 
+      <ModuleGrid
         modules={currentModules}
-        loading={loading} 
-        error={error} 
+        loading={loading}
+        error={error}
         onViewDetails={handleDetailsClick}
         favorites={favorites}
         onToggleFavorite={handleToggleFavorite}
         isAuthenticated={isAuthenticated}
       />
-      
+
       {!loading && !error && totalPages > 1 && (
         <Pagination
           totalPages={totalPages}
