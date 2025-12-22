@@ -2,14 +2,20 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // TODO: change about class names globally to profile where applicable and set styles in css stylesheet
-// TODO: Remove alter email and add the rest of the inputs
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
 
+  const [userName, setUserName] = useState("");
+  const [education, setEducation] = useState("");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    // Show modal with passwords
+    console.log("Change password clicked");
+  };
 
   const handleChangeCredentials = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,10 +46,26 @@ const Profile: React.FC = () => {
           <form
             onSubmit={() => {
               //handleChangeCredentials()
-              navigate("/dashboard");
+              navigate("/modules");
             }}
             className="login-form"
           >
+            <div className="form-group">
+              <label htmlFor="username" className="form-label">
+                Wijzig username
+              </label>
+              <input
+                type="text"
+                id="username"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+                required
+                placeholder="username"
+                className="form-input"
+              />
+            </div>
+
+            {/* Geen email toegevoegd, kan verwijderd worden */}
             <div className="form-group">
               <label htmlFor="email" className="form-label">
                 Wijzig E-mailadres
@@ -52,12 +74,39 @@ const Profile: React.FC = () => {
                 type="email"
                 id="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                disabled
+                // onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="naam@voorbeeld.nl"
                 className="form-input"
               />
             </div>
+
+            <div className="form-group">
+              <label htmlFor="education" className="form-label">
+                Wijzig opleiding
+              </label>
+              <input
+                type="text"
+                id="education"
+                value={education}
+                onChange={(e) => setEducation(e.target.value)}
+                required
+                placeholder="ICT"
+                className="form-input"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className={`btn btn-primary w-full`}
+              disabled={true}
+              onClick={handleChangePassword}
+            >
+              Verander wachtwoord
+            </button>
+
+            <hr />
 
             <button
               type="submit"
@@ -66,7 +115,7 @@ const Profile: React.FC = () => {
               }`}
               disabled={loading}
             >
-              {loading ? "Bezig met wijzigen..." : "Wijzigen"}
+              {loading ? "Bezig met wijzigen..." : "Wijzigingen opslaan"}
             </button>
           </form>
         </div>
