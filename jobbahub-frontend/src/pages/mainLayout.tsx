@@ -1,7 +1,7 @@
-import React from 'react';
-import { Outlet, Link } from 'react-router-dom';
-import { useAuth } from '../context/authContext';
-import ThemeToggle from '../components/ThemeToggle';
+import React from "react";
+import { Outlet, Link } from "react-router-dom";
+import { useAuth } from "../context/authContext";
+import ThemeToggle from "../components/ThemeToggle";
 
 const MainLayout: React.FC = () => {
   const { user, logout } = useAuth();
@@ -12,22 +12,35 @@ const MainLayout: React.FC = () => {
         <div className="container header-inner header-grid">
           {/* Left Navigation */}
           <nav className="nav-links nav-group-left">
-            <Link to="/modules" className="nav-link">Keuzemodules</Link>
-            <Link to="/vragenlijst" className="nav-link">Help Mij Kiezen</Link>
-            <Link to="/favorites" className="nav-link">Favorieten</Link>
+            <Link to="/modules" className="nav-link">
+              Keuzemodules
+            </Link>
+            <Link to="/vragenlijst" className="nav-link">
+              Help Mij Kiezen
+            </Link>
+            <Link to="/favorites" className="nav-link">
+              Favorieten
+            </Link>
           </nav>
 
           {/* Center Logo */}
           <Link to="/" className="logo-container">
             <h1 className="logo">Jobbahub</h1>
           </Link>
-          
+
           {/* Right Navigation */}
           <nav className="nav-links nav-group-right">
-            <Link to="/about" className="nav-link">About</Link>
+            <Link to="/about" className="nav-link">
+              About
+            </Link>
+            <Link to="/profile" className="nav-link">
+              Profile
+            </Link>
             {!user ? (
               <>
-                <Link to="/login" className="nav-link">Login</Link>
+                <Link to="/login" className="nav-link">
+                  Login
+                </Link>
               </>
             ) : (
               <>
