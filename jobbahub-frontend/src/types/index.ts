@@ -8,7 +8,7 @@ export interface IChoiceModule {
   level?: string;
   start_date?: string;
   location?: string;
-  tags_list?: string;   // Hernaamd van module_tags
+  tags_list?: string;   // Hernaamd van module_tag
   main_filter?: string; // Nieuw veld
   learningoutcomes?: string;
   content?: string;
