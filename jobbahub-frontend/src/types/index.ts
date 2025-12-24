@@ -33,4 +33,4 @@ export interface ClusterRecommendation {
   name: string;
   popularity_score: number;
   waarom: string;
-}
+} 
