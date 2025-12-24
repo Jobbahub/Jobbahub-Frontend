@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/authContext';
+import { useLanguage } from '../context/LanguageContext';
 import { useNavigate } from 'react-router-dom';
 
 const Login: React.FC = () => {
   const { login } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
@@ -28,7 +30,7 @@ const Login: React.FC = () => {
         navigate('/dashboard');
       }
     } catch (err: any) {
-      setFormError(err.message || "Inloggen mislukt. Controleer je gegevens.");
+      setFormError(err.message || t("Inloggen mislukt. Controleer je gegevens."));
     } finally {
       setLoading(false);
     }
@@ -37,10 +39,10 @@ const Login: React.FC = () => {
   return (
     <div className="form-wrapper">
       <div className="form-container">
-        <h2 className="form-title">Inloggen</h2>
+        <h2 className="form-title">{t("Inloggen")}</h2>
 
         <p className="form-description">
-          Vul je gegevens in om toegang te krijgen tot je dashboard.
+          {t("Vul je gegevens in om toegang te krijgen tot je dashboard.")}
         </p>
 
         {formError && (
@@ -52,7 +54,7 @@ const Login: React.FC = () => {
         <form onSubmit={handleLogin} className="login-form">
           <div className="form-group">
             <label htmlFor="email" className="form-label">
-              E-mailadres
+              {t("E-mailadres")}
             </label>
             <input
               type="email"
@@ -60,14 +62,14 @@ const Login: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="naam@voorbeeld.nl"
+              placeholder={t("naam@voorbeeld.nl")}
               className="form-input"
             />
           </div>
 
           <div className="form-group">
             <label htmlFor="password" className="form-label">
-              Wachtwoord
+              {t("Wachtwoord")}
             </label>
             <input
               type="password"
@@ -75,7 +77,7 @@ const Login: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder="••••••••"
+              placeholder={t("••••••••")}
               className="form-input"
             />
           </div>
@@ -85,7 +87,7 @@ const Login: React.FC = () => {
             className={`btn btn-primary w-full ${loading ? 'btn-disabled' : ''}`}
             disabled={loading}
           >
-            {loading ? 'Bezig met inloggen...' : 'Inloggen'}
+            {loading ? t("Bezig met inloggen...") : t("Inloggen")}
           </button>
         </form>
       </div>

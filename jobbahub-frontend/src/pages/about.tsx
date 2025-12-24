@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 const About: React.FC = () => {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('about');
 
   const renderTabButton = (tabName: string, label: string) => (
@@ -8,7 +10,7 @@ const About: React.FC = () => {
       onClick={() => setActiveTab(tabName)}
       className={`tab-btn ${activeTab === tabName ? 'active' : ''}`}
     >
-      {label}
+      {t(label)}
     </button>
   );
 
@@ -16,7 +18,7 @@ const About: React.FC = () => {
     <div className="page-wrapper">
       {/* Hero Section */}
       <div className="page-hero">
-        <h1 className="page-hero-title">About</h1>
+        <h1 className="page-hero-title">{t("About")}</h1>
       </div>
 
       {/* Wrap about content in container */}
@@ -34,39 +36,39 @@ const About: React.FC = () => {
           <div className="about-content-box">
             {activeTab === 'about' && (
               <div>
-                <h2 className="about-heading">About Jobbahub</h2>
+                <h2 className="about-heading">{t("About Jobbahub")}</h2>
                 <p className="about-text">
-                  Jobbahub is een platform voor studenten om keuzemodules te vinden en te kiezen die passen bij hun interesses en studie.
+                  {t("Jobbahub is een platform voor studenten om keuzemodules te vinden en te kiezen die passen bij hun interesses en studie.")}
                 </p>
                 <p className="about-text">
-                  Met Jobbahub kun je eenvoudig door verschillende modules bladeren, favorieten opslaan, en een vragenlijst invullen om gepersonaliseerde aanbevelingen te krijgen.
+                  {t("Met Jobbahub kun je eenvoudig door verschillende modules bladeren, favorieten opslaan, en een vragenlijst invullen om gepersonaliseerde aanbevelingen te krijgen.")}
                 </p>
               </div>
             )}
 
             {activeTab === 'casus' && (
               <div>
-                <h2 className="about-heading">Casus</h2>
+                <h2 className="about-heading">{t("Casus")}</h2>
                 <p className="about-text">
-                  Hier komt de casus beschrijving voor het project.
+                  {t("Hier komt de casus beschrijving voor het project.")}
                 </p>
               </div>
             )}
 
             {activeTab === 'userstories' && (
               <div>
-                <h2 className="about-heading">User Stories</h2>
+                <h2 className="about-heading">{t("User Stories")}</h2>
                 <p className="about-text">
-                  Hier komen de user stories voor het project.
+                  {t("Hier komen de user stories voor het project.")}
                 </p>
               </div>
             )}
 
             {activeTab === 'wireframes' && (
               <div>
-                <h2 className="about-heading">Wireframes</h2>
+                <h2 className="about-heading">{t("Wireframes")}</h2>
                 <p className="about-text">
-                  Hier komen de wireframes voor het project.
+                  {t("Hier komen de wireframes voor het project.")}
                 </p>
               </div>
             )}

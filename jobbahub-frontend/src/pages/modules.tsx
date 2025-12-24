@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 import { IChoiceModule } from '../types';
 import { apiService } from '../services/apiService';
 import ModuleGrid from '../components/moduleGrid';
@@ -11,6 +12,7 @@ import { useAuth } from '../context/authContext';
 const ITEMS_PER_PAGE = 9;
 
 const ElectiveModules: React.FC = () => {
+  const { t } = useLanguage();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [allModules, setAllModules] = useState<IChoiceModule[]>([]);
@@ -37,14 +39,14 @@ const ElectiveModules: React.FC = () => {
           setAllModules(modulesData);
         } else {
           setAllModules([]);
-          setError("Ongeldig dataformaat ontvangen.");
+          setError(t("Ongeldig dataformaat ontvangen."));
         }
         if (isAuthenticated) {
           const favData = await apiService.getFavorites();
           setFavorites(favData);
         }
       } catch (err) {
-        setError("Kon de modules niet laden. Controleer de API.");
+        setError(t("Kon de modules niet laden. Controleer de API."));
       } finally {
         setLoading(false);
       }
@@ -144,12 +146,12 @@ const ElectiveModules: React.FC = () => {
     <div className="page-wrapper">
       {/* Hero Section */}
       <div className="page-hero">
-        <h1 className="page-hero-title">Beschikbare Keuzemodules</h1>
+        <h1 className="page-hero-title">{t("Beschikbare Keuzemodules")}</h1>
       </div>
 
       <div className="container" style={{ marginTop: '40px' }}>
         <p className="page-intro">
-          Kies uit een breed aanbod van modules om je skills te verbeteren.
+          {t("Kies uit een breed aanbod van modules om je skills te verbeteren.")}
         </p>
 
         <ModuleSearch
@@ -178,7 +180,7 @@ const ElectiveModules: React.FC = () => {
 
       {!loading && !error && filteredModules.length === 0 && (
         <div className="text-center p-6 text-gray-500">
-          Er zijn geen modules gevonden die overeenkomen met "{searchTerm}".
+          {t("Er zijn geen modules gevonden die overeenkomen met")} "{searchTerm}".
         </div>
       )}
     </div>

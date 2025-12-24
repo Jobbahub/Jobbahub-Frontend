@@ -1,8 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 import { AIRecommendation, ClusterRecommendation, VragenlijstData } from '../services/apiService';
 import { IChoiceModule } from '../types';
-import { TOPICS } from './vragenlijstFormulier';
+import { TOPICS } from '../data/constants';
 import ModuleCard from './moduleCard';
 
 interface VragenlijstResultatenProps {
@@ -14,23 +15,37 @@ interface VragenlijstResultatenProps {
 }
 
 const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, clusterRecs, dbModules, userAnswers, onRetry }) => {
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
 
   const handleViewDetails = (id: string) => {
     navigate(`/modules/${id}`);
   };
 
+  const getExplanation = (originalText: string) => {
+    if (language === 'nl') return originalText;
+
+    // Check if it starts with the known Dutch prefix
+    const prefix = "Match op termen:";
+    if (originalText && originalText.startsWith(prefix)) {
+      const terms = originalText.substring(prefix.length).trim();
+      return `${t('match_on_terms')}: ${terms}`;
+    }
+
+    return t('generic_ai_reason');
+  };
+
   const getScoreLabel = (score: number) => {
-    switch(score) {
-      case 0: return "Nee";
-      case 1: return "Neutraal";
-      case 2: return "Ja";
+    switch (score) {
+      case 0: return t("Nee");
+      case 1: return t("Neutraal");
+      case 2: return t("Ja");
       default: return "-";
     }
   };
 
   const getScoreClass = (score: number) => {
-    switch(score) {
+    switch (score) {
       case 0: return "score-negative";
       case 1: return "score-neutral";
       case 2: return "score-positive";
@@ -53,7 +68,7 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
           const score = userAnswers.knoppen_input[topic.id]?.score;
           return (
             <li key={topic.id}>
-              <span className="detail-list-label">{topic.label}</span>
+              <span className="detail-list-label">{t(topic.label)}</span>
               <span className={`detail-list-value ${getScoreClass(score)}`}>
                 {getScoreLabel(score)}
               </span>
@@ -66,23 +81,23 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
 
   return (
     <div className="container">
-      <h1 className="page-header center-text">Jouw Resultaten</h1>
-      
+      <h1 className="page-header center-text">{t("Jouw Resultaten")}</h1>
+
       <div className="centered-btn-container">
         <button className="btn btn-secondary" onClick={onRetry}>
-          Opnieuw invullen
+          {t("Opnieuw invullen")}
         </button>
       </div>
 
       {aiRecs.length === 0 ? (
         <div className="form-container no-matches-box">
-          <h3 className="form-title">Geen matches gevonden</h3>
-          <p>Helaas heeft de AI geen modules kunnen vinden.</p>
+          <h3 className="form-title">{t("Geen matches gevonden")}</h3>
+          <p>{t("Helaas heeft de AI geen modules kunnen vinden.")}</p>
         </div>
       ) : (
         <>
           <p className="page-intro center-text">
-            Op basis van jouw antwoorden passen deze modules het beste bij jou.
+            {t("Op basis van jouw antwoorden passen deze modules het beste bij jou.")}
           </p>
           <div className="grid-container grid-container-margin-bottom">
             {aiRecs.map((rec, index) => {
@@ -90,12 +105,12 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
               if (!foundModule) return null;
 
               return (
-                <ModuleCard 
+                <ModuleCard
                   key={`rec-${index}`}
                   module={foundModule}
                   onClick={handleViewDetails}
                   matchPercentage={rec.match_percentage}
-                  explanation={rec.waarom}
+                  explanation={getExplanation(rec.waarom)}
                   isCluster={false}
                 />
               );
@@ -104,13 +119,9 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
 
           {clusterRecs.length > 0 && (
             <div className="section-divider">
-              <h2 className="form-title center-text section-title-large">Ook interessant voor jou</h2>
+              <h2 className="form-title center-text section-title-large">{t("Ook interessant voor jou")}</h2>
               <div className="section-intro-text">
-                <p>
-                  Naast je directe matches hebben we ook gekeken naar je <strong>nummer 1 match</strong>. 
-                  De onderstaande modules vallen binnen hetzelfde vakgebied (cluster) als die match. 
-                  Binnen dit cluster hebben we de <strong>populairste modules</strong> geselecteerd die ook aansluiten bij jouw trefwoorden.
-                </p>
+                <p dangerouslySetInnerHTML={{ __html: t("Naast je directe matches hebben we ook gekeken naar je <strong>nummer 1 match</strong>. De onderstaande modules vallen binnen hetzelfde vakgebied (cluster) als die match. Binnen dit cluster hebben we de <strong>populairste modules</strong> geselecteerd die ook aansluiten bij jouw trefwoorden.") }} />
               </div>
 
               <div className="grid-container">
@@ -119,11 +130,11 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
                   if (!foundModule) return null;
 
                   return (
-                    <ModuleCard 
+                    <ModuleCard
                       key={`cluster-${index}`}
                       module={foundModule}
                       onClick={handleViewDetails}
-                      explanation={rec.waarom}
+                      explanation={getExplanation(rec.waarom)}
                       isCluster={true}
                     />
                   );
@@ -137,29 +148,29 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
       {userAnswers && (
         <div className="profile-section-container">
           <h2 className="form-title center-text section-title-large">
-            Jouw Profiel
+            {t("Jouw Profiel")}
           </h2>
-          
+
           <div className="results-summary-grid">
             <div className="result-column">
-              <h4>Algemeen & Voorkeuren</h4>
+              <h4>{t("Algemeen & Voorkeuren")}</h4>
               <ul className="detail-list detail-list-clean">
                 <li>
-                  <strong>Taal</strong>
-                  <span>{userAnswers.keuze_taal || "Geen voorkeur"}</span>
+                  <strong>{t("Taal")}</strong>
+                  <span>{userAnswers.keuze_taal ? t(userAnswers.keuze_taal) : t("Geen voorkeur")}</span>
                 </li>
                 <li>
-                  <strong>Locatie</strong>
-                  <span>{userAnswers.keuze_locatie || "Geen voorkeur"}</span>
+                  <strong>{t("Locatie")}</strong>
+                  <span>{userAnswers.keuze_locatie ? t(userAnswers.keuze_locatie) : t("Geen voorkeur")}</span>
                 </li>
                 <li>
-                  <strong>Studiepunten</strong>
-                  <span>{userAnswers.keuze_punten ? `${userAnswers.keuze_punten} EC` : "Geen voorkeur"}</span>
+                  <strong>{t("Studiepunten")}</strong>
+                  <span>{userAnswers.keuze_punten ? `${userAnswers.keuze_punten} EC` : t("Geen voorkeur")}</span>
                 </li>
               </ul>
               {userAnswers.open_antwoord && (
                 <div className="profile-answer-block">
-                  <span className="profile-answer-label">Jouw Toelichting:</span>
+                  <span className="profile-answer-label">{t("Jouw Toelichting")}:</span>
                   <div className="profile-answer-text">
                     "{userAnswers.open_antwoord}"
                   </div>
@@ -168,15 +179,15 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
             </div>
 
             <div className="result-column">
-              <h4>Interesses (Vakgebieden)</h4>
+              <h4>{t("Interesses (Vakgebieden)")}</h4>
               {renderTopicList(categories.vakgebieden)}
             </div>
 
             <div className="result-column">
-              <h4>Waarden & Doelen</h4>
-              <h5 className="topic-category-header">Waarden</h5>
+              <h4>{t("Waarden & Doelen")}</h4>
+              <h5 className="topic-category-header">{t("Waarden")}</h5>
               {renderTopicList(categories.waarden)}
-              <h5 className="topic-category-header">Doelen</h5>
+              <h5 className="topic-category-header">{t("Doelen")}</h5>
               {renderTopicList(categories.doelen)}
             </div>
           </div>

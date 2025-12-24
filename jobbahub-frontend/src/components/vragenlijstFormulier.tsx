@@ -1,28 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { apiService, VragenlijstData, AIRecommendation } from '../services/apiService';
 import { IChoiceModule, ClusterRecommendation } from '../types';
-
-export const TOPICS = [
-  // Subjects (Weighted)
-  { id: 'q_tech', label: 'Technologie & IT', question: "Vind je het leuk om te leren hoe technologie de wereld verandert en hoe je IT-oplossingen kunt toepassen?", type: 'subject' },
-  { id: 'q_health', label: 'Gezondheid & Zorg', question: "Heb je interesse in zorg, welzijn en innovaties die mensen gezonder maken?", type: 'subject' },
-  { id: 'q_law', label: 'Recht & Regelgeving', question: "Vind je het interessant om te duiken in regels, wetten en rechtvaardigheid?", type: 'subject' },
-  { id: 'q_edu', label: 'Onderwijs', question: "Lijkt het je wat om anderen iets te leren, te coachen of te begeleiden in hun ontwikkeling?", type: 'subject' },
-  { id: 'q_econ', label: 'Economie & Financiën', question: "Ben je nieuwsgierig naar hoe markten werken, geldstromen lopen en financiële beslissingen worden gemaakt?", type: 'subject' },
-  { id: 'q_comm', label: 'Communicatie & Media', question: "Houd je van storytelling, media-strategieën en het overbrengen van boodschappen?", type: 'subject' },
-  { id: 'q_eng', label: 'Engineering & Techniek', question: "Wil je weten hoe dingen werken en tastbare technische oplossingen ontwerpen?", type: 'subject' },
-  { id: 'q_sport', label: 'Sport & Beweging', question: "Vind je sport, vitaliteit en beweging belangrijke thema's?", type: 'subject' },
-  { id: 'q_creative', label: 'Creativiteit & Design', question: "Houd je ervan om creatieve concepten te bedenken, te ontwerpen en 'out of the box' te denken?", type: 'subject' },
-  { id: 'q_biz', label: 'Business & Ondernemen', question: "Zie je jezelf later een eigen bedrijf starten of een organisatie managen?", type: 'subject' },
-
-  // Values (Unweighted)
-  { id: 'q_social', label: 'Sociaal & Maatschappij', question: "Ben je betrokken bij maatschappelijke vraagstukken en wil je begrijpen wat mensen beweegt?", type: 'value' },
-  { id: 'q_sustain', label: 'Duurzaamheid & Milieu', question: "Wil je bijdragen aan een groenere wereld en oplossingen bedenken voor klimaatproblemen?", type: 'value' },
-  { id: 'q_intl', label: 'Internationaal', question: "Ben je geïnteresseerd in andere culturen, talen en internationale samenwerking?", type: 'value' },
-  { id: 'q_research', label: 'Onderzoek & Wetenschap', question: "Vind je het leuk om dingen tot op de bodem uit te zoeken en feiten te analyseren?", type: 'value' },
-  { id: 'q_personal', label: 'Persoonlijke Ontwikkeling', question: "Wil je specifiek werken aan je eigen leiderschap, skills en persoonlijke groei?", type: 'value' },
-  { id: 'q_broadening', label: 'Algemene Verbreding', question: "Sta je open voor algemene onderwerpen die je blik verruimen buiten je eigen vakgebied?", type: 'value' },
-];
+import { useLanguage } from '../context/LanguageContext';
+import LanguageSwitcher from './LanguageSwitcher';
+import { TOPICS as SHARED_TOPICS } from '../data/constants';
 
 interface VragenlijstFormulierProps {
   onComplete: (
@@ -34,12 +15,25 @@ interface VragenlijstFormulierProps {
 }
 
 const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete }) => {
+  const { t } = useLanguage();
   const [step, setStep] = useState(1);
   const [topicIndex, setTopicIndex] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  // Memoize topics to use translations
+  const TOPICS = useMemo(() => {
+    return SHARED_TOPICS.map(topic => ({
+      ...topic,
+      // Use the topic label/question as key if possible, or defined keys. 
+      // Since we use natural language keys, we can just use the Dutch text if it matches what's in SHARED_TOPICS.
+      // Assuming SHARED_TOPICS contains Dutch text.
+      label: t(topic.label),
+      question: t(topic.question)
+    }));
+  }, [t]);
+
   // Initialize with default weights
-  const [formData, setFormData] = useState<VragenlijstData>({
+  const [formData, setFormData] = useState<VragenlijstData>(() => ({
     keuze_taal: null,
     keuze_locatie: null,
     keuze_punten: null,
@@ -48,7 +42,7 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
       ...acc,
       [topic.id]: { score: 1, weight: 1 }
     }), {})
-  });
+  }));
 
   const handleChange = (field: keyof VragenlijstData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -121,9 +115,9 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
     return (
       <div className="container loading-container">
         <div className="loading-spinner"></div>
-        <h2 className="form-title">Even geduld...</h2>
+        <h2 className="form-title">{t('loading')}</h2>
         <p className="form-description loading-text">
-          De AI is jouw antwoorden aan het analyseren om de beste matches te vinden.
+          {t('ai_analyzing')}
         </p>
       </div>
     );
@@ -134,6 +128,9 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
     const subjects = TOPICS.filter(t => t.type === 'subject');
     return (
       <div className="form-container form-container-wide">
+        <div className="flex justify-end mb-4">
+          <LanguageSwitcher />
+        </div>
         <h2 className="form-title">{title}</h2>
         <p className="form-description">{subtitle}</p>
 
@@ -158,8 +155,7 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
         </div>
 
         <div className="nav-buttons-container">
-          {onBack && <button className="btn btn-secondary w-full btn-margin-right" onClick={onBack}>← Terug</button>}
-          {/* If explicit back is not needed (first step), maybe optional? But here we use w-full so if no back btn, single btn takes full width */}
+          {onBack && <button className="btn btn-secondary w-full btn-margin-right" onClick={onBack}>← {t('previous')}</button>}
           <button className="btn btn-primary w-full" onClick={onNext}>
             {textBtnNext}
           </button>
@@ -171,10 +167,10 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
   // Step 1: Priority Selection (Subjects)
   if (step === 1) {
     return renderPrioritySelection(
-      "Kies je belangrijkste vakgebieden",
-      "Selecteer de onderwerpen die voor jou het belangrijkst zijn. Deze tellen dubbel mee in de weging.",
+      t('Intake Vragenlijst'),
+      t('Vul deze vragenlijst in zodat wij je beter kunnen helpen.'),
       () => setStep(2),
-      "Start Vragenlijst →"
+      t('next') + " →"
     );
   }
 
@@ -187,28 +183,31 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
 
     return (
       <div className="container question-container">
+        <div className="flex justify-end mb-4 absolute top-4 right-4">
+          {/* Language switcher can be sticky or just at start/end, leaving it out here to avoid clutter or putting it absolute */}
+        </div>
         <div className="progress-bar">
           <div className="progress-fill" style={{ width: `${progressPercentage}%` }}></div>
         </div>
         <div className="form-container form-container-full">
           <div className="question-header-row">
-            <span className="question-counter">Onderwerp {topicIndex + 1} van {TOPICS.length}</span>
+            <span className="question-counter">{t("Onderwerp")} {topicIndex + 1} {t("van")} {TOPICS.length}</span>
             {isWeighted && (
               <span className="badge badge-weighted">
-                Telt 2x mee
+                {t("Telt 2x mee")}
               </span>
             )}
           </div>
 
           <h2 className="form-title question-title">{topic.question}</h2>
           <div className="topic-btn-group">
-            <button type="button" className={`btn topic-btn btn-topic-choice ${currentScore === 0 ? 'active' : ''}`} onClick={() => handleScoreChange(topic.id, 0)}>Nee</button>
-            <button type="button" className={`btn topic-btn btn-topic-choice ${currentScore === 1 ? 'active' : ''}`} onClick={() => handleScoreChange(topic.id, 1)}>Neutraal</button>
-            <button type="button" className={`btn topic-btn btn-topic-choice ${currentScore === 2 ? 'active' : ''}`} onClick={() => handleScoreChange(topic.id, 2)}>Ja</button>
+            <button type="button" className={`btn topic-btn btn-topic-choice ${currentScore === 0 ? 'active' : ''}`} onClick={() => handleScoreChange(topic.id, 0)}>{t("Nee")}</button>
+            <button type="button" className={`btn topic-btn btn-topic-choice ${currentScore === 1 ? 'active' : ''}`} onClick={() => handleScoreChange(topic.id, 1)}>{t("Neutraal")}</button>
+            <button type="button" className={`btn topic-btn btn-topic-choice ${currentScore === 2 ? 'active' : ''}`} onClick={() => handleScoreChange(topic.id, 2)}>{t("Ja")}</button>
           </div>
           <div className="nav-buttons-container">
-            <button className="btn btn-secondary" onClick={prevQuestion}>← Vorige</button>
-            <button className="btn btn-primary" onClick={nextQuestion}>Volgende →</button>
+            <button className="btn btn-secondary" onClick={prevQuestion}>← {t('previous')}</button>
+            <button className="btn btn-primary" onClick={nextQuestion}>{t('next')} →</button>
           </div>
         </div>
       </div>
@@ -218,10 +217,10 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
   // Step 3: Re-confirm Priorities
   if (step === 3) {
     return renderPrioritySelection(
-      "Nog even checken...",
-      "Wil je nog iets aanpassen aan je belangrijkste vakgebieden voordat we afronden?",
+      t("Nog even checken..."),
+      t("Wil je nog iets aanpassen aan je belangrijkste vakgebieden voordat we afronden?"),
       () => setStep(4),
-      "Verder naar afronding →",
+      t("Verder naar afronding →"),
       () => {
         setTopicIndex(TOPICS.length - 1);
         setStep(2);
@@ -232,67 +231,63 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
   // Step 4: Final Preferences (Open Question & Metadata)
   return (
     <div className="form-container form-container-wide">
-      <h2 className="form-title">Bijna klaar!</h2>
-      <p className="form-description">Heb je nog specifieke wensen?</p>
+      <h2 className="form-title">{t('Persoonlijke Gegevens')}</h2>
+      <p className="form-description">{t("Heb je nog specifieke wensen?")}</p>
       <div className="login-form">
 
-        {/* Voorkeuren from Original Step 1 moved here or just kept? 
-            Original Step 1 had Taal, Locatie, Punten. 
-            User didn't say to remove them, but "Step 1" is now Priority.
-            Let's add them here or make this the "Profile" step.
-        */}
+        {/* Voorkeuren */}
         <div className="form-group-row-grid">
           <div className="form-group">
-            <label className="form-label">Taal</label>
+            <label className="form-label">{t("Taal")}</label>
             <select
               className="form-input"
               value={formData.keuze_taal || ""}
               onChange={(e) => handleChange('keuze_taal', e.target.value === "" ? null : e.target.value)}
             >
-              <option value="">Geen voorkeur</option>
-              <option value="Nederlands">Nederlands</option>
-              <option value="Engels">Engels</option>
+              <option value="">{t("Geen voorkeur")}</option>
+              <option value="Nederlands">{t("Nederlands")}</option>
+              <option value="Engels">{t("Engels")}</option>
             </select>
           </div>
           <div className="form-group">
-            <label className="form-label">Locatie</label>
+            <label className="form-label">{t("Locatie")}</label>
             <select
               className="form-input"
               value={formData.keuze_locatie || ""}
               onChange={(e) => handleChange('keuze_locatie', e.target.value === "" ? null : e.target.value)}
             >
-              <option value="">Geen voorkeur</option>
-              <option value="Den Bosch">Den Bosch</option>
-              <option value="Breda">Breda</option>
+              <option value="">{t("Geen voorkeur")}</option>
+              <option value="Den Bosch">{t("Den Bosch")}</option>
+              <option value="Breda">{t("Breda")}</option>
             </select>
           </div>
           <div className="form-group">
-            <label className="form-label">Studiepunten</label>
+            <label className="form-label">{t("Studiepunten")}</label>
             <select
               className="form-input"
               value={formData.keuze_punten || ""}
               onChange={(e) => handleChange('keuze_punten', e.target.value === "" ? null : parseInt(e.target.value))}
             >
-              <option value="">Geen voorkeur</option>
-              <option value={15}>15 EC</option>
-              <option value={30}>30 EC</option>
+              <option value="">{t("Geen voorkeur")}</option>
+              <option value={15}>{t("15 EC")}</option>
+              <option value={30}>{t("30 EC")}</option>
             </select>
           </div>
         </div>
 
         <div className="form-group">
-          <label className="form-label">Jouw gedachten (Optioneel)</label>
+          <label className="form-label">{t("Jouw gedachten (Optioneel)")}</label>
           <textarea
             className="form-input"
             rows={4}
-            placeholder="Bijvoorbeeld: Ik wil graag iets doen met AI en duurzaamheid..."
+            placeholder={t("Bijvoorbeeld: Ik wil graag iets doen met AI en duurzaamheid...")}
             value={formData.open_antwoord}
             onChange={(e) => handleChange('open_antwoord', e.target.value)}
           />
         </div>
         <div className="nav-buttons-container">
-          <button className="btn btn-secondary w-full btn-margin-right" onClick={() => setStep(3)}>← Terug</button>
-          <button className="btn btn-primary w-full" onClick={handleSubmit}>Bekijk Mijn Matches</button>
+          <button className="btn btn-secondary w-full btn-margin-right" onClick={() => setStep(3)}>← {t('previous')}</button>
+          <button className="btn btn-primary w-full" onClick={handleSubmit}>{t('submit')}</button>
         </div>
       </div>
     </div>
