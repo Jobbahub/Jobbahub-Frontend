@@ -141,6 +141,16 @@ export const translationsList = {
     "Je moet ingelogd zijn om favorieten te bekijken.": { nl: "Je moet ingelogd zijn om favorieten te bekijken.", en: "You must be logged in to view favorites." },
     "Hier vind je een overzicht van de modules die jij hebt bewaard.": { nl: "Hier vind je een overzicht van de modules die jij hebt bewaard.", en: "Here you can find an overview of the modules you saved." },
 
+    // Module Details
+    back: { nl: "Terug", en: "Back" },
+    "Inhoud": { nl: "Inhoud", en: "Content" },
+    "Leeruitkomsten": { nl: "Leeruitkomsten", en: "Learning Outcomes" },
+    "Module Details": { nl: "Module Details", en: "Module Details" },
+    "Startdatum": { nl: "Startdatum", en: "Start Date" },
+    "Beschikbare plaatsen": { nl: "Beschikbare plaatsen", en: "Available Spots" },
+    "Moeilijkheidsgraad": { nl: "Moeilijkheidsgraad", en: "Difficulty" },
+    "Onbekend": { nl: "Onbekend", en: "Unknown" },
+
     // Topics & Questions
     "Technologie & IT": { nl: "Technologie & IT", en: "Technology & IT" },
     "Vind je het leuk om te leren hoe technologie de wereld verandert en hoe je IT-oplossingen kunt toepassen?": { nl: "Vind je het leuk om te leren hoe technologie de wereld verandert en hoe je IT-oplossingen kunt toepassen?", en: "Do you enjoy learning how technology changes the world and how to apply IT solutions?" },

@@ -23,8 +23,16 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
   explanation,
   isCluster
 }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [tagsExpanded, setTagsExpanded] = useState(false);
+
+  const getTranslatedContent = (key: 'name' | 'shortdescription' | 'description', fallback?: string) => {
+    if (language === 'en') {
+      const enKey = `${key}_en` as keyof IChoiceModule;
+      if (module[enKey]) return module[enKey] as string;
+    }
+    return module[key] as string || fallback || '';
+  };
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -84,7 +92,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
       </div>
 
       <div className="card-body">
-        <h3 className="card-title">{module.name}</h3>
+        <h3 className="card-title">{getTranslatedContent('name')}</h3>
 
         <div className="card-tags-container">
           {module.main_filter && (
@@ -113,7 +121,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
         )}
 
         <p className="card-text">
-          {module.shortdescription || (module.description ? module.description.substring(0, 100) + '...' : '')}
+          {getTranslatedContent('shortdescription') || (getTranslatedContent('description') ? getTranslatedContent('description').substring(0, 100) + '...' : '')}
         </p>
 
         <div className="card-meta">

@@ -9,7 +9,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [wachtwoord, setWachtwoord] = useState('');
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -19,7 +19,7 @@ const Login: React.FC = () => {
     setFormError(null);
 
     try {
-      const loggedInUser = await login(email, password);
+      const loggedInUser = await login(email, wachtwoord);
 
       // Check of er opgeslagen resultaten zijn
       if (loggedInUser.vragenlijst_resultaten &&
@@ -68,14 +68,14 @@ const Login: React.FC = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="password" className="form-label">
+            <label htmlFor="wachtwoord" className="form-label">
               {t("Wachtwoord")}
             </label>
             <input
               type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              id="wachtwoord"
+              value={wachtwoord}
+              onChange={(e) => setWachtwoord(e.target.value)}
               required
               placeholder={t("••••••••")}
               className="form-input"

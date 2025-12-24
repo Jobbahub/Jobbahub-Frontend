@@ -13,7 +13,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<User>;
+  login: (email: string, wachtwoord: string) => Promise<User>;
   logout: () => void;
   updateUser: (user: User | null) => void;
   error: string | null;
@@ -28,10 +28,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Optioneel: Je zou hier een useEffect kunnen toevoegen die bij het opstarten
   // kijkt of er nog een token in localStorage zit om de user te herstellen.
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, wachtwoord: string) => {
     setError(null);
     try {
-      const data = await apiService.login(email, password);
+      const data = await apiService.login(email, wachtwoord);
 
       // 1. Sla token op (voor latere authenticated requests)
       localStorage.setItem('token', data.token);
