@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { IChoiceModule } from '../types';
-import { apiService } from '../services/apiService';
+import { apiService, ApiError } from '../services/apiService';
 import ModuleGrid from '../components/moduleGrid';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
@@ -30,9 +30,16 @@ const Favorites: React.FC = () => {
                 setFavoriteIds(favIds);
                 const filtered = allModules.filter(mod => favIds.includes(mod._id));
                 setFavoriteModules(filtered);
-            } catch (err) {
+            } catch (err: any) {
                 console.error(err);
-                setError(t("Kon favorieten niet laden."));
+                const status = err instanceof ApiError ? err.status : "FAVORITES_LOAD_ERROR";
+                navigate('/error', {
+                    state: {
+                        title: "Kon favorieten niet laden",
+                        message: "Er ging iets mis bij het ophalen van je favorieten.",
+                        code: status
+                    }
+                });
             } finally {
                 setLoading(false);
             }

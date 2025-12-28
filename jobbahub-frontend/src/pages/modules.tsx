@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import { IChoiceModule } from '../types';
-import { apiService } from '../services/apiService';
+import { apiService, ApiError } from '../services/apiService';
 import ModuleGrid from '../components/moduleGrid';
 import Pagination from '../components/modulePagination';
 import ModuleSearch from '../components/moduleSearch';
@@ -29,6 +29,7 @@ const ElectiveModules: React.FC = () => {
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated } = useAuth();
 
   useEffect(() => {
@@ -45,8 +46,17 @@ const ElectiveModules: React.FC = () => {
           const favData = await apiService.getFavorites();
           setFavorites(favData);
         }
-      } catch (err) {
-        setError(t("Kon de modules niet laden. Controleer de API."));
+      } catch (err: any) {
+        console.error("Failed to load modules:", err);
+        const status = err instanceof ApiError ? err.status : "MODULES_LOAD_ERROR";
+        navigate('/error', {
+          state: {
+            title: "Kon modules niet laden",
+            message: "Er ging iets mis bij het ophalen van de modules. Probeer het later opnieuw.",
+            code: status,
+            from: location.pathname
+          }
+        });
       } finally {
         setLoading(false);
       }

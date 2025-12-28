@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { IChoiceModule } from '../types';
-import { apiService } from '../services/apiService';
+import { apiService, ApiError } from '../services/apiService';
 import { useAuth } from '../context/authContext';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -13,6 +13,7 @@ const getHeroImageUrl = (id: number) => {
 const ModuleDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated } = useAuth();
   const { t, language } = useLanguage();
 
@@ -41,8 +42,16 @@ const ModuleDetail: React.FC = () => {
           const favorites = await apiService.getFavorites();
           setIsFavorite(favorites.includes(data._id));
         }
-      } catch (err) {
-        setError("Kon de module niet laden.");
+      } catch (err: any) {
+        const status = err instanceof ApiError ? err.status : "MODULE_DETAIL_LOAD_ERROR";
+        navigate('/error', {
+          state: {
+            title: "Kon module details niet laden",
+            message: "Er ging iets mis bij het ophalen van de module details.",
+            code: status,
+            from: location.pathname
+          }
+        });
       } finally {
         setLoading(false);
       }

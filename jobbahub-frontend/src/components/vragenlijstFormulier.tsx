@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
-import { apiService, VragenlijstData, AIRecommendation } from '../services/apiService';
+// import { useNavigate } from 'react-router-dom';
+import { apiService, VragenlijstData, AIRecommendation, ApiError } from '../services/apiService';
 import { IChoiceModule, ClusterRecommendation } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
@@ -16,9 +17,11 @@ interface VragenlijstFormulierProps {
 
 const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete }) => {
   const { t } = useLanguage();
+  // const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [topicIndex, setTopicIndex] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Memoize topics to use translations
   const TOPICS = useMemo(() => {
@@ -103,9 +106,13 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
       } else {
         onComplete([], modules, formData, []);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert("Er ging iets mis bij het ophalen van aanbevelingen. Probeer het later opnieuw.");
+      const errorMessage = error instanceof ApiError && error.message
+        ? error.message
+        : "Er ging iets mis bij het ophalen van de aanbevelingen. Controleer je internetverbinding en probeer het opnieuw.";
+
+      setSubmitError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -286,6 +293,33 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
           />
         </div>
         <div className="nav-buttons-container">
+          {submitError && (
+            <div style={{
+              position: 'fixed',
+              top: '20px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              backgroundColor: '#fee2e2',
+              color: '#991b1b', // Red-800
+              padding: '12px 24px',
+              borderRadius: '8px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+              zIndex: 9999,
+              border: '1px solid #fecaca',
+              fontWeight: 500,
+              minWidth: '300px',
+              textAlign: 'center',
+              animation: 'fadeIn 0.3s ease-in-out'
+            }}>
+              {submitError}
+              <button
+                onClick={() => setSubmitError(null)}
+                style={{ marginLeft: '15px', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '16px', color: '#991b1b' }}
+              >
+                ✕
+              </button>
+            </div>
+          )}
           <button className="btn btn-secondary w-full btn-margin-right" onClick={() => setStep(3)}>← {t('previous')}</button>
           <button className="btn btn-primary w-full" onClick={handleSubmit}>{t('submit')}</button>
         </div>

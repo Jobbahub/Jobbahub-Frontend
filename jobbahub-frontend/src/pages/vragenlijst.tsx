@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import VragenlijstFormulier from '../components/vragenlijstFormulier';
 import VragenlijstResultaten from '../components/vragenlijstResultaten';
-import { AIRecommendation, ClusterRecommendation, VragenlijstData, apiService } from '../services/apiService';
+import { AIRecommendation, ClusterRecommendation, VragenlijstData, apiService, ApiError } from '../services/apiService';
 import { IChoiceModule } from '../types';
 import { useAuth } from '../context/authContext';
 
@@ -12,6 +13,9 @@ const Vragenlijst: React.FC = () => {
   const [clusterRecs, setClusterRecs] = useState<ClusterRecommendation[]>([]);
   const [dbModules, setDbModules] = useState<IChoiceModule[]>([]);
   const [userAnswers, setUserAnswers] = useState<VragenlijstData | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const { user, updateUser } = useAuth();
 
@@ -31,8 +35,17 @@ const Vragenlijst: React.FC = () => {
           const modules = await apiService.getModules();
           setDbModules(modules);
           setShowResults(true);
-        } catch (e) {
+        } catch (e: any) {
           console.error("Error loading saved questionnaire results:", e);
+          const errorCode = e instanceof ApiError ? e.status : "LOAD_ERROR";
+          navigate('/error', {
+            state: {
+              title: "Kon resultaten niet laden",
+              message: "Er ging iets mis bij het ophalen van je opgeslagen resultaten. Probeer het later opnieuw.",
+              code: errorCode,
+              from: location.pathname
+            }
+          });
         }
       }
     };
@@ -60,8 +73,11 @@ const Vragenlijst: React.FC = () => {
           ...user,
           vragenlijst_resultaten: updatedStudent.vragenlijst_resultaten
         });
-      } catch (e) {
+      } catch (e: any) {
         console.error("Failed to save questionnaire results:", e);
+        // const errorCode = e instanceof ApiError ? e.status : "SAVE_ERROR";
+        // Show inline error instead of redirecting so data is not lost
+        setSaveError("Kon resultaten niet opslaan. Je kunt de resultaten wel bekijken, maar ze worden mogelijk niet bewaard in je profiel.");
       }
     }
   };
@@ -73,8 +89,17 @@ const Vragenlijst: React.FC = () => {
         const updatedUser = { ...user };
         delete updatedUser.vragenlijst_resultaten;
         updateUser(updatedUser);
-      } catch (e) {
+      } catch (e: any) {
         console.error("Failed to reset questionnaire results:", e);
+        const errorCode = e instanceof ApiError ? e.status : "RESET_ERROR";
+        navigate('/error', {
+          state: {
+            title: "Resetten mislukt",
+            message: "We konden je eerdere resultaten niet verwijderen. Probeer het opnieuw.",
+            code: errorCode,
+            from: location.pathname
+          }
+        });
       }
     }
     setAiRecs([]);
@@ -85,6 +110,11 @@ const Vragenlijst: React.FC = () => {
 
   return (
     <div className="page-content">
+      {saveError && (
+        <div className="container form-error" style={{ marginBottom: '20px', padding: '10px', background: '#fee2e2', color: '#b91c1c', borderRadius: '4px' }}>
+          {saveError}
+        </div>
+      )}
       {!showResults ? (
         // We moeten de VragenlijstFormulier component ook vertellen dat hij cluster data moet doorgeven. 
         // Zie stap 2b hieronder voor de aanpassing in VragenlijstFormulier.
