@@ -25,8 +25,23 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Optioneel: Je zou hier een useEffect kunnen toevoegen die bij het opstarten
-  // kijkt of er nog een token in localStorage zit om de user te herstellen.
+
+
+  // Restore user session on mount
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      apiService.getMe()
+        .then(userData => {
+          setUser(userData);
+        })
+        .catch(err => {
+          console.error("Session restore failed:", err);
+          localStorage.removeItem('token');
+          setUser(null);
+        });
+    }
+  }, []);
 
   const login = async (email: string, wachtwoord: string) => {
     setError(null);

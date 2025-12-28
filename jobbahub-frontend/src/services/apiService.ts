@@ -142,5 +142,13 @@ export const apiService = {
     });
     if (!response.ok) throw new Error('Kon vragenlijst resultaten niet resetten');
     return await response.json();
+  },
+
+  getMe: async (): Promise<any> => {
+    const response = await fetch(`${API_URL}/api/auth/me`, {
+      headers: getAuthHeaders()
+    });
+    if (!response.ok) throw new Error('Kon gebruikersgegevens niet ophalen');
+    return await response.json();
   }
 };
