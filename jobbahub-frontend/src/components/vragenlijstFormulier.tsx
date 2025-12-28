@@ -311,7 +311,7 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
               textAlign: 'center',
               animation: 'fadeIn 0.3s ease-in-out'
             }}>
-              {submitError}
+              {t(submitError)}
               <button
                 onClick={() => setSubmitError(null)}
                 style={{ marginLeft: '15px', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '16px', color: '#991b1b' }}

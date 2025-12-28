@@ -198,7 +198,29 @@ export const translationsList = {
     "Wil je specifiek werken aan je eigen leiderschap, skills en persoonlijke groei?": { nl: "Wil je specifiek werken aan je eigen leiderschap, skills en persoonlijke groei?", en: "Do you specifically want to work on your own leadership, skills, and personal growth?" },
 
     "Algemene Verbreding": { nl: "Algemene Verbreding", en: "General Broadening" },
-    "Sta je open voor algemene onderwerpen die je blik verruimen buiten je eigen vakgebied?": { nl: "Sta je open voor algemene onderwerpen die je blik verruimen buiten je eigen vakgebied?", en: "Are you open to general topics that broaden your view outside your own field?" }
+    "Sta je open voor algemene onderwerpen die je blik verruimen buiten je eigen vakgebied?": { nl: "Sta je open voor algemene onderwerpen die je blik verruimen buiten je eigen vakgebied?", en: "Are you open to general topics that broaden your view outside your own field?" },
+
+    // Error Page & Messages
+    "Er is iets misgegaan": { nl: "Er is iets misgegaan", en: "Something went wrong" },
+    "Er is een onverwachte fout opgetreden.": { nl: "Er is een onverwachte fout opgetreden.", en: "An unexpected error occurred." },
+    "Terug naar Home": { nl: "Terug naar Home", en: "Back to Home" },
+    "Probeer opnieuw": { nl: "Probeer opnieuw", en: "Try again" },
+    "Kon module details niet laden": { nl: "Kon module details niet laden", en: "Could not load module details" },
+    "Er ging iets mis bij het ophalen van de module details.": { nl: "Er ging iets mis bij het ophalen van de module details.", en: "Something went wrong while fetching module details." },
+    "Opslaan mislukt": { nl: "Opslaan mislukt", en: "Save failed" },
+    "We konden je resultaten niet opslaan bij je profiel. Je kunt de resultaten wel bekijken.": { nl: "We konden je resultaten niet opslaan bij je profiel. Je kunt de resultaten wel bekijken.", en: "We could not save your results to your profile. You can still view the results." },
+    "Kon resultaten niet laden": { nl: "Kon resultaten niet laden", en: "Could not load results" },
+    "Er ging iets mis bij het ophalen van je opgeslagen resultaten. Probeer het later opnieuw.": { nl: "Er ging iets mis bij het ophalen van je opgeslagen resultaten. Probeer het later opnieuw.", en: "Something went wrong while fetching your saved results. Please try again later." },
+    "Resetten mislukt": { nl: "Resetten mislukt", en: "Reset failed" },
+    "We konden je eerdere resultaten niet verwijderen. Probeer het opnieuw.": { nl: "We konden je eerdere resultaten niet verwijderen. Probeer het opnieuw.", en: "We could not remove your previous results. Please try again." },
+    "Kon favorieten niet laden": { nl: "Kon favorieten niet laden", en: "Could not load favorites" },
+    "Er ging iets mis bij het ophalen van je favorieten.": { nl: "Er ging iets mis bij het ophalen van je favorieten.", en: "Something went wrong while fetching your favorites." },
+    "Analyse mislukt": { nl: "Analyse mislukt", en: "Analysis failed" },
+    "Er ging iets mis bij het ophalen van de aanbevelingen. Controleer je internetverbinding en probeer het opnieuw.": { nl: "Er ging iets mis bij het ophalen van de aanbevelingen. Controleer je internetverbinding en probeer het opnieuw.", en: "Something went wrong while fetching recommendations. Check your internet connection and try again." },
+    "Kon resultaten niet opslaan. Je kunt de resultaten wel bekijken, maar ze worden mogelijk niet bewaard in je profiel.": { nl: "Kon resultaten niet opslaan. Je kunt de resultaten wel bekijken, maar ze worden mogelijk niet bewaard in je profiel.", en: "Could not save results. You can view the results, but they may not be saved to your profile." },
+    "Kon modules niet laden": { nl: "Kon modules niet laden", en: "Could not load modules" },
+    "Er ging iets mis bij het ophalen van de modules. Probeer het later opnieuw.": { nl: "Er ging iets mis bij het ophalen van de modules. Probeer het later opnieuw.", en: "Something went wrong while fetching modules. Please try again later." },
+    "Kon geen aanbevelingen ophalen van de server.": { nl: "Kon geen aanbevelingen ophalen van de server.", en: "Could not retrieve recommendations from the server." }
 } as const;
 
 export const nl = Object.fromEntries(

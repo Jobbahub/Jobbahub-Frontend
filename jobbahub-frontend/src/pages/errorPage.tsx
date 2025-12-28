@@ -8,12 +8,15 @@ interface ErrorPageProps {
     onRetry?: () => void;
 }
 
+import { useLanguage } from '../context/LanguageContext';
+
 const ErrorPage: React.FC<ErrorPageProps> = ({
     title = "Er is iets misgegaan",
     message = "Er is een onverwachte fout opgetreden.",
     code,
     onRetry
 }) => {
+    const { t } = useLanguage();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -29,17 +32,17 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
             <div className="error-content">
                 <div className="error-icon">⚠️</div>
                 {displayCode && <div className="error-code">{displayCode}</div>}
-                <h1 className="error-title">{displayTitle}</h1>
-                <p className="error-message">{displayMessage}</p>
+                <h1 className="error-title">{t(displayTitle)}</h1>
+                <p className="error-message">{t(displayMessage)}</p>
 
                 <div className="error-actions">
                     <button className="btn btn-primary btn-margin-right" onClick={() => navigate('/')}>
-                        Terug naar Home
+                        {t("Terug naar Home")}
                     </button>
 
                     {onRetry ? (
                         <button className="btn btn-secondary" onClick={onRetry}>
-                            Probeer opnieuw
+                            {t("Probeer opnieuw")}
                         </button>
                     ) : (
                         <button className="btn btn-secondary" onClick={() => {
@@ -53,7 +56,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
                                 navigate(-1);
                             }
                         }}>
-                            Probeer opnieuw
+                            {t("Probeer opnieuw")}
                         </button>
                     )}
                 </div>
