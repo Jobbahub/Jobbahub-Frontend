@@ -1,27 +1,30 @@
 // ElectiveModules.tsx (Versie met Zoekfunctionaliteit en Paginering)
 
-import React, { useEffect, useState, useMemo } from 'react';
-import { IChoiceModule } from '../types';
-import { apiService } from '../services/apiService';
-import ModuleGrid from '../components/moduleGrid';
-import Pagination from '../components/modulePagination'; 
-import ModuleSearch from '../components/moduleSearch'; // <-- Importeer de Zoekcomponent
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/authContext';
+import React, { useEffect, useState, useMemo } from "react";
+import { IChoiceCustomModule, IChoiceModule } from "../types";
+import { apiService } from "../services/apiService";
+import ModuleGrid from "../components/moduleGrid";
+import Pagination from "../components/modulePagination";
+import ModuleSearch from "../components/moduleSearch"; // <-- Importeer de Zoekcomponent
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/authContext";
+import ModuleFilter from "../components/moduleFilter";
 
-const ITEMS_PER_PAGE = 8; 
+const ITEMS_PER_PAGE = 8;
 
 const ElectiveModules: React.FC = () => {
-  const [allModules, setAllModules] = useState<IChoiceModule[]>([]);
+  const [allModules, setAllModules] = useState<IChoiceCustomModule[]>([]);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // 1. Nieuwe State voor Zoekterm
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   // State voor Paginering
   const [currentPage, setCurrentPage] = useState(1);
-  
+
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
@@ -51,25 +54,22 @@ const ElectiveModules: React.FC = () => {
     fetchData();
   }, [isAuthenticated]);
 
-
-  // 2. FILTEREN: Stap om de modules te filteren op basis van de zoekterm
   const filteredModules = useMemo(() => {
-    if (!searchTerm) {
-      return allModules; // Geen zoekterm = alle modules
-    }
-    
-    const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    
-    // Filter logica: filter op module naam (en optioneel andere velden)
-    return allModules.filter(module => 
-      module.name.toLowerCase().includes(lowerCaseSearchTerm) ||
-      (module.description && module.description.toLowerCase().includes(lowerCaseSearchTerm))
-      // Voeg hier andere velden toe om op te zoeken (bijv. tags)
-    );
-  }, [allModules, searchTerm]);
+    return allModules.filter((module) => {
+      const lowerCaseSearch = searchTerm.toLowerCase();
+      const matchesSearch =
+        module.name.toLowerCase().includes(lowerCaseSearch) ||
+        (module.description &&
+          module.description.toLowerCase().includes(lowerCaseSearch));
 
+      const matchesTags =
+        selectedTags.length === 0 ||
+        selectedTags.every((tag) => module.tags_list?.includes(tag));
 
-  // 3. PAGINERING: Gebruik de GEFILTERDE modules om de paginering te berekenen
+      return matchesSearch && matchesTags;
+    });
+  }, [allModules, searchTerm, selectedTags]);
+
   const { currentModules, totalPages } = useMemo(() => {
     const totalItems = filteredModules.length;
     const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
@@ -77,18 +77,24 @@ const ElectiveModules: React.FC = () => {
     const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
     const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
 
-    // Snijd de array om alleen de modules voor de huidige pagina te krijgen
-    const currentModules = filteredModules.slice(indexOfFirstItem, indexOfLastItem);
+    const currentModules = filteredModules.slice(
+      indexOfFirstItem,
+      indexOfLastItem
+    );
 
-    // Correctie logica: ga terug naar laatste pagina als de huidige leeg is
     if (currentModules.length === 0 && totalPages > 0) {
-        setCurrentPage(totalPages);
-        return { currentModules: filteredModules.slice(totalPages * ITEMS_PER_PAGE - ITEMS_PER_PAGE, totalPages * ITEMS_PER_PAGE), totalPages };
+      setCurrentPage(totalPages);
+      return {
+        currentModules: filteredModules.slice(
+          totalPages * ITEMS_PER_PAGE - ITEMS_PER_PAGE,
+          totalPages * ITEMS_PER_PAGE
+        ),
+        totalPages,
+      };
     }
 
     return { currentModules, totalPages };
   }, [filteredModules, currentPage]);
-
 
   // 4. HANDLER: Zorgt ervoor dat de pagina naar 1 springt bij het zoeken
   const handleSearchChange = (value: string) => {
@@ -96,13 +102,11 @@ const ElectiveModules: React.FC = () => {
     setCurrentPage(1); // Cruciaal: Reset naar de eerste pagina bij elke zoekopdracht
   };
 
-
   // Handler functie voor de Paginering (onveranderd)
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
-    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
 
   // ... Bestaande handlers (handleDetailsClick, handleToggleFavorite) ...
   const handleDetailsClick = (id: string) => {
@@ -117,16 +121,22 @@ const ElectiveModules: React.FC = () => {
     try {
       if (isFav) {
         await apiService.removeFavorite(moduleId);
-        setFavorites(prev => prev.filter(id => id !== moduleId));
+        setFavorites((prev) => prev.filter((id) => id !== moduleId));
       } else {
         await apiService.addFavorite(moduleId);
-        setFavorites(prev => [...prev, moduleId]);
+        setFavorites((prev) => [...prev, moduleId]);
       }
     } catch (error) {
       console.error("Fout bij updaten favoriet:", error);
     }
   };
 
+  const handleTagToggle = (tag: string) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+    setCurrentPage(1);
+  };
 
   return (
     <div>
@@ -135,25 +145,32 @@ const ElectiveModules: React.FC = () => {
         <p className="page-intro">
           Kies uit een breed aanbod van modules om je skills te verbeteren.
         </p>
-        
+
         {/* Voeg de zoekbalk toe */}
-        <ModuleSearch 
-          searchTerm={searchTerm}
-          onSearchChange={handleSearchChange}
-        />
-        
+        <div className="search-filter-controls">
+          <ModuleSearch
+            searchTerm={searchTerm}
+            onSearchChange={handleSearchChange}
+          />
+
+          <ModuleFilter
+            modules={allModules}
+            selectedTags={selectedTags}
+            onTagToggle={handleTagToggle}
+          />
+        </div>
       </div>
 
-      <ModuleGrid 
-        modules={currentModules} // Geef de gepagineerde én gefilterde modules mee
-        loading={loading} 
-        error={error} 
+      <ModuleGrid
+        modules={currentModules}
+        loading={loading}
+        error={error}
         onViewDetails={handleDetailsClick}
         favorites={favorites}
         onToggleFavorite={handleToggleFavorite}
         isAuthenticated={isAuthenticated}
       />
-      
+
       {/* ------------------------------------- */}
       {/* Paginatie renderen                   */}
       {/* ------------------------------------- */}
@@ -166,11 +183,11 @@ const ElectiveModules: React.FC = () => {
       )}
 
       {/* Geen resultaten melding */}
-      {!loading && !error && filteredModules.length === 0 && (
-          <div className="text-center p-6 text-gray-500">
-              Er zijn geen modules gevonden die overeenkomen met "{searchTerm}".
-          </div>
-      )}
+      {/* {!loading && !error && (
+        <div className="text-center p-6 text-gray-500">
+          Er zijn geen modules gevonden die overeenkomen met "{searchTerm}".
+        </div>
+      )} */}
     </div>
   );
 };
