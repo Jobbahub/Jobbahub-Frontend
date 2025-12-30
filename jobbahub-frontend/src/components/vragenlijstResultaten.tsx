@@ -5,6 +5,7 @@ import { AIRecommendation, ClusterRecommendation, VragenlijstData } from '../ser
 import { IChoiceModule } from '../types';
 import { TOPICS } from '../data/constants';
 import ModuleCard from './moduleCard';
+import ResultChart, { ChartDataPoint } from './ResultChart';
 
 interface VragenlijstResultatenProps {
   aiRecs: AIRecommendation[];
@@ -35,22 +36,37 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
     return t('generic_ai_reason');
   };
 
-  const getScoreLabel = (score: number) => {
-    switch (score) {
-      case 0: return t("Nee");
-      case 1: return t("Neutraal");
-      case 2: return t("Ja");
-      default: return "-";
-    }
-  };
+  // RBY Color generation helper
+  // Generate N distinct colors around the hue wheel, centered on primary RBY mix.
+  const generateGlobalColorMap = (ids: string[]) => {
+    // Kelly's colors for maximum contrast
+    const KELLY_COLORS = [
+      "#FFB300", // Vivid Yellow
+      "#803E75", // Strong Purple
+      "#FF6800", // Vivid Orange
+      "#A6BDD7", // Very Light Blue
+      "#C10020", // Vivid Red
+      "#CEA262", // Grayish Yellow
+      "#817066", // Medium Gray
+      "#007D34", // Vivid Green
+      "#F6768E", // Strong Purplish Pink
+      "#00538A", // Strong Blue
+      "#FF7A5C", // Strong Yellowish Pink
+      "#53377A", // Strong Violet
+      "#FF8E00", // Vivid Orange Yellow
+      "#B32851", // Strong Purplish Red
+      "#F4C800", // Vivid Greenish Yellow
+      "#7F180D", // Strong Reddish Brown
+      "#93AA00", // Vivid Yellowish Green
+      "#593315", // Deep Yellowish Brown
+      "#F13A13", // Vivid Reddish Orange
+      "#232C16", // Dark Olive Green
+    ];
 
-  const getScoreClass = (score: number) => {
-    switch (score) {
-      case 0: return "score-negative";
-      case 1: return "score-neutral";
-      case 2: return "score-positive";
-      default: return "";
-    }
+    return ids.reduce((acc, id, index) => {
+      acc[id] = KELLY_COLORS[index % KELLY_COLORS.length];
+      return acc;
+    }, {} as Record<string, string>);
   };
 
   const categories = {
@@ -59,24 +75,28 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
     doelen: ['q_research', 'q_personal', 'q_broadening']
   };
 
-  const renderTopicList = (ids: string[]) => {
-    if (!userAnswers) return null;
-    const filteredTopics = TOPICS.filter(t => ids.includes(t.id));
-    return (
-      <ul className="detail-list detail-list-clean">
-        {filteredTopics.map((topic) => {
-          const score = userAnswers.knoppen_input[topic.id]?.score;
-          return (
-            <li key={topic.id}>
-              <span className="detail-list-label">{t(topic.label)}</span>
-              <span className={`detail-list-value ${getScoreClass(score)}`}>
-                {getScoreLabel(score)}
-              </span>
-            </li>
-          );
-        })}
-      </ul>
-    );
+  // Generate color map once for all potential items
+  const allCategoryIds = [
+    ...categories.vakgebieden,
+    ...categories.waarden,
+    ...categories.doelen
+  ];
+  const colorMap = generateGlobalColorMap(allCategoryIds);
+
+  const prepareChartData = (ids: string[]): ChartDataPoint[] => {
+    if (!userAnswers) return [];
+    return ids
+      .filter(id => id in userAnswers.knoppen_input)
+      .map(id => {
+        const topic = TOPICS.find(t => t.id === id);
+        return {
+          id,
+          label: topic ? t(topic.label) : id,
+          score: userAnswers.knoppen_input[id].score,
+          color: colorMap[id] // Assign unique global color
+        };
+      })
+      .sort((a, b) => b.score - a.score); // Sort by score descending for better visualization
   };
 
   return (
@@ -178,17 +198,27 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
               )}
             </div>
 
-            <div className="result-column">
-              <h4>{t("Interesses (Vakgebieden)")}</h4>
-              {renderTopicList(categories.vakgebieden)}
+            {/* Column 2: Interests Chart */}
+            <div>
+              <ResultChart
+                title={t("Interesses (Vakgebieden)")}
+                data={prepareChartData(categories.vakgebieden)}
+                colorTheme="blue"
+              />
             </div>
 
-            <div className="result-column">
-              <h4>{t("Waarden & Doelen")}</h4>
-              <h5 className="topic-category-header">{t("Waarden")}</h5>
-              {renderTopicList(categories.waarden)}
-              <h5 className="topic-category-header">{t("Doelen")}</h5>
-              {renderTopicList(categories.doelen)}
+            {/* Column 3: Values & Goals Charts */}
+            <div>
+              <ResultChart
+                title={t("Waarden")}
+                data={prepareChartData(categories.waarden)}
+                colorTheme="green"
+              />
+              <ResultChart
+                title={t("Doelen")}
+                data={prepareChartData(categories.doelen)}
+                colorTheme="purple"
+              />
             </div>
           </div>
         </div>
