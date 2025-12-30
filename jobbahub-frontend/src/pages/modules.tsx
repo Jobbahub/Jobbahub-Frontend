@@ -7,6 +7,7 @@ import ModuleGrid from '../components/moduleGrid';
 import Pagination from '../components/modulePagination';
 import ModuleSearch from '../components/moduleSearch';
 import { useNavigate } from 'react-router-dom';
+import ModuleFilter from "../components/moduleFilter";
 import { useAuth } from '../context/authContext';
 
 const ITEMS_PER_PAGE = 9;
@@ -19,6 +20,7 @@ const ElectiveModules: React.FC = () => {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   // We can still keep these as derived state or just use the params directly. 
   // Using params directly or syncing state is fine. 
@@ -66,17 +68,44 @@ const ElectiveModules: React.FC = () => {
   }, [isAuthenticated]);
 
   const filteredModules = useMemo(() => {
-    if (!searchTerm) {
-      return allModules;
-    }
+    return allModules.filter((module) => {
+      const lowerCaseSearch = searchTerm.toLowerCase();
+      const matchesSearch = !searchTerm ||
+        module.name.toLowerCase().includes(lowerCaseSearch) ||
+        (module.description &&
+          module.description.toLowerCase().includes(lowerCaseSearch));
 
-    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+      let matchesTags = true;
+      if (selectedTags.length > 0) {
+        if (!module.main_filter) {
+          matchesTags = false;
+        } else {
+          const getModuleTags = (mod: IChoiceModule) => {
+            const tags = new Set<string>();
+            if (mod.main_filter) {
+              try {
+                const cleaned = mod.main_filter.replace(/'/g, '"');
+                if (cleaned.trim().startsWith('[') && cleaned.trim().endsWith(']')) {
+                  const parsed: string[] = JSON.parse(cleaned);
+                  parsed.forEach(t => tags.add(t));
+                } else {
+                  mod.main_filter.split(',').forEach(t => tags.add(t.trim()));
+                }
+              } catch {
+                tags.add(mod.main_filter.trim());
+              }
+            }
+            return tags;
+          };
 
-    return allModules.filter(module =>
-      module.name.toLowerCase().includes(lowerCaseSearchTerm) ||
-      (module.description && module.description.toLowerCase().includes(lowerCaseSearchTerm))
-    );
-  }, [allModules, searchTerm]);
+          const moduleTags = getModuleTags(module);
+          matchesTags = selectedTags.some(tag => moduleTags.has(tag));
+        }
+      }
+
+      return matchesSearch && matchesTags;
+    });
+  }, [allModules, searchTerm, selectedTags]);
 
   const { currentModules, totalPages } = useMemo(() => {
     const totalItems = filteredModules.length;
@@ -152,6 +181,17 @@ const ElectiveModules: React.FC = () => {
     }
   };
 
+  const handleTagToggle = (tag: string) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+    // Reset page to 1
+    setSearchParams((prev: URLSearchParams) => {
+      prev.set('page', '1');
+      return prev;
+    }, { replace: true });
+  };
+
   return (
     <div className="page-wrapper">
       {/* Hero Section */}
@@ -164,10 +204,17 @@ const ElectiveModules: React.FC = () => {
           {t("Kies uit een breed aanbod van modules om je skills te verbeteren.")}
         </p>
 
-        <ModuleSearch
-          searchTerm={searchTerm}
-          onSearchChange={handleSearchChange}
-        />
+        <div className="search-filter-controls">
+          <ModuleSearch
+            searchTerm={searchTerm}
+            onSearchChange={handleSearchChange}
+          />
+          <ModuleFilter
+            modules={allModules}
+            selectedTags={selectedTags}
+            onTagToggle={handleTagToggle}
+          />
+        </div>
       </div>
 
       <ModuleGrid
