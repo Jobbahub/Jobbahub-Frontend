@@ -220,7 +220,8 @@ export const translationsList = {
     "Kon resultaten niet opslaan. Je kunt de resultaten wel bekijken, maar ze worden mogelijk niet bewaard in je profiel.": { nl: "Kon resultaten niet opslaan. Je kunt de resultaten wel bekijken, maar ze worden mogelijk niet bewaard in je profiel.", en: "Could not save results. You can view the results, but they may not be saved to your profile." },
     "Kon modules niet laden": { nl: "Kon modules niet laden", en: "Could not load modules" },
     "Er ging iets mis bij het ophalen van de modules. Probeer het later opnieuw.": { nl: "Er ging iets mis bij het ophalen van de modules. Probeer het later opnieuw.", en: "Something went wrong while fetching modules. Please try again later." },
-    "Kon geen aanbevelingen ophalen van de server.": { nl: "Kon geen aanbevelingen ophalen van de server.", en: "Could not retrieve recommendations from the server." }
+    "Kon geen aanbevelingen ophalen van de server.": { nl: "Kon geen aanbevelingen ophalen van de server.", en: "Could not retrieve recommendations from the server." },
+    "RATE_LIMIT_EXCEEDED": { nl: "Je hebt het limiet van 20 verzoeken per 5 minuten bereikt. Probeer het later opnieuw.", en: "You have reached the limit of 20 requests per 5 minutes. Please try again later." }
 } as const;
 
 export const nl = Object.fromEntries(
