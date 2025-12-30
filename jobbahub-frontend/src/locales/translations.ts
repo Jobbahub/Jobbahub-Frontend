@@ -195,6 +195,7 @@ export const translationsList = {
     "Vind je het leuk om dingen tot op de bodem uit te zoeken en feiten te analyseren?": { nl: "Vind je het leuk om dingen tot op de bodem uit te zoeken en feiten te analyseren?", en: "Do you like to get to the bottom of things and analyze facts?" },
 
     "Persoonlijke Ontwikkeling": { nl: "Persoonlijke Ontwikkeling", en: "Personal Development" },
+    "Algemene Ontwikkeling": { nl: "Algemene Ontwikkeling", en: "General Development" },
     "Wil je specifiek werken aan je eigen leiderschap, skills en persoonlijke groei?": { nl: "Wil je specifiek werken aan je eigen leiderschap, skills en persoonlijke groei?", en: "Do you specifically want to work on your own leadership, skills, and personal growth?" },
 
     "Algemene Verbreding": { nl: "Algemene Verbreding", en: "General Broadening" },
@@ -221,7 +222,8 @@ export const translationsList = {
     "Kon modules niet laden": { nl: "Kon modules niet laden", en: "Could not load modules" },
     "Er ging iets mis bij het ophalen van de modules. Probeer het later opnieuw.": { nl: "Er ging iets mis bij het ophalen van de modules. Probeer het later opnieuw.", en: "Something went wrong while fetching modules. Please try again later." },
     "Kon geen aanbevelingen ophalen van de server.": { nl: "Kon geen aanbevelingen ophalen van de server.", en: "Could not retrieve recommendations from the server." },
-    "RATE_LIMIT_EXCEEDED": { nl: "Je hebt het limiet van 20 verzoeken per 5 minuten bereikt. Probeer het later opnieuw.", en: "You have reached the limit of 20 requests per 5 minutes. Please try again later." }
+    "RATE_LIMIT_EXCEEDED": { nl: "Je hebt het limiet van 20 verzoeken per 5 minuten bereikt. Probeer het later opnieuw.", en: "You have reached the limit of 20 requests per 5 minutes. Please try again later." },
+
 } as const;
 
 export const nl = Object.fromEntries(

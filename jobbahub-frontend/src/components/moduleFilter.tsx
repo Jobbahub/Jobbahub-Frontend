@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { IChoiceModule } from "../types";
+import { useLanguage } from "../context/LanguageContext";
 
 interface ModuleFilterProps {
   modules: IChoiceModule[];
@@ -14,15 +15,14 @@ const ModuleFilter: React.FC<ModuleFilterProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
 
   const availableTags = useMemo(() => {
     const tagSet = new Set<string>();
 
     modules.forEach((mod) => {
-      // AANGEPAST: Gebruik main_filter i.p.v. tags_list
       if (mod.main_filter) {
         try {
-          // Probeer te parsen als JSON array string (net als oude tags_list)
           // Vervang single quotes met double quotes voor valid JSON
           const cleaned = mod.main_filter.replace(/'/g, '"');
           if (cleaned.trim().startsWith('[') && cleaned.trim().endsWith(']')) {
@@ -36,7 +36,6 @@ const ModuleFilter: React.FC<ModuleFilterProps> = ({
           }
         } catch (error) {
           // Als parsen mislukt, voeg gewoon de ruwe waarde toe
-          console.warn("Kon main_filter niet als JSON parsen, gebruik ruwe waarde:", mod.main_filter);
           tagSet.add(mod.main_filter.trim());
         }
       }
@@ -63,7 +62,7 @@ const ModuleFilter: React.FC<ModuleFilterProps> = ({
   return (
     <div className="filter-dropdown-wrapper" ref={dropdownRef}>
       <button className="filter-trigger-btn" onClick={() => setIsOpen(!isOpen)}>
-        <span>Filters</span>
+        <span>{t("Filters" as any)}</span>
         {selectedTags.length > 0 && (
           <span className="filter-badge">{selectedTags.length}</span>
         )}
@@ -81,7 +80,7 @@ const ModuleFilter: React.FC<ModuleFilterProps> = ({
                   checked={selectedTags.includes(tag)}
                   onChange={() => onTagToggle(tag)}
                 />
-                <span>{tag}</span>
+                <span>{t(tag)}</span>
               </label>
             ))}
           </div>
@@ -93,7 +92,7 @@ const ModuleFilter: React.FC<ModuleFilterProps> = ({
                 selectedTags.forEach((t) => onTagToggle(t));
               }}
             >
-              Alle filters wissen
+              {t("Alle filters wissen" as any)}
             </button>
           )}
         </div>

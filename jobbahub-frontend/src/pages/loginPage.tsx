@@ -21,14 +21,7 @@ const Login: React.FC = () => {
     try {
       const loggedInUser = await login(email, wachtwoord);
 
-      // Check of er opgeslagen resultaten zijn
-      if (loggedInUser.vragenlijst_resultaten &&
-        loggedInUser.vragenlijst_resultaten.aanbevelingen &&
-        loggedInUser.vragenlijst_resultaten.aanbevelingen.length > 0) {
-        navigate('/vragenlijst');
-      } else {
-        navigate('/dashboard');
-      }
+      navigate('/dashboard');
     } catch (err: any) {
       setFormError(err.message || t("Inloggen mislukt. Controleer je gegevens."));
     } finally {
