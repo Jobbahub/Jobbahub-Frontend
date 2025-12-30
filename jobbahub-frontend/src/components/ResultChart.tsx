@@ -12,9 +12,10 @@ interface ResultChartProps {
     title: string;
     data: ChartDataPoint[];
     colorTheme?: 'blue' | 'green' | 'purple' | 'orange';
+    className?: string;
 }
 
-const ResultChart: React.FC<ResultChartProps> = ({ title, data }) => {
+const ResultChart: React.FC<ResultChartProps> = ({ title, data, className = '' }) => {
     const { t } = useLanguage();
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
@@ -93,7 +94,7 @@ const ResultChart: React.FC<ResultChartProps> = ({ title, data }) => {
     };
 
     return (
-        <div className="result-chart-container">
+        <div className={`result-chart-container ${className}`}>
             <h3 className="result-chart-title">{title}</h3>
 
             <div className="chart-content">

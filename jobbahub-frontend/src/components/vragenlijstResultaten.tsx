@@ -119,7 +119,7 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
           <p className="page-intro center-text">
             {t("Op basis van jouw antwoorden passen deze modules het beste bij jou.")}
           </p>
-          <div className="grid-container grid-container-margin-bottom">
+          <div className="centered-modules-grid grid-container-margin-bottom">
             {aiRecs.map((rec, index) => {
               const foundModule = dbModules.find(m => m.name.toLowerCase().includes(rec.name.toLowerCase()));
               if (!foundModule) return null;
@@ -144,7 +144,7 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
                 <p dangerouslySetInnerHTML={{ __html: t("Naast je directe matches hebben we ook gekeken naar je <strong>nummer 1 match</strong>. De onderstaande modules vallen binnen hetzelfde vakgebied (cluster) als die match. Binnen dit cluster hebben we de <strong>populairste modules</strong> geselecteerd die ook aansluiten bij jouw trefwoorden.") }} />
               </div>
 
-              <div className="grid-container">
+              <div className="centered-modules-grid">
                 {clusterRecs.map((rec, index) => {
                   const foundModule = dbModules.find(m => m.name.toLowerCase().includes(rec.name.toLowerCase()));
                   if (!foundModule) return null;

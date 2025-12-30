@@ -1680,5 +1680,93 @@ textarea.form-input {
 
 .legend-percent {
   font-weight: 600;
-  color: #64748b;
+}
+
+/* --- Dashboard Specific Styles --- */
+
+/* Centered Flex Grid for Modules (Reusable) */
+.centered-modules-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  /* Centers the last row items */
+  gap: 30px;
+  max-width: var(--container-width);
+  margin: 0 auto 50px auto;
+}
+
+/* Ensure module cards have a consistent width in flex container */
+.centered-modules-grid>* {
+  flex: 0 1 350px;
+  /* grow=0, shrink=1, basis=350px */
+  max-width: 100%;
+}
+
+/* Dashboard Welcome Card */
+.dashboard-welcome-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+  border: 1px solid #e0f2fe;
+  margin-bottom: 40px;
+}
+
+/* Dashboard Section Titles */
+.dashboard-section-title {
+  text-align: center;
+  font-size: 2rem;
+  color: #0f172a;
+  margin-bottom: 30px;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 15px;
+}
+
+.dashboard-section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: var(--primary-color);
+  border-radius: 2px;
+}
+
+.dashboard-section-wrapper {
+  text-align: center;
+  /* Center the title */
+  margin-bottom: 60px;
+}
+
+/* Dashboard Charts Grid - Distinct from results page */
+.dashboard-charts-grid {
+  display: grid;
+  /* Fit 3 columns if space permits (min 300px per item) */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 20px;
+}
+
+/* Modifier to remove default card styling from ResultChart */
+.result-chart-container.borderless {
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+  margin-bottom: 0;
+}
+
+/* Wrapper for individual charts to give them a "card" look on dashboard */
+.dashboard-chart-card {
+  /* Previously had background/shadow. Now making it transparent/minimal as requested */
+  background: transparent;
+  box-shadow: none;
+  padding: 10px;
+  transition: transform 0.3s ease;
+}
+
+.dashboard-chart-card:hover {
+  transform: translateY(-5px);
 }
