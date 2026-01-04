@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 import { IChoiceModule } from '../types';
 
 interface ModuleCardProps {
@@ -12,17 +13,26 @@ interface ModuleCardProps {
   isCluster?: boolean;
 }
 
-const ModuleCard: React.FC<ModuleCardProps> = ({ 
-  module, 
-  onClick, 
-  isFavorite, 
-  onToggleFavorite, 
+const ModuleCard: React.FC<ModuleCardProps> = ({
+  module,
+  onClick,
+  isFavorite,
+  onToggleFavorite,
   isAuthenticated,
   matchPercentage,
   explanation,
   isCluster
 }) => {
+  const { t, language } = useLanguage();
   const [tagsExpanded, setTagsExpanded] = useState(false);
+
+  const getTranslatedContent = (key: 'name' | 'shortdescription' | 'description', fallback?: string) => {
+    if (language === 'en') {
+      const enKey = `${key}_en` as keyof IChoiceModule;
+      if (module[enKey]) return module[enKey] as string;
+    }
+    return module[key] as string || fallback || '';
+  };
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -50,10 +60,10 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
 
   return (
     <div className="card clickable-card" onClick={() => onClick(String(module.id))}>
-      
+
       <div className="result-card-image-wrapper">
         {isAuthenticated && onToggleFavorite && (
-          <button 
+          <button
             className={`btn-favorite-card ${isFavorite ? 'active' : ''}`}
             onClick={handleFavoriteClick}
             title={isFavorite ? "Verwijder uit favorieten" : "Voeg toe aan favorieten"}
@@ -62,10 +72,10 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
           </button>
         )}
 
-        <img 
+        <img
           src={imageUrl}
-          alt={module.name} 
-          className="card-image" 
+          alt={module.name}
+          className="card-image"
         />
 
         {matchPercentage !== undefined && matchPercentage !== null && (
@@ -73,29 +83,29 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
             {matchPercentage}% Match
           </span>
         )}
-        
+
         {isCluster && (
-           <span className="match-badge badge-cluster-color">
-             Populair in Cluster
-           </span>
+          <span className="match-badge badge-cluster-color">
+            Populair in Cluster
+          </span>
         )}
       </div>
-      
+
       <div className="card-body">
-        <h3 className="card-title">{module.name}</h3>
-        
+        <h3 className="card-title">{getTranslatedContent('name')}</h3>
+
         <div className="card-tags-container">
           {module.main_filter && (
             <span className="tag-main">{module.main_filter}</span>
           )}
 
           {tags.length > 0 && (
-            <button 
-              className={`tag-toggle-btn ${tagsExpanded ? 'expanded' : ''}`} 
+            <button
+              className={`tag-toggle-btn ${tagsExpanded ? 'expanded' : ''}`}
               onClick={handleToggleTags}
               title={tagsExpanded ? "Verberg tags" : "Toon alle tags"}
             >
-              {'>'} 
+              {'>'}
             </button>
           )}
 
@@ -106,14 +116,14 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
 
         {explanation && (
           <div className={`why-box ${isCluster ? 'why-box-cluster' : ''}`}>
-            <strong>Waarom:</strong> {explanation}
+            <strong>{t ? t('why') : 'Waarom'}:</strong> {explanation}
           </div>
         )}
 
         <p className="card-text">
-          {module.shortdescription || (module.description ? module.description.substring(0, 100) + '...' : '')}
+          {getTranslatedContent('shortdescription') || (getTranslatedContent('description') ? getTranslatedContent('description').substring(0, 100) + '...' : '')}
         </p>
-        
+
         <div className="card-meta">
           <span className="credits">{module.studycredit} EC</span>
         </div>

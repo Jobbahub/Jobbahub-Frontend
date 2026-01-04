@@ -52,44 +52,64 @@ const getAuthHeaders = () => {
   };
 };
 
+// Custom Error class
+export class ApiError extends Error {
+  public status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+  }
+}
+
+const handleResponse = async (response: Response, defaultMessage: string = 'Er is een fout opgetreden') => {
+  if (!response.ok) {
+    let errorMessage = defaultMessage;
+    try {
+      const errorData = await response.json();
+      errorMessage = errorData.message || errorMessage;
+    } catch { } // Fallback to default message if JSON parsing fails
+    throw new ApiError(errorMessage, response.status);
+  }
+  return response.json();
+};
+
 export const apiService = {
   getModules: async (): Promise<IChoiceModule[]> => {
     const response = await fetch(`${API_URL}/api/modules`);
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    return await response.json();
+    return handleResponse(response, 'Kon modules niet ophalen');
   },
 
   getModuleById: async (id: string): Promise<IChoiceModule> => {
     const response = await fetch(`${API_URL}/api/modules/${id}`);
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    return await response.json();
+    return handleResponse(response, 'Kon module niet ophalen');
   },
 
-  login: async (email: string, password: string): Promise<LoginResponse> => {
+  login: async (email: string, wachtwoord: string): Promise<LoginResponse> => {
     const response = await fetch(`${API_URL}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, wachtwoord }),
     });
-
-    if (!response.ok) {
-      let errorMessage = 'Inloggen mislukt';
-      try {
-        const errorData = await response.json();
-        errorMessage = errorData.message || errorMessage;
-      } catch { }
-      throw new Error(errorMessage);
-    }
-    return await response.json();
+    // Special handling for login could be done here if needed, but handleResponse works too
+    return handleResponse(response, 'Inloggen mislukt');
   },
 
   getFavorites: async (): Promise<string[]> => {
     const response = await fetch(`${API_URL}/api/favorites`, {
       headers: getAuthHeaders()
     });
+    // Special case: return empty array on error? Or throw? Code was defaulting to empty array.
+    // Let's keep existing logic but standardizing implies throwing. 
+    // However, getFavorites returning [] on error was intentional.
     if (!response.ok) return [];
     const data = await response.json();
-    return data.map((fav: any) => fav.module_id);
+    if (Array.isArray(data)) {
+      // Check of het objecten zijn of strings, en map correct naar IDs
+      return data.map((fav: any) => typeof fav === 'string' ? fav : fav.module_id);
+    }
+    return [];
   },
 
   addFavorite: async (moduleId: string) => {
@@ -98,7 +118,7 @@ export const apiService = {
       headers: getAuthHeaders(),
       body: JSON.stringify({ module_id: moduleId })
     });
-    if (!response.ok) throw new Error('Kon favoriet niet toevoegen');
+    if (!response.ok) throw new ApiError('Kon favoriet niet toevoegen', response.status);
   },
 
   removeFavorite: async (moduleId: string) => {
@@ -106,7 +126,7 @@ export const apiService = {
       method: 'DELETE',
       headers: getAuthHeaders()
     });
-    if (!response.ok) throw new Error('Kon favoriet niet verwijderen');
+    if (!response.ok) throw new ApiError('Kon favoriet niet verwijderen', response.status);
   },
 
   verstuurVragenlijst: async (data: VragenlijstData): Promise<AIResponse> => {
@@ -118,11 +138,7 @@ export const apiService = {
       body: JSON.stringify(data),
     });
 
-    if (!response.ok) {
-      throw new Error('Kon geen aanbevelingen ophalen van de server.');
-    }
-
-    return await response.json();
+    return handleResponse(response, 'Kon geen aanbevelingen ophalen van de server.');
   },
 
   saveQuestionnaireResults: async (data: any) => {
@@ -131,8 +147,7 @@ export const apiService = {
       headers: getAuthHeaders(),
       body: JSON.stringify(data)
     });
-    if (!response.ok) throw new Error('Kon vragenlijst resultaten niet opslaan');
-    return await response.json();
+    return handleResponse(response, 'Kon vragenlijst resultaten niet opslaan');
   },
 
   deleteQuestionnaireResults: async () => {
@@ -140,7 +155,13 @@ export const apiService = {
       method: 'DELETE',
       headers: getAuthHeaders()
     });
-    if (!response.ok) throw new Error('Kon vragenlijst resultaten niet resetten');
-    return await response.json();
+    return handleResponse(response, 'Kon vragenlijst resultaten niet resetten');
+  },
+
+  getMe: async (): Promise<any> => {
+    const response = await fetch(`${API_URL}/api/auth/me`, {
+      headers: getAuthHeaders()
+    });
+    return handleResponse(response, 'Kon gebruikersgegevens niet ophalen');
   }
 };

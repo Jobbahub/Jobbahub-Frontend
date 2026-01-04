@@ -15,6 +15,11 @@ export interface IChoiceModule {
   available_spots?: number;
   estimated_difficulty?: number;
   target_audience?: string;
+  name_en?: string;
+  description_en?: string;
+  shortdescription_en?: string;
+  content_en?: string;
+  learningoutcomes_en?: string;
 }
 
 export interface AIRecommendation {
@@ -28,4 +33,4 @@ export interface ClusterRecommendation {
   name: string;
   popularity_score: number;
   waarom: string;
-}
+} 

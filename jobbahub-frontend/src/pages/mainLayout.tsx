@@ -1,10 +1,13 @@
 import React from "react";
 import { Outlet, Link } from "react-router-dom";
 import { useAuth } from "../context/authContext";
+import { useLanguage } from "../context/LanguageContext";
 import ThemeToggle from "../components/ThemeToggle";
+import LanguageSwitcher from "../components/LanguageSwitcher";
 
 const MainLayout: React.FC = () => {
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
 
   return (
     <div className="main-layout">
@@ -13,13 +16,13 @@ const MainLayout: React.FC = () => {
           {/* Left Navigation */}
           <nav className="nav-links nav-group-left">
             <Link to="/modules" className="nav-link">
-              Keuzemodules
+              {t("nav_modules")}
             </Link>
             <Link to="/vragenlijst" className="nav-link">
-              Help Mij Kiezen
+              {t("nav_help_me_choose")}
             </Link>
             <Link to="/favorites" className="nav-link">
-              Favorieten
+              {t("nav_favorites")}
             </Link>
           </nav>
 
@@ -31,25 +34,23 @@ const MainLayout: React.FC = () => {
           {/* Right Navigation */}
           <nav className="nav-links nav-group-right">
             <Link to="/about" className="nav-link">
-              About
-            </Link>
-            <Link to="/profile" className="nav-link">
-              Profile
+              {t("nav_about")}
             </Link>
             {!user ? (
               <>
                 <Link to="/login" className="nav-link">
-                  Login
+                  {t("login")}
                 </Link>
               </>
             ) : (
               <>
                 <button onClick={logout} className="btn btn-logout">
-                  Uitloggen
+                  {t("logout")}
                 </button>
               </>
             )}
             <ThemeToggle />
+            <LanguageSwitcher />
           </nav>
         </div>
       </header>
