@@ -143,6 +143,17 @@ const Dashboard: React.FC = () => {
           <h2 className="text-2xl font-bold mb-2">
             {t("dashboard_welcome_intro")} <span className="text-blue-600">{user?.name}</span>!
           </h2>
+          <p className="text-gray-700 mt-2">
+            {t("dashboard_intro_loggedin")}
+          </p>
+
+          <div className="bg-white p-4 rounded-lg border border-gray-200 mt-4 shadow-sm">
+            <ul className="list-disc pl-5 space-y-2 text-gray-700">
+              <li>{t("dashboard_feature_results")}</li>
+              <li>{t("dashboard_feature_favorites")}</li>
+              <li>{t("dashboard_feature_profile")}</li>
+            </ul>
+          </div>
 
           {hasResults ? (
             <div className="mt-4 space-y-4 text-gray-700">

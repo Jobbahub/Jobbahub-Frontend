@@ -15,23 +15,14 @@ const Home: React.FC = () => {
       {/* Subtitle */}
       <div className="home-subtitle-container">
         <h2 className="home-subtitle">
-          {t("A Subtitle")}
+          {t("home_subtitle")}
         </h2>
       </div>
 
       {/* Main Content Area */}
       <div className="home-content">
         <p className="text-paragraph">
-          {t("Lorem ipsum paragraph 1")}
-        </p>
-        <p className="text-paragraph">
-          {t("Lorem ipsum paragraph 2")}
-        </p>
-        <p className="text-paragraph">
-          {t("Lorem ipsum paragraph 3")}
-        </p>
-        <p className="text-paragraph">
-          {t("Lorem ipsum paragraph 4")}
+          {t("home_intro")}
         </p>
       </div>
     </div>

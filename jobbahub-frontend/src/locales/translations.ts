@@ -35,22 +35,29 @@ export const translationsList = {
 
     // Home Page
     "HOME PAGE": { nl: "HOME PAGE", en: "HOME PAGE" },
-    "A Subtitle": { nl: "A Subtitle", en: "A Subtitle" },
-    "Lorem ipsum paragraph 1": {
-        nl: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
-        en: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+    home_subtitle: {
+        nl: "Ontdek jouw ideale keuzemodule in minuten.",
+        en: "Discover your ideal elective module in minutes."
     },
-    "Lorem ipsum paragraph 2": {
-        nl: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.",
-        en: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit."
+    home_intro: {
+        nl: "Jobbahub helpt studenten bij het vinden van de perfecte keuzemodule. Weet je niet zeker wat je wilt kiezen? Geen probleem! Onze AI-gedreven vragenlijst analyseert jouw interesses, waarden en doelen om de best passende keuzemodules voor jou te vinden. Weet je al welke richting je op wilt? Gebruik dan onze handige filters om direct door alle keuzemodules te scrollen. Begin vandaag nog en maak een zelfverzekerde keuze voor jouw toekomst.",
+        en: "Jobbahub helps students find the perfect elective module. Not sure what to choose? No problem! Our AI-driven questionnaire analyzes your interests, values, and goals to find the best matching electives for you. Already know which direction you want to go? Use our handy filters to scroll directly through all modules. Start today and make a confident choice for your future."
     },
-    "Lorem ipsum paragraph 3": {
-        nl: "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
-        en: "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga."
+    dashboard_intro_loggedin: {
+        nl: "Welkom op je persoonlijke dashboard. Als ingelogde gebruiker heb je toegang tot exclusieve functies om je studiekeuze nog makkelijker te maken.",
+        en: "Welcome to your personal dashboard. As a logged-in user, you have access to exclusive features to make your study choice even easier."
     },
-    "Lorem ipsum paragraph 4": {
-        nl: "Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.",
-        en: "Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus."
+    dashboard_feature_results: {
+        nl: "Bekijk je gedetailleerde resultaten en AI-matches.",
+        en: "View your detailed results and AI matches."
+    },
+    dashboard_feature_favorites: {
+        nl: "Sla interessante modules op in je favorieten om ze later te vergelijken.",
+        en: "Save interesting modules to your favorites to compare them later."
+    },
+    dashboard_feature_profile: {
+        nl: "Update je profiel op elk moment door de vragenlijst opnieuw in te vullen.",
+        en: "Update your profile at any time by retaking the questionnaire."
     },
 
     // Language Switcher
