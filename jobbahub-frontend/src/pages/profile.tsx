@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/authContext";
+import { ApiError, apiService } from "../services/apiService";
 
 // TODO: change about class names globally to profile where applicable and set styles in css stylesheet
 
@@ -11,23 +13,46 @@ const Profile: React.FC = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const { user, updateUser } = useAuth();
 
   const handleChangePassword = async (e: React.FormEvent) => {
-    // Show modal with passwords
     console.log("Change password clicked");
   };
 
-  const handleChangeCredentials = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setFormError(null);
+  // const handleChangeCredentials = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   setFormError(null);
 
-    try {
-      //   Backend api logica hier toevoegen
-    } catch (err: any) {
-      setFormError(err.message || "Inloggen mislukt. Controleer je gegevens.");
-    } finally {
-      setLoading(false);
+  //   try {
+  //     //   Backend api logica hier toevoegen
+  //   } catch (err: any) {
+  //     setFormError(err.message || "Inloggen mislukt. Controleer je gegevens.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const handleResetQuestions = async (e: React.FormEvent) => {
+    if (user) {
+      try {
+        await apiService.deleteQuestionnaireResults();
+        const updatedUser = { ...user };
+        delete updatedUser.vragenlijst_resultaten;
+        updateUser(updatedUser);
+      } catch (e: any) {
+        console.error("Failed to reset questionnaire results:", e);
+        const errorCode = e instanceof ApiError ? e.status : "RESET_ERROR";
+        navigate("/error", {
+          state: {
+            title: "Resetten mislukt",
+            message:
+              "We konden je eerdere resultaten niet verwijderen. Probeer het opnieuw.",
+            code: errorCode,
+            from: location.pathname,
+          },
+        });
+      }
     }
   };
 
@@ -104,6 +129,15 @@ const Profile: React.FC = () => {
               onClick={handleChangePassword}
             >
               Verander wachtwoord
+            </button>
+
+            <button
+              type="submit"
+              className={`btn btn-primary w-full`}
+              disabled={true}
+              onClick={handleResetQuestions}
+            >
+              Reset vragenlijst
             </button>
 
             <hr />
