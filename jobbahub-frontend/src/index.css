@@ -1,6 +1,6 @@
 :root {
   /* Kleuren (Avans Stijl) - LIGHT MODE */
-  --primary-color: #C8102E;
+  --primary-color: #c8102e;
   --primary-hover: #a00d25;
   --secondary-color: #333333;
   --bg-color: #f9fafb;
@@ -23,7 +23,8 @@
   /* Spacing & Layout */
   --container-width: 1200px;
   --header-height: 70px;
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 /* DARK MODE VARIABLES */
@@ -54,7 +55,7 @@
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--bg-color);
   color: var(--text-color);
   line-height: 1.6;
@@ -980,11 +981,11 @@ button {
   font-size: 0.875rem;
 }
 
-.space-y-2>* {
+.space-y-2 > * {
   margin-bottom: 0.5rem;
 }
 
-.space-y-2>*:last-child {
+.space-y-2 > *:last-child {
   margin-bottom: 0;
 }
 
@@ -1134,9 +1135,74 @@ button {
   animation: spin 1s linear infinite;
 }
 
+.profile-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.profile-modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  color: #333;
+}
+
+.profile-modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.profile-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.profile-form-input-disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  border: 1px solid #ddd;
+}
+
+.profile-form-success {
+  color: #28a745;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  padding: 10px;
+  border-radius: 4px;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-simple {
@@ -1192,7 +1258,7 @@ button {
   }
 
   /* Hide certain nav items on mobile */
-  .nav-links .nav-link:nth-child(n+2) {
+  .nav-links .nav-link:nth-child(n + 2) {
     font-size: 0.85rem;
   }
 
@@ -1331,7 +1397,7 @@ button {
     gap: 20px;
   }
 
-  .centered-modules-grid>* {
+  .centered-modules-grid > * {
     flex: 0 1 100%;
     max-width: 100%;
   }
@@ -1342,7 +1408,7 @@ button {
     gap: 10px;
   }
 
-  .search-filter-controls>*:last-child {
+  .search-filter-controls > *:last-child {
     flex-shrink: 1;
     width: 100%;
   }
@@ -1445,7 +1511,7 @@ button {
 
 /* Tablet: Medium adjustments */
 @media (max-width: 1024px) {
-  .centered-modules-grid>* {
+  .centered-modules-grid > * {
     flex: 0 1 45%;
   }
 
@@ -1490,11 +1556,11 @@ button {
   width: 100%;
 }
 
-.search-filter-controls>*:first-child {
+.search-filter-controls > *:first-child {
   flex-grow: 1;
 }
 
-.search-filter-controls>*:last-child {
+.search-filter-controls > *:last-child {
   flex-shrink: 0;
 }
 
@@ -1812,7 +1878,7 @@ button {
 }
 
 /* Ensure module cards have a consistent width in flex container */
-.centered-modules-grid>* {
+.centered-modules-grid > * {
   flex: 0 1 350px;
   /* grow=0, shrink=1, basis=350px */
   max-width: 100%;
@@ -1823,7 +1889,8 @@ button {
   background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
   padding: 30px;
   border-radius: 16px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05),
+    0 8px 10px -6px rgba(0, 0, 0, 0.01);
   border: 1px solid #e0f2fe;
   margin-bottom: 40px;
 }
@@ -1841,7 +1908,7 @@ button {
 }
 
 .dashboard-section-title::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 50%;
@@ -1961,7 +2028,7 @@ button {
     margin-bottom: 30px;
   }
 
-  .centered-modules-grid>* {
+  .centered-modules-grid > * {
     flex: 0 1 100%;
   }
 
