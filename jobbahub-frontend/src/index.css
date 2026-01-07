@@ -7,6 +7,7 @@
   --text-color: #1f2937;
   --text-muted: #6b7280;
   --white: #ffffff;
+  --surface-color: #ffffff;
   --border-color: #e5e7eb;
   --purple-link: #a855f7;
 
@@ -34,7 +35,8 @@
   --bg-color: #111827;
   --text-color: #f3f4f6;
   --text-muted: #9ca3af;
-  --white: #1f2937;
+  --white: #ffffff;
+  --surface-color: #1f2937;
   --border-color: #374151;
   --purple-link: #c084fc;
   --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
@@ -100,7 +102,7 @@ button {
 
 /* AANGEPAST: Hero styles generiek gemaakt */
 .page-hero {
-  background-color: var(--white);
+  background-color: var(--surface-color);
   padding: 60px 40px;
   margin-bottom: 0;
   text-align: center;
@@ -129,7 +131,7 @@ button {
 
 /* --- Header --- */
 .site-header {
-  background-color: var(--white);
+  background-color: var(--surface-color);
   height: var(--header-height);
   box-shadow: var(--shadow);
   display: flex;
@@ -2601,4 +2603,264 @@ textarea.form-input {
   display: flex;
   gap: 15px;
   align-items: center;
+}
+/* ========== COMPREHENSIVE DARK MODE OVERRIDES ========== */
+
+/* Update all --white usage for backgrounds to use surface-color in dark mode */
+[data-theme="dark"] .card,
+[data-theme="dark"] .search-input,
+[data-theme="dark"] .form-container,
+[data-theme="dark"] .home-hero,
+[data-theme="dark"] .home-content,
+[data-theme="dark"] .about-content-box,
+[data-theme="dark"] .detail-header,
+[data-theme="dark"] .detail-title-box,
+[data-theme="dark"] .detail-main,
+[data-theme="dark"] .sidebar-card,
+[data-theme="dark"] .error-content,
+[data-theme="dark"] .questionnaire-modal,
+[data-theme="dark"] .bg-white {
+  background-color: var(--surface-color);
+}
+
+/* Pagination Buttons - Dark Mode */
+[data-theme="dark"] .pagination-nav button {
+  background-color: var(--surface-color);
+  color: var(--text-color);
+  border-right-color: var(--border-color);
+}
+
+[data-theme="dark"] .pagination-nav li:not(:last-child) button {
+  border-right: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .pagination-nav button:not(.disabled):hover {
+  background-color: var(--bg-color);
+  color: var(--primary-color);
+}
+
+[data-theme="dark"] .pagination-nav button.active {
+  background-color: var(--primary-color);
+  color: var(--white);
+  cursor: default;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .pagination-nav button:disabled,
+[data-theme="dark"] .pagination-nav button.disabled {
+  cursor: not-allowed;
+  background-color: var(--border-color);
+  color: #666;
+}
+
+[data-theme="dark"] .pagination-nav li.px-2 {
+  background-color: var(--surface-color);
+  color: var(--text-muted);
+  border-right: 1px solid var(--border-color);
+}
+
+/* Priority Cards - Dark Mode */
+[data-theme="dark"] .priority-card {
+  background-color: var(--surface-color);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .priority-card.selected {
+  background-color: var(--bg-color);
+  border-color: var(--primary-color);
+}
+
+[data-theme="dark"] .priority-badge {
+  background: var(--primary-color);
+}
+
+/* Form Container - Dark Mode */
+[data-theme="dark"] .form-container {
+  background-color: var(--surface-color);
+}
+
+/* Tags - Dark Mode */
+[data-theme="dark"] .tag-main {
+  background-color: #1e3a8a;
+  color: #93c5fd;
+  border-color: #1e40af;
+}
+
+[data-theme="dark"] .tag-secondary {
+  background-color: #2e1065;
+  color: #d8b4fe;
+  border-color: #6d28d9;
+}
+
+/* Buttons in modal - Dark Mode */
+[data-theme="dark"] .button-group button {
+  background-color: var(--surface-color);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .button-group button:hover {
+  background-color: var(--bg-color);
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+[data-theme="dark"] .button-group button.active {
+  background-color: var(--primary-color);
+  color: var(--white);
+  border-color: var(--primary-color);
+}
+
+/* Tab buttons - Dark Mode */
+[data-theme="dark"] .tab-btn {
+  background: var(--surface-color);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .tab-btn.active {
+  background: var(--bg-color);
+  border-bottom: 3px solid var(--primary-color);
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+/* Forms - Dark Mode */
+[data-theme="dark"] .form-input {
+  background-color: var(--surface-color);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .form-input::placeholder {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .search-input {
+  background-color: var(--surface-color);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .search-input::placeholder {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .form-error {
+  background-color: rgba(220, 38, 38, 0.1);
+  color: #fca5a5;
+  border-color: #7f1d1d;
+}
+
+/* Text colors - Dark Mode */
+[data-theme="dark"] .text-blue-600,
+[data-theme="dark"] .text-blue-700,
+[data-theme="dark"] .text-blue-800 {
+  color: #93c5fd;
+}
+
+[data-theme="dark"] .text-gray-700 {
+  color: #d1d5db;
+}
+
+[data-theme="dark"] .text-gray-600 {
+  color: #9ca3af;
+}
+
+[data-theme="dark"] .text-gray-500 {
+  color: #a3a3a3;
+}
+
+[data-theme="dark"] .text-green-600 {
+  color: #4ade80;
+}
+
+[data-theme="dark"] .text-red-700 {
+  color: #fca5a5;
+}
+
+/* Background utilities - Dark Mode */
+[data-theme="dark"] .bg-blue-50,
+[data-theme="dark"] .bg-blue-100 {
+  background-color: #1e3a8a;
+}
+
+/* Border utilities - Dark Mode */
+[data-theme="dark"] .border-gray-200,
+[data-theme="dark"] .border-blue-100 {
+  border-color: var(--border-color);
+}
+
+/* Detail Page - Dark Mode */
+[data-theme="dark"] .detail-intro-text {
+  color: #d1d5db;
+}
+
+[data-theme="dark"] .detail-section h3 {
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .detail-list li {
+  border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .detail-list-clean li {
+  border-bottom-color: var(--border-color);
+}
+
+/* Footer - Dark Mode */
+[data-theme="dark"] .footer {
+  background-color: var(--surface-color);
+  color: var(--text-muted);
+}
+
+/* Result Summary - Dark Mode */
+[data-theme="dark"] .result-column {
+  background: var(--surface-color);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .result-column h4 {
+  border-bottom-color: var(--border-color);
+}
+
+/* Score colors - Dark Mode */
+[data-theme="dark"] .score-positive {
+  color: #86efac;
+}
+
+[data-theme="dark"] .score-neutral {
+  color: #facc15;
+}
+
+[data-theme="dark"] .score-negative {
+  color: #fca5a5;
+}
+
+/* Why boxes - Dark Mode */
+[data-theme="dark"] .why-box {
+  background-color: #051d0d;
+  color: #86efac;
+  border-left-color: #22c55e;
+}
+
+/* Dashboard - Dark Mode */
+[data-theme="dark"] .dashboard-welcome-card {
+  background: var(--surface-color);
+  border-color: var(--border-color);
+}
+
+/* Favorite buttons - Dark Mode */
+[data-theme="dark"] .btn-favorite-card {
+  background: rgba(31, 41, 55, 0.95);
+  border-color: #555;
+}
+
+[data-theme="dark"] .btn-favorite-detail {
+  background-color: var(--surface-color);
+  color: #6b7280;
+}
+
+/* Mobile menu - Dark Mode */
+[data-theme="dark"] .mobile-menu {
+  background-color: var(--surface-color);
 }
