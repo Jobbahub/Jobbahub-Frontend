@@ -2590,3 +2590,15 @@ textarea.form-input {
     grid-template-columns: 1fr auto 1fr;
   }
 }
+
+.mobile-menu-footer {
+  padding: 20px;
+  border-top: 1px solid var(--border-color);
+  margin-top: 20px;
+}
+
+.mobile-menu-controls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}

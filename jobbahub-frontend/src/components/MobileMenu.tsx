@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
+import ThemeToggle from './ThemeToggle';
+import LanguageSwitcher from './LanguageSwitcher';
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -66,8 +68,6 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, user, onLogout
             {t('nav_about')}
           </Link>
 
-          <div className="mobile-menu-divider" />
-
           {!user ? (
             <Link
               to="/login"
@@ -84,6 +84,13 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, user, onLogout
               {t('logout')}
             </button>
           )}
+
+          <div className="mobile-menu-footer">
+            <div className="mobile-menu-controls">
+              <ThemeToggle />
+              <LanguageSwitcher />
+            </div>
+          </div>
         </div>
       </nav>
     </>
