@@ -134,7 +134,7 @@ const Dashboard: React.FC = () => {
     <div className="page-wrapper">
       {/* Hero Section */}
       <div className="page-hero">
-        <h1 className="page-hero-title">{t("Persoonlijk Dashboard")}</h1>
+        <h1 className="page-hero-title">{t("personal_dashboard")}</h1>
       </div>
 
       {/* Main Content */}

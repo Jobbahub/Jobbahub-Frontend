@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
+import { useLanguage } from "../context/LanguageContext";
 import { ApiError, apiService } from "../services/apiService";
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
   const { user, updateUser } = useAuth();
+  const { t } = useLanguage();
 
   const [userName, setUserName] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -31,7 +33,7 @@ const Profile: React.FC = () => {
 
   const handleFinalSubmit = async () => {
     if (!currentPassword) {
-      setFormError("Huidig wachtwoord is vereist.");
+      setFormError(t("current_password_required"));
       return;
     }
 
@@ -47,11 +49,11 @@ const Profile: React.FC = () => {
 
       updateUser(response.user);
 
-      setSuccessMessage("Gegevens succesvol gewijzigd");
+      setSuccessMessage(t("profile_update_success"));
       setNewPassword("");
       setCurrentPassword("");
     } catch (err: any) {
-      setFormError(err.message || "Wijziging mislukt.");
+      setFormError(err.message || t("profile_update_failed"));
     } finally {
       setLoading(false);
     }
@@ -60,19 +62,19 @@ const Profile: React.FC = () => {
   const handleResetQuestions = async () => {
     if (
       user &&
-      window.confirm("Weet je zeker dat je je resultaten wilt verwijderen?")
+      window.confirm(t("reset_confirm"))
     ) {
       try {
         await apiService.deleteQuestionnaireResults();
         const updatedUser = { ...user };
         delete updatedUser.vragenlijst_resultaten;
         updateUser(updatedUser);
-        setSuccessMessage("Vragenlijst succesvol gereset.");
+        setSuccessMessage(t("reset_success"));
       } catch (e: any) {
         navigate("/error", {
           state: {
-            title: "Resetten mislukt",
-            message: "Kon resultaten niet verwijderen.",
+            title: t("reset_failed_msg"),
+            message: t("reset_failed_msg"),
             code: e instanceof ApiError ? e.status : "RESET_ERROR",
             from: window.location.pathname,
           },
@@ -84,22 +86,21 @@ const Profile: React.FC = () => {
   return (
     <div className="page-wrapper">
       <div className="page-hero">
-        <h1 className="page-hero-title">Profile</h1>
+        <h1 className="page-hero-title">{t("profile_page_title")}</h1>
       </div>
 
-      <div className="container" style={{ marginTop: "40px" }}>
+      <div className="container profile-container">
         {formError && <div className="form-error">{formError}</div>}
         {successMessage && (
           <div className="profile-form-success">{successMessage}</div>
         )}
 
         <div
-          className="about-content-box"
-          style={{ maxWidth: "400px", margin: "0 auto", minHeight: "auto" }}
+          className="about-content-box profile-content-box"
         >
           <form onSubmit={handleOpenConfirmModal} className="login-form">
             <div className="form-group">
-              <label className="form-label">Username</label>
+              <label className="form-label">{t("username_label")}</label>
               <input
                 type="text"
                 value={userName}
@@ -110,7 +111,7 @@ const Profile: React.FC = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">E-mailadres</label>
+              <label className="form-label">{t("E-mailadres")}</label>
               <input
                 type="email"
                 value={user?.email || ""}
@@ -120,7 +121,7 @@ const Profile: React.FC = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Nieuw wachtwoord</label>
+              <label className="form-label">{t("new_password_label")}</label>
               <input
                 type="password"
                 value={newPassword}
@@ -132,23 +133,21 @@ const Profile: React.FC = () => {
 
             <button
               type="submit"
-              className={`btn btn-primary w-full ${
-                loading ? "btn-disabled" : ""
-              }`}
+              className={`btn btn-primary w-full ${loading ? "btn-disabled" : ""
+                }`}
               disabled={loading}
             >
-              {loading ? "Opslaan..." : "Wijzigingen opslaan"}
+              {loading ? t("saving") : t("save_changes")}
             </button>
 
             <hr />
 
             <button
               type="button"
-              className="btn btn-secondary w-full"
-              style={{ marginTop: "10px" }}
+              className="btn btn-secondary w-full profile-reset-btn"
               onClick={handleResetQuestions}
             >
-              Reset vragenlijst
+              {t("reset_questionnaire_btn")}
             </button>
           </form>
         </div>
@@ -157,13 +156,13 @@ const Profile: React.FC = () => {
       {showModal && (
         <div className="profile-modal-overlay">
           <div className="profile-modal-content">
-            <h3>Bevestig wijziging</h3>
-            <p>Voer je huidige wachtwoord in om de wijzigingen op te slaan.</p>
+            <h3>{t("confirm_change_modal_title")}</h3>
+            <p>{t("confirm_change_modal_text")}</p>
 
             <input
               type="password"
               className="form-input"
-              placeholder="Huidig wachtwoord"
+              placeholder={t("current_password_placeholder")}
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               autoFocus
@@ -177,13 +176,13 @@ const Profile: React.FC = () => {
                   setCurrentPassword("");
                 }}
               >
-                Annuleren
+                {t("cancel")}
               </button>
               <button
                 className="btn btn-primary w-full"
                 onClick={handleFinalSubmit}
               >
-                Bevestigen
+                {t("confirm")}
               </button>
             </div>
           </div>

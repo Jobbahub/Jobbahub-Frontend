@@ -34,7 +34,7 @@ export const translationsList = {
     "••••••••": { nl: "••••••••", en: "••••••••" },
 
     // Home Page
-    "HOME PAGE": { nl: "HOME PAGE", en: "HOME PAGE" },
+    "HOME PAGE": { nl: "Home Pagina", en: "Home Page" },
     home_subtitle: {
         nl: "Ontdek jouw ideale keuzemodule in minuten.",
         en: "Discover your ideal elective module in minutes."
@@ -69,6 +69,7 @@ export const translationsList = {
     nav_help_me_choose: { nl: "Help Mij Kiezen", en: "Help Me Choose" },
     nav_favorites: { nl: "Favorieten", en: "Favorites" },
     nav_about: { nl: "Over ons", en: "About" },
+    nav_profile: { nl: "Profiel", en: "Profile" },
 
     // Modules Page
     "Beschikbare Keuzemodules": { nl: "Beschikbare Keuzemodules", en: "Available Elective Modules" },
@@ -240,6 +241,28 @@ export const translationsList = {
     "Er ging iets mis bij het ophalen van de modules. Probeer het later opnieuw.": { nl: "Er ging iets mis bij het ophalen van de modules. Probeer het later opnieuw.", en: "Something went wrong while fetching modules. Please try again later." },
     "Kon geen aanbevelingen ophalen van de server.": { nl: "Kon geen aanbevelingen ophalen van de server.", en: "Could not retrieve recommendations from the server." },
     "RATE_LIMIT_EXCEEDED": { nl: "Je hebt het limiet van 20 verzoeken per 5 minuten bereikt. Probeer het later opnieuw.", en: "You have reached the limit of 20 requests per 5 minutes. Please try again later." },
+
+    // Profile Page
+    profile_page_title: { nl: "Mijn Profiel", en: "My Profile" },
+    username_label: { nl: "Gebruikersnaam", en: "Username" },
+    new_password_label: { nl: "Nieuw wachtwoord", en: "New password" },
+    current_password_required: { nl: "Huidig wachtwoord is vereist.", en: "Current password is required." },
+    profile_update_success: { nl: "Gegevens succesvol gewijzigd.", en: "Details successfully updated." },
+    profile_update_failed: { nl: "Wijziging mislukt.", en: "Update failed." },
+    save_changes: { nl: "Wijzigingen opslaan", en: "Save changes" },
+    saving: { nl: "Opslaan...", en: "Saving..." },
+    reset_questionnaire_btn: { nl: "Reset vragenlijst", en: "Reset questionnaire" },
+    reset_confirm: { nl: "Weet je zeker dat je je resultaten wilt verwijderen?", en: "Are you sure you want to delete your results?" },
+    reset_success: { nl: "Vragenlijst succesvol gereset.", en: "Questionnaire successfully reset." },
+    reset_failed_msg: { nl: "Kon resultaten niet verwijderen.", en: "Could not remove results." },
+    confirm_change_modal_title: { nl: "Bevestig wijziging", en: "Confirm change" },
+    confirm_change_modal_text: { nl: "Voer je huidige wachtwoord in om de wijzigingen op te slaan.", en: "Enter your current password to save changes." },
+    current_password_placeholder: { nl: "Huidig wachtwoord", en: "Current password" },
+    cancel: { nl: "Annuleren", en: "Cancel" },
+    confirm: { nl: "Bevestigen", en: "Confirm" },
+
+    // Dashboard
+    personal_dashboard: { nl: "Persoonlijk Dashboard", en: "Personal Dashboard" },
 
 } as const;
 

@@ -45,9 +45,7 @@ const MainLayout: React.FC = () => {
             <Link to="/favorites" className="nav-link">
               {t("nav_favorites")}
             </Link>
-            <Link to="/profile" className="nav-link">
-              {t("nav_profile")}
-            </Link>
+
           </nav>
 
           {/* Center Logo */}
@@ -71,6 +69,18 @@ const MainLayout: React.FC = () => {
                 <button onClick={logout} className="btn btn-logout">
                   {t("logout")}
                 </button>
+                <Link to="/profile" className="nav-link nav-icon-link">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    className="nav-profile-icon"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                  <span>{t("nav_profile")}</span>
+                </Link>
               </>
             )}
             <ThemeToggle />

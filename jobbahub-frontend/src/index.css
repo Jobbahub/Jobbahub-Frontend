@@ -2138,6 +2138,50 @@ button {
   }
 }
 
+
+/* --- Profile Page Styles --- */
+.profile-container {
+  margin-top: 40px;
+}
+
+.profile-content-box {
+  max-width: 400px;
+  margin: 0 auto;
+  min-height: auto;
+}
+
+.profile-reset-btn {
+  margin-top: 10px;
+}
+
+/* --- Navigation Icon Styles --- */
+.nav-icon-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-icon-link:hover {
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+}
+
+.nav-profile-icon {
+  width: 24px;
+  height: 24px;
+  stroke-width: 2;
+}
+
+@media (max-width: 640px) {
+  .nav-icon-link span {
+    display: none;
+    /* Hide text on mobile if desired, though nav is usually hidden on mobile */
+  }
+}
+
 /* --- Pagination --- */
 .pagination-nav {
   display: flex;
@@ -2682,6 +2726,7 @@ textarea.form-input {
   gap: 15px;
   align-items: center;
 }
+
 /* ========== COMPREHENSIVE DARK MODE OVERRIDES ========== */
 
 /* Update all --white usage for backgrounds to use surface-color in dark mode */
@@ -2941,4 +2986,32 @@ textarea.form-input {
 /* Mobile menu - Dark Mode */
 [data-theme="dark"] .mobile-menu {
   background-color: var(--surface-color);
+}
+
+/* --- User Icon & Profile Link --- */
+.nav-profile-link {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+.user-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* --- Profile Page Refactored Styles --- */
+.profile-page-container {
+  margin-top: 40px;
+}
+
+.profile-content-box {
+  max-width: 400px;
+  margin: 0 auto;
+  min-height: auto;
+}
+
+.mt-10 {
+  margin-top: 10px;
 }
