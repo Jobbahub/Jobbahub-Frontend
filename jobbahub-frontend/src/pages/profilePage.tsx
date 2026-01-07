@@ -159,7 +159,7 @@ const Profile: React.FC = () => {
           <div className="profile-modal-content">
             <h3>Bevestig wijziging</h3>
             <p>Voer je huidige wachtwoord in om de wijzigingen op te slaan.</p>
-
+            <br />
             <input
               type="password"
               className="form-input"
