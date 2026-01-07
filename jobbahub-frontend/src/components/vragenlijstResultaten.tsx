@@ -93,7 +93,8 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
           id,
           label: topic ? t(topic.label) : id,
           score: userAnswers.knoppen_input[id].score,
-          color: colorMap[id] // Assign unique global color
+          color: colorMap[id], // Assign unique global color
+          isWeighted: userAnswers.knoppen_input[id].weight === 2
         };
       })
       .sort((a, b) => b.score - a.score); // Sort by score descending for better visualization

@@ -210,7 +210,7 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
           <div className="topic-btn-group">
             <button type="button" className={`btn topic-btn btn-topic-choice ${currentScore === 0 ? 'active' : ''}`} onClick={() => handleScoreChange(topic.id, 0)}>{t("Nee")}</button>
             <button type="button" className={`btn topic-btn btn-topic-choice ${currentScore === 1 ? 'active' : ''}`} onClick={() => handleScoreChange(topic.id, 1)}>{t("Neutraal")}</button>
-            <button type="button" className={`btn topic-btn btn-topic-choice ${currentScore === 2 ? 'active' : ''}`} onClick={() => handleScoreChange(topic.id, 2)}>{t("Ja")}</button>
+            <button type="button" className={`btn topic-btn btn-topic-choice ${currentScore === 4 ? 'active' : ''}`} onClick={() => handleScoreChange(topic.id, 4)}>{t("Ja")}</button>
           </div>
           <div className="nav-buttons-container">
             <button className="btn btn-secondary" onClick={prevQuestion}>← {t('previous')}</button>

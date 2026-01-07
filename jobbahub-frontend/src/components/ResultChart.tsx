@@ -3,9 +3,10 @@ import { useLanguage } from '../context/LanguageContext';
 
 export interface ChartDataPoint {
     label: string;
-    score: number; // 0, 1, 2
+    score: number; // 0, 1, 2, 4 (4=Ja)
     id: string;
     color?: string; // Optional override
+    isWeighted?: boolean; // New: indicates 2x weighting
 }
 
 interface ResultChartProps {
@@ -19,16 +20,22 @@ const ResultChart: React.FC<ResultChartProps> = ({ title, data, className = '' }
     const { t } = useLanguage();
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-    // Filter out items with 0 score for the pie chart
+    // Filter out items with 0 score and calculate effective score based on weighting
     const activeData = useMemo(() => {
-        return data.filter(d => d.score > 0);
+        return data
+            .filter(d => d.score > 0)
+            .map(d => ({
+                ...d,
+                effectiveScore: d.score * (d.isWeighted ? 2 : 1)
+            }));
     }, [data]);
 
     const totalScore = useMemo(() => {
-        return activeData.reduce((acc, curr) => acc + curr.score, 0);
+        return activeData.reduce((acc, curr) => acc + curr.effectiveScore, 0);
     }, [activeData]);
 
-    // Fallback internal colors if no specific color provided (Legacy support)
+    // ... (rest of getThemeColors and getCoordinatesForPercent)
+
     const getThemeColors = (index: number, total: number) => {
         const hue = (index * (360 / total)) % 360;
         return `hsl(${hue}, 70%, 50%)`;
@@ -43,7 +50,7 @@ const ResultChart: React.FC<ResultChartProps> = ({ title, data, className = '' }
     let cumulativePercent = 0;
 
     const slices = activeData.map((slice, index) => {
-        const percent = slice.score / totalScore;
+        const percent = slice.effectiveScore / totalScore;
 
         // Starting coordinates
         const [startX, startY] = getCoordinatesForPercent(cumulativePercent);
@@ -55,11 +62,15 @@ const ResultChart: React.FC<ResultChartProps> = ({ title, data, className = '' }
         // If the slice is more than 50%, take the large arc (the long way around)
         const largeArcFlag = percent > 0.5 ? 1 : 0;
 
-        const pathData = `M 0 0 L ${startX} ${startY} A 1 1 0 ${largeArcFlag} 1 ${endX} ${endY} L 0 0`;
+        // Ensure we don't divide by zero or have weird arcs if there is only 1 item (100%)
+        // If 1 item, draw a full circle
+        const pathData = activeData.length === 1
+            ? `M 1 0 A 1 1 0 1 1 -1 0 A 1 1 0 1 1 1 0`
+            : `M 0 0 L ${startX} ${startY} A 1 1 0 ${largeArcFlag} 1 ${endX} ${endY} L 0 0`;
 
         return {
             ...slice,
-            path: pathData,
+            path: activeData.length === 1 ? `M 1 0 A 1 1 0 1 1 -1 0 A 1 1 0 1 1 1 0` : pathData, // Quick fix for full circle if needed, though SVG path usually M 0 0 for pie slices
             color: slice.color || getThemeColors(index, activeData.length),
             percent
         };
@@ -79,11 +90,22 @@ const ResultChart: React.FC<ResultChartProps> = ({ title, data, className = '' }
                 className += 'chart-score-neutral';
                 break;
             case 2:
+                // Fallback for old data or if we decide to keep 2 for something
+                label = t('Ja') + ' (Oud)';
+                className += 'chart-score-positive'; // Treat as positive
+                break;
+            case 4:
                 label = t('Ja');
                 className += 'chart-score-positive';
                 break;
             default:
-                return null;
+                // Handle arbitrary scores if needed, or mapped scores
+                if (score > 2) {
+                    label = t('Ja');
+                    className += 'chart-score-positive';
+                } else {
+                    return null;
+                }
         }
 
         return (
@@ -138,6 +160,9 @@ const ResultChart: React.FC<ResultChartProps> = ({ title, data, className = '' }
                                     </div>
                                     <div className="chart-tooltip-meta">
                                         {renderScoreBadge(activeData[hoveredIndex].score)}
+                                        {activeData[hoveredIndex].isWeighted && (
+                                            <span className="badge badge-weighted ml-1" style={{ fontSize: '0.7rem' }}>2x</span>
+                                        )}
                                         <span className="chart-tooltip-percent">
                                             {(slices[hoveredIndex].percent * 100).toFixed(0)}%
                                         </span>
@@ -167,6 +192,11 @@ const ResultChart: React.FC<ResultChartProps> = ({ title, data, className = '' }
                                     <span className="legend-label-wrapper">
                                         {t(slice.label)}
                                         {renderScoreBadge(slice.score)}
+                                        {slice.isWeighted && (
+                                            <span className="badge badge-weighted ml-2" style={{ fontSize: '0.7rem', padding: '2px 6px' }}>
+                                                2x
+                                            </span>
+                                        )}
                                     </span>
                                     <span className="legend-percent">{(slice.percent * 100).toFixed(0)}%</span>
                                 </li>
