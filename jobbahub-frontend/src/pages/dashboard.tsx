@@ -160,6 +160,23 @@ const Dashboard: React.FC = () => {
               {t("dashboard_time_estimate")}
             </div>
           </div>
+
+          <div className="dashboard-welcome-card" style={{ marginTop: '40px' }}>
+            <h2 className="text-2xl font-bold mb-2">
+              {t("dashboard_welcome_intro")} <span className="text-blue-600">{user?.name}</span>!
+            </h2>
+            <div className="mt-4 space-y-4 text-gray-700">
+              <p>{t("dashboard_explanation_results")}</p>
+              <ul className="list-disc pl-5 space-y-2">
+                <li><strong>{t("Jouw Profiel Verdeling")}:</strong> {t("dashboard_graphs_explanation")}</li>
+                <li><strong>{t("Aanbevolen voor jou (Top 5)")}:</strong> {t("dashboard_recs_explanation")}</li>
+              </ul>
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 mt-4">
+                <p className="font-semibold text-blue-800 mb-1">{t("Wat kun je nu doen?")}</p>
+                <p className="text-blue-700 text-sm">{t("dashboard_no_results_actions")}</p>
+              </div>
+            </div>
+          </div>
         </div>
       ) : (
         <>
