@@ -134,46 +134,53 @@ const Dashboard: React.FC = () => {
   return (
     <div className="page-wrapper">
       {!hasResults ? (
-        <div className="container">
-          <div className="dashboard-welcome-container">
-            <h1 className="dashboard-welcome-title">
-              {t("dashboard_start_questionnaire_title")}
-            </h1>
-            <p className="dashboard-welcome-text">
-              {t("dashboard_start_questionnaire_subtitle")}
-            </p>
-            <button
-              className="btn-large-primary"
-              onClick={() => navigate('/vragenlijst')}
-            >
-              {t("dashboard_start_button")}
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </button>
-            <div className="time-estimate">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-              </svg>
-              {t("dashboard_time_estimate")}
-            </div>
+        <div className="page-wrapper">
+          {/* Hero Section */}
+          <div className="page-hero">
+            <h1 className="page-hero-title">{t("personal_dashboard")}</h1>
           </div>
 
-          <div className="dashboard-welcome-card" style={{ marginTop: '40px' }}>
-            <h2 className="text-2xl font-bold mb-2">
-              {t("dashboard_welcome_intro")} <span className="text-blue-600">{user?.name}</span>!
-            </h2>
-            <div className="mt-4 space-y-4 text-gray-700">
-              <p>{t("dashboard_explanation_results")}</p>
-              <ul className="list-disc pl-5 space-y-2">
-                <li><strong>{t("Jouw Profiel Verdeling")}:</strong> {t("dashboard_graphs_explanation")}</li>
-                <li><strong>{t("Aanbevolen voor jou (Top 5)")}:</strong> {t("dashboard_recs_explanation")}</li>
-              </ul>
-              <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 mt-4">
-                <p className="font-semibold text-blue-800 mb-1">{t("Wat kun je nu doen?")}</p>
-                <p className="text-blue-700 text-sm">{t("dashboard_actions_explanation")}</p>
+          <div className="container" style={{ marginTop: '40px' }}>
+            <div className="dashboard-welcome-card" style={{ marginBottom: '40px' }}>
+              <h2 className="text-2xl font-bold mb-2">
+                {t("dashboard_welcome_intro")} <span className="text-blue-600">{user?.name}</span>!
+              </h2>
+              <div className="mt-4 space-y-4 text-gray-700">
+                <p>{t("dashboard_explanation_results")}</p>
+                <ul className="list-disc pl-5 space-y-2">
+                  <li><strong>{t("Jouw Profiel Verdeling")}:</strong> {t("dashboard_graphs_explanation")}</li>
+                  <li><strong>{t("Aanbevolen voor jou (Top 5)")}:</strong> {t("dashboard_recs_explanation")}</li>
+                </ul>
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 mt-4">
+                  <p className="font-semibold text-blue-800 mb-1">{t("Wat kun je nu doen?")}</p>
+                  <p className="text-blue-700 text-sm">{t("dashboard_actions_explanation")}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="dashboard-welcome-container">
+              <h1 className="dashboard-welcome-title">
+                {t("dashboard_start_questionnaire_title")}
+              </h1>
+              <p className="dashboard-welcome-text">
+                {t("dashboard_start_questionnaire_subtitle")}
+              </p>
+              <button
+                className="btn-large-primary"
+                onClick={() => navigate('/vragenlijst')}
+              >
+                {t("dashboard_start_button")}
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+              <div className="time-estimate">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                {t("dashboard_time_estimate")}
               </div>
             </div>
           </div>
