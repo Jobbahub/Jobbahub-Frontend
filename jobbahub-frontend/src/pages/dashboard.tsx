@@ -227,6 +227,8 @@ const Dashboard: React.FC = () => {
                       matchPercentage={rec.match_percentage}
                       explanation={getExplanation(rec.waarom)}
                       isCluster={false}
+                      categoryScores={rec.category_scores}
+                      userAnswers={userAnswers}
                     />
                   );
                 })}

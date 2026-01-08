@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { IChoiceModule } from '../types';
+import CategoryComparisonChart from './CategoryComparisonChart';
 
 interface ModuleCardProps {
   module: IChoiceModule;
@@ -11,6 +12,8 @@ interface ModuleCardProps {
   matchPercentage?: number | null;
   explanation?: string;
   isCluster?: boolean;
+  categoryScores?: Record<string, number>;
+  userAnswers?: any;
 }
 
 const ModuleCard: React.FC<ModuleCardProps> = ({
@@ -21,7 +24,9 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
   isAuthenticated,
   matchPercentage,
   explanation,
-  isCluster
+  isCluster,
+  categoryScores,
+  userAnswers
 }) => {
   const { t, language } = useLanguage();
   const [tagsExpanded, setTagsExpanded] = useState(false);
@@ -118,6 +123,10 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
           <div className={`why-box ${isCluster ? 'why-box-cluster' : ''}`}>
             <strong>{t ? t('why') : 'Waarom'}:</strong> {explanation}
           </div>
+        )}
+
+        {categoryScores && userAnswers && (
+          <CategoryComparisonChart moduleScores={categoryScores} userAnswers={userAnswers} />
         )}
 
         <p className="card-text">

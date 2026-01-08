@@ -3,7 +3,7 @@ import { useLanguage } from '../context/LanguageContext';
 
 export interface ChartDataPoint {
     label: string;
-    score: number; // 0, 1, 2, 4 (4=Ja)
+    score: number; // -1, 0, 1 (1=Ja)
     id: string;
     color?: string; // Optional override
     isWeighted?: boolean; // New: indicates 2x weighting
@@ -20,13 +20,14 @@ const ResultChart: React.FC<ResultChartProps> = ({ title, data, className = '' }
     const { t } = useLanguage();
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-    // Filter out items with 0 score and calculate effective score based on weighting
+    // Filter out items with negative score. Include 0 (Neutraal) as "partial" score.
     const activeData = useMemo(() => {
         return data
-            .filter(d => d.score > 0)
+            .filter(d => d.score >= 0)
             .map(d => ({
                 ...d,
-                effectiveScore: d.score * (d.isWeighted ? 2 : 1)
+                // Neutraal (0) counts as 0.5. Ja (1) counts as 1 (or 2 if weighted).
+                effectiveScore: d.score === 0 ? 0.5 : d.score * (d.isWeighted ? 2 : 1)
             }));
     }, [data]);
 
@@ -50,7 +51,8 @@ const ResultChart: React.FC<ResultChartProps> = ({ title, data, className = '' }
     let cumulativePercent = 0;
 
     const slices = activeData.map((slice, index) => {
-        const percent = slice.effectiveScore / totalScore;
+        // Guard against 0 total score
+        const percent = totalScore > 0 ? slice.effectiveScore / totalScore : 0;
 
         // Starting coordinates
         const [startX, startY] = getCoordinatesForPercent(cumulativePercent);
@@ -81,20 +83,15 @@ const ResultChart: React.FC<ResultChartProps> = ({ title, data, className = '' }
         let className = 'chart-score-badge ';
 
         switch (score) {
-            case 0:
+            case -1:
                 label = t('Nee');
                 className += 'chart-score-negative';
                 break;
-            case 1:
+            case 0:
                 label = t('Neutraal');
                 className += 'chart-score-neutral';
                 break;
-            case 2:
-                // Fallback for old data or if we decide to keep 2 for something
-                label = t('Ja') + ' (Oud)';
-                className += 'chart-score-positive'; // Treat as positive
-                break;
-            case 4:
+            case 1:
                 label = t('Ja');
                 className += 'chart-score-positive';
                 break;
@@ -202,8 +199,8 @@ const ResultChart: React.FC<ResultChartProps> = ({ title, data, className = '' }
                                 </li>
                             );
                         })}
-                        {/* Show 0 score items but grayed out */}
-                        {data.filter(d => d.score === 0).map(d => (
+                        {/* Show negative score items grayed out (Neutraal is now in the main list) */}
+                        {data.filter(d => d.score < 0).map(d => (
                             <li key={d.id} className="chart-legend-item is-muted">
                                 <span
                                     className="legend-color-dot"

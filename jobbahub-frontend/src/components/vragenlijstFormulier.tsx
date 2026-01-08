@@ -43,7 +43,7 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
     open_antwoord: '',
     knoppen_input: TOPICS.reduce((acc, topic) => ({
       ...acc,
-      [topic.id]: { score: 1, weight: 1 }
+      [topic.id]: { score: 0, weight: 1 }
     }), {})
   }));
 
@@ -208,9 +208,9 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
 
           <h2 className="form-title question-title">{topic.question}</h2>
           <div className="topic-btn-group">
-            <button type="button" className={`btn topic-btn btn-topic-choice ${currentScore === 0 ? 'active' : ''}`} onClick={() => handleScoreChange(topic.id, 0)}>{t("Nee")}</button>
-            <button type="button" className={`btn topic-btn btn-topic-choice ${currentScore === 1 ? 'active' : ''}`} onClick={() => handleScoreChange(topic.id, 1)}>{t("Neutraal")}</button>
-            <button type="button" className={`btn topic-btn btn-topic-choice ${currentScore === 4 ? 'active' : ''}`} onClick={() => handleScoreChange(topic.id, 4)}>{t("Ja")}</button>
+            <button type="button" className={`btn topic-btn btn-topic-choice ${currentScore === -1 ? 'active' : ''}`} onClick={() => handleScoreChange(topic.id, -1)}>{t("Nee")}</button>
+            <button type="button" className={`btn topic-btn btn-topic-choice ${currentScore === 0 ? 'active' : ''}`} onClick={() => handleScoreChange(topic.id, 0)}>{t("Neutraal")}</button>
+            <button type="button" className={`btn topic-btn btn-topic-choice ${currentScore === 1 ? 'active' : ''}`} onClick={() => handleScoreChange(topic.id, 1)}>{t("Ja")}</button>
           </div>
           <div className="nav-buttons-container">
             <button className="btn btn-secondary" onClick={prevQuestion}>← {t('previous')}</button>

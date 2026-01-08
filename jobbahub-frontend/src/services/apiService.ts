@@ -30,6 +30,7 @@ export interface AIRecommendation {
   match_percentage: number;
   waarom: string;
   studycredit: number;
+  category_scores?: Record<string, number>;
 }
 
 // NIEUW: Type voor cluster suggesties

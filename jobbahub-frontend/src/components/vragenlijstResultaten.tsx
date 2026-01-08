@@ -133,6 +133,8 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
                   matchPercentage={rec.match_percentage}
                   explanation={getExplanation(rec.waarom)}
                   isCluster={false}
+                  categoryScores={rec.category_scores}
+                  userAnswers={userAnswers}
                 />
               );
             })}

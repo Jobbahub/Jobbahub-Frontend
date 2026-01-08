@@ -3089,6 +3089,60 @@ textarea.form-input {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Module Focus Comparison Chart */
+.module-focus-container {
+  @apply mt-6 p-5 bg-slate-50 rounded-xl border border-slate-200;
+}
+
+.module-focus-header h4 {
+  @apply text-xs font-bold text-slate-700 mb-0 uppercase tracking-wide;
+}
+
+.module-focus-header p {
+  @apply text-[10px] text-slate-500 mt-1;
+}
+
+.module-focus-table {
+  @apply w-full text-xs border-collapse table-fixed;
+}
+
+.module-focus-th {
+  @apply pb-2 font-semibold text-left text-[10px] text-slate-500 border-b border-slate-200;
+}
+
+.module-focus-tr {
+  @apply hover:bg-slate-100 transition-colors;
+}
+
+.module-focus-label {
+  @apply py-2.5 pr-2 align-middle text-slate-700 font-medium truncate;
+}
+
+.module-focus-bar-cell {
+  @apply py-2.5 align-middle pl-3;
+}
+
+.module-focus-bar-track {
+  @apply flex-grow rounded-full overflow-hidden relative mr-3 bg-white shadow-inner border border-slate-300;
+  height: 12px;
+}
+
+.module-focus-bar-fill {
+  @apply h-full rounded-full block;
+  transition: width 0.5s ease-out, background-color 0.3s ease;
+}
+
+.module-focus-text {
+  @apply text-[10px] font-bold text-slate-600 w-8 text-right;
 }
