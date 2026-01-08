@@ -129,9 +129,12 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
           <CategoryComparisonChart moduleScores={categoryScores} userAnswers={userAnswers} />
         )}
 
-        <p className="card-text">
-          {getTranslatedContent('shortdescription') || (getTranslatedContent('description') ? getTranslatedContent('description').substring(0, 100) + '...' : '')}
-        </p>
+        <div className="mb-2">
+          <h5 className="text-sm font-bold text-slate-700">Short description</h5>
+          <p className="card-text">
+            {getTranslatedContent('shortdescription') || (getTranslatedContent('description') ? getTranslatedContent('description').substring(0, 100) + '...' : '')}
+          </p>
+        </div>
 
         <div className="card-meta">
           <span className="credits">{module.studycredit} EC</span>

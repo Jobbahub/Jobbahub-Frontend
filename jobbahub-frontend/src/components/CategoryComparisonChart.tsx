@@ -48,56 +48,61 @@ const CategoryComparisonChart: React.FC<CategoryComparisonChartProps> = ({
         return '#ef4444'; // Red-500
     };
 
+    const [hoveredLabel, setHoveredLabel] = React.useState<string | null>(null);
+
     return (
-        <div className="category-comparison-chart mt-6 p-5 bg-slate-50 rounded-xl border border-slate-200">
-            <div className="mb-4">
-                <h4 className="text-xs font-bold text-slate-700 mb-0 uppercase tracking-wide">{t('Module Focus')}</h4>
-                <p className="text-[10px] text-slate-500 mt-1">
+        <div className="module-focus-container">
+            <div className="module-focus-header">
+                <h4>{t('Module Focus')}</h4>
+                <p>
                     {t("Bekijk hoeveel aandacht deze module besteedt aan de verschillende onderwerpen.")}
                 </p>
             </div>
 
-            <table className="w-full text-xs border-collapse table-fixed">
+            <table className="module-focus-table">
                 <thead>
-                    <tr className="text-[10px] text-slate-500 font-semibold text-left border-b border-slate-200">
-                        <th className="pb-2 font-semibold text-left" style={{ width: '50%' }}>{t('Categorie')}</th>
-                        <th className="pb-2 font-semibold text-left" style={{ width: '50%', paddingLeft: '12px' }}>{t('Percentage')}</th>
+                    <tr>
+                        <th className="module-focus-th module-focus-col-cat">{t('Categorie')}</th>
+                        <th className="module-focus-th module-focus-col-pct">{t('Percentage')}</th>
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
                     {comparisonData.map((item) => (
-                        <tr key={item.key} className="hover:bg-slate-100 transition-colors">
-                            {/* Label */}
-                            <td className="py-2.5 pr-2 align-middle text-slate-700 font-medium truncate" title={item.label}>
-                                {item.label}
+                        <tr key={item.key} className="module-focus-tr">
+                            {/* Label with Custom Tooltip */}
+                            <td
+                                className="module-focus-label"
+                                onMouseEnter={() => setHoveredLabel(item.label)}
+                                onMouseLeave={() => setHoveredLabel(null)}
+                            >
+                                <span className="module-focus-label-text">
+                                    {item.label}
+                                </span>
+                                {hoveredLabel === item.label && (
+                                    <div className="custom-tooltip">
+                                        {item.label}
+                                    </div>
+                                )}
                             </td>
 
                             {/* Module Bar with Dynamic Color */}
-                            <td className="py-2.5 align-middle" style={{ paddingLeft: '12px' }}>
+                            <td className="module-focus-bar-cell">
                                 <div className="flex items-center w-full">
                                     {/* Bar Container */}
                                     <div
-                                        className="flex-grow rounded-full overflow-hidden relative mr-3 bg-white shadow-inner"
-                                        style={{
-                                            height: '12px',
-                                            backgroundColor: '#ffffff',
-                                            border: '1px solid #cbd5e1'
-                                        }}
+                                        className="module-focus-bar-track"
                                         title={`${(item.moduleScore * 100).toFixed(0)}% focus`}
                                     >
                                         {/* Filled Bar */}
                                         <div
+                                            className="module-focus-bar-fill"
                                             style={{
                                                 width: `${Math.max(item.moduleScore * 100, 5)}%`,
-                                                height: '100%',
-                                                backgroundColor: getModuleBarColor(item.moduleScore),
-                                                borderRadius: '9999px',
-                                                display: 'block',
-                                                transition: 'width 0.5s ease-out, background-color 0.3s ease'
+                                                backgroundColor: getModuleBarColor(item.moduleScore)
                                             }}
                                         />
                                     </div>
-                                    <span className="text-[10px] font-bold text-slate-600 w-8 text-right">
+                                    <span className="module-focus-text">
                                         {(item.moduleScore * 100).toFixed(0)}%
                                     </span>
                                 </div>
