@@ -173,7 +173,7 @@ const Dashboard: React.FC = () => {
               </ul>
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 mt-4">
                 <p className="font-semibold text-blue-800 mb-1">{t("Wat kun je nu doen?")}</p>
-                <p className="text-blue-700 text-sm">{t("dashboard_no_results_actions")}</p>
+                <p className="text-blue-700 text-sm">{t("dashboard_actions_explanation")}</p>
               </div>
             </div>
           </div>
