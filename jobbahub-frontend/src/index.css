@@ -3015,3 +3015,80 @@ textarea.form-input {
 .mt-10 {
   margin-top: 10px;
 }
+
+/* --- Dashboard Welcome Screen --- */
+.dashboard-welcome-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 40px;
+  background-color: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  max-width: 800px;
+  margin: 40px auto;
+  min-height: 450px;
+  border: 1px solid var(--border-color);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.dashboard-welcome-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--secondary-color);
+  margin-bottom: 20px;
+  letter-spacing: -0.5px;
+}
+
+.dashboard-welcome-text {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  max-width: 600px;
+  margin-bottom: 48px;
+  line-height: 1.6;
+}
+
+.btn-large-primary {
+  padding: 18px 48px;
+  font-size: 1.2rem;
+  background-color: var(--primary-color);
+  color: var(--white);
+  border-radius: 100px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(200, 16, 46, 0.25);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.btn-large-primary:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(200, 16, 46, 0.3);
+}
+
+.btn-large-primary:active {
+  transform: translateY(-1px);
+}
+
+.time-estimate {
+  margin-top: 20px;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

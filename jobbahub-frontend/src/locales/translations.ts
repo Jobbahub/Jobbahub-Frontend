@@ -263,6 +263,10 @@ export const translationsList = {
 
     // Dashboard
     personal_dashboard: { nl: "Persoonlijk Dashboard", en: "Personal Dashboard" },
+    dashboard_start_questionnaire_title: { nl: "Laten we jouw perfecte keuzemodule vinden", en: "Let's find your perfect elective" },
+    dashboard_start_questionnaire_subtitle: { nl: "Onze vragenlijst helpt je de modules te vinden die het beste passen bij jouw interesses en doelen.", en: "Our questionnaire helps match you with modules that fit your interests and goals." },
+    dashboard_start_button: { nl: "Start de vragenlijst", en: "Start the questionnaire" },
+    dashboard_time_estimate: { nl: "Duurt ongeveer 5 minuten", en: "Takes about 5 minutes" },
 
 } as const;
 
