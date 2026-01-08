@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from "react";
+import React, { useState, useRef, useMemo, useEffect } from "react";
 import { IChoiceModule } from "../types";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -21,6 +21,7 @@ const ModuleFilter: React.FC<ModuleFilterProps> = ({
     const categories = new Set<string>();
     const locations = new Set<string>();
     const credits = new Set<string>();
+    const languages = new Set<string>();
 
     modules.forEach((mod) => {
       if (mod.main_filter) {
@@ -37,18 +38,36 @@ const ModuleFilter: React.FC<ModuleFilterProps> = ({
       if (mod.studycredit) {
         credits.add(`${mod.studycredit} EC`);
       }
+
+      if (mod.taal) {
+        languages.add(mod.taal.trim());
+      }
     });
 
     return {
       categories: Array.from(categories).sort(),
       locations: Array.from(locations).sort(),
       credits: Array.from(credits).sort((a, b) => parseInt(a) - parseInt(b)),
+      languages: Array.from(languages).sort(),
     };
   }, [modules]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const renderList = (items: string[], title: string) => (
     <div className="filter-section">
-      <h4 className="filter-section-title">{t(title as any)}</h4>
+      <h4 className="filter-section-title">{t(title)}</h4>
       {items.map((item) => (
         <label key={item} className="filter-option-item">
           <input
@@ -57,7 +76,7 @@ const ModuleFilter: React.FC<ModuleFilterProps> = ({
             onChange={() => onTagToggle(item)}
             className="filter-checkbox"
           />
-          <span>{t(item as any)}</span>
+          <span>{t(item)}</span>
         </label>
       ))}
     </div>
@@ -66,7 +85,7 @@ const ModuleFilter: React.FC<ModuleFilterProps> = ({
   return (
     <div className="filter-dropdown-wrapper" ref={dropdownRef}>
       <button className="filter-trigger-btn" onClick={() => setIsOpen(!isOpen)}>
-        <span>{t("Filters" as any)}</span>
+        <span>{t("Filters")}</span>
         {selectedTags.length > 0 && (
           <span className="filter-badge">{selectedTags.length}</span>
         )}
@@ -80,13 +99,15 @@ const ModuleFilter: React.FC<ModuleFilterProps> = ({
           {renderList(filterData.locations, "Locaties")}
           <hr className="filter-divider" />
           {renderList(filterData.credits, "Studiepunten")}
+          <hr className="filter-divider" />
+          {renderList(filterData.languages, "Taal")}
 
           {selectedTags.length > 0 && (
             <button
               className="filter-clear-btn"
               onClick={() => selectedTags.forEach(onTagToggle)}
             >
-              {t("Alle filters wissen" as any)}
+              {t("Alle filters wissen")}
             </button>
           )}
         </div>

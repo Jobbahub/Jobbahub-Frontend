@@ -85,7 +85,7 @@ const ElectiveModules: React.FC = () => {
 
           if (mod.location) tags.add(mod.location.trim());
           if (mod.studycredit) tags.add(`${mod.studycredit} EC`);
-
+          if (mod.taal) tags.add(mod.taal.trim());
           if (mod.main_filter) {
             try {
               const cleaned = mod.main_filter.replace(/'/g, '"');
