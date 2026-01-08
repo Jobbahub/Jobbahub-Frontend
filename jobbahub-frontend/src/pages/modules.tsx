@@ -73,19 +73,16 @@ const ElectiveModules: React.FC = () => {
     return allModules.filter((module) => {
       const lowerCaseSearch = searchTerm.toLowerCase();
       const matchesSearch =
-        !searchTerm ||
-        module.name.toLowerCase().includes(lowerCaseSearch) ||
-        (module.description &&
-          module.description.toLowerCase().includes(lowerCaseSearch));
+        !searchTerm || module.name.toLowerCase().includes(lowerCaseSearch);
 
       let matchesTags = true;
       if (selectedTags.length > 0) {
         const getModuleTags = (mod: IChoiceModule) => {
           const tags = new Set<string>();
-
           if (mod.location) tags.add(mod.location.trim());
           if (mod.studycredit) tags.add(`${mod.studycredit} EC`);
           if (mod.taal) tags.add(mod.taal.trim());
+
           if (mod.main_filter) {
             try {
               const cleaned = mod.main_filter.replace(/'/g, '"');
@@ -106,9 +103,8 @@ const ElectiveModules: React.FC = () => {
         };
 
         const moduleTags = getModuleTags(module);
-        matchesTags = selectedTags.some((tag) => moduleTags.has(tag));
+        matchesTags = selectedTags.every((tag) => moduleTags.has(tag));
       }
-
       return matchesSearch && matchesTags;
     });
   }, [allModules, searchTerm, selectedTags]);
