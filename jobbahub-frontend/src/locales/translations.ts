@@ -268,6 +268,12 @@ export const translationsList = {
     dashboard_start_button: { nl: "Start de vragenlijst", en: "Start the questionnaire" },
     dashboard_time_estimate: { nl: "Duurt ongeveer 5 minuten", en: "Takes about 5 minutes" },
 
+    // Category Comparison Chart
+    "Module Focus": { nl: "Module Focus", en: "Module Focus" },
+    "Bekijk hoeveel aandacht deze module besteedt aan de verschillende onderwerpen.": { nl: "Bekijk hoeveel aandacht deze module besteedt aan de verschillende onderwerpen.", en: "View how much attention this module devotes to the different topics." },
+    "Categorie": { nl: "Categorie", en: "Category" },
+    "Percentage": { nl: "Percentage", en: "Percentage" },
+
 } as const;
 
 export const nl = Object.fromEntries(
