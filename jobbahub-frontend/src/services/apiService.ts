@@ -30,6 +30,7 @@ export interface AIRecommendation {
   match_percentage: number;
   waarom: string;
   studycredit: number;
+  category_scores?: Record<string, number>;
 }
 
 // NIEUW: Type voor cluster suggesties
@@ -163,5 +164,16 @@ export const apiService = {
       headers: getAuthHeaders()
     });
     return handleResponse(response, 'Kon gebruikersgegevens niet ophalen');
+  },
+
+  changeCredentials: async (data: { currentPassword: string; newNaam?: string; newPassword?: string }) => {
+
+    const response = await fetch(`${API_URL}/api/auth/change-credentials`, {
+      method: 'PATCH',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data),
+    });
+
+    return handleResponse(response, 'Wijzigen van gegevens mislukt');
   }
 };

@@ -1,20 +1,27 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
-import MainLayout from '../pages/mainLayout';
-import Home from '../pages/home';
-import About from '../pages/about';
-import Login from '../pages/loginPage';
-import Dashboard from '../pages/dashboard';
-import ElectiveModules from '../pages/modules';
-import ModuleDetail from '../pages/moduleDetail';
-import Favorites from '../pages/favorites';
-import Vragenlijst from '../pages/vragenlijst';
-import GlobalErrorBoundary from '../components/GlobalErrorBoundary';
-import ErrorPage from '../pages/errorPage';
-import { AuthProvider, useAuth } from '../context/authContext';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+} from "react-router-dom";
+import MainLayout from "../pages/mainLayout";
+import Home from "../pages/home";
+import About from "../pages/about";
+import Login from "../pages/loginPage";
+import Dashboard from "../pages/dashboard";
+import ElectiveModules from "../pages/modules";
+import ModuleDetail from "../pages/moduleDetail";
+import Favorites from "../pages/favorites";
+import Vragenlijst from "../pages/vragenlijst";
+import GlobalErrorBoundary from "../components/GlobalErrorBoundary";
+import ErrorPage from "../pages/errorPage";
+import { AuthProvider, useAuth } from "../context/authContext";
+import Profile from "../pages/profilePage";
 
 // --- INLINE PROTECTED ROUTE ---
-// Dit componentje checkt of je bent ingelogd. 
+// Dit componentje checkt of je bent ingelogd.
 // Zo niet? Dan stuurt hij je direct naar /login.
 const ProtectedRoute = () => {
   const { isAuthenticated } = useAuth();
@@ -60,10 +67,20 @@ const AppRouter: React.FC = () => {
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="favorites" element={<Favorites />} />
                 <Route path="vragenlijst" element={<Vragenlijst />} />
+                <Route path="profile" element={<Profile />} />
               </Route>
 
               {/* 404 Route */}
-              <Route path="*" element={<ErrorPage code="404" title="Pagina niet gevonden" message="De pagina die je zoekt bestaat niet." />} />
+              <Route
+                path="*"
+                element={
+                  <ErrorPage
+                    code="404"
+                    title="Pagina niet gevonden"
+                    message="De pagina die je zoekt bestaat niet."
+                  />
+                }
+              />
             </Route>
           </Routes>
         </AuthProvider>

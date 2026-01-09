@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     server: {
+      host: '127.0.0.1',
       proxy: {
         '/api': {
           // Nu kun je env.VITE_BACKEND_URI gebruiken
