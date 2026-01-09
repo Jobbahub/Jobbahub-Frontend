@@ -50,6 +50,19 @@ const CategoryComparisonChart: React.FC<CategoryComparisonChartProps> = ({
         return '#ef4444'; // Red-500
     };
 
+    const getUserBarConfig = (score: number) => {
+        // Score is -1, 0, or 1
+        switch (score) {
+            case 1: // High interest
+                return { width: '100%', color: '#22c55e', text: t('Hoge interesse') };
+            case 0: // Neutral
+                return { width: '50%', color: '#eab308', text: t('Gemiddelde interesse') };
+            case -1: // Low/No interest
+            default:
+                return { width: '20%', color: '#94a3b8', text: t('Lage interesse') };
+        }
+    };
+
     const getTypeLabel = (type: string) => {
         switch (type) {
             case 'interest': return t('interests_label');
@@ -75,7 +88,7 @@ const CategoryComparisonChart: React.FC<CategoryComparisonChartProps> = ({
             <div className="module-focus-header">
                 <h4>{t('Module Focus')}</h4>
                 <p>
-                    {t("Bekijk hoeveel aandacht deze module besteedt aan de verschillende onderwerpen.")}
+                    {t("Vergelijk de focus van de module met jouw eigen interesse-niveau.")}
                 </p>
             </div>
 
@@ -83,69 +96,97 @@ const CategoryComparisonChart: React.FC<CategoryComparisonChartProps> = ({
                 <thead>
                     <tr>
                         <th className="module-focus-th module-focus-col-cat">{t('Categorie')}</th>
-                        <th className="module-focus-th module-focus-col-pct">{t('Percentage')}</th>
+                        <th className="module-focus-th module-focus-col-pct">{t('Module Focus')}</th>
+                        <th className="module-focus-th module-focus-col-pct">{t('Jouw Interesse')}</th>
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
-                    {comparisonData.map((item) => (
-                        <tr key={item.key} className="module-focus-tr">
-                            {/* Label with Custom Tooltip */}
-                            <td
-                                className="module-focus-label"
-                                onMouseEnter={() => setHoveredLabel(item.label)}
-                                onMouseLeave={() => setHoveredLabel(null)}
-                            >
-                                <div className="flex flex-col">
-                                    <span className="module-focus-label-text">
-                                        {item.label}
-                                    </span>
-                                    {/* Type Badge */}
-                                    <span
-                                        style={{
-                                            backgroundColor: getTypeColor(item.type) + '20', // 20% opacity background
-                                            color: getTypeColor(item.type),
-                                            fontSize: '0.7rem',
-                                            padding: '2px 6px',
-                                            borderRadius: '4px',
-                                            width: 'fit-content',
-                                            fontWeight: 600,
-                                            marginTop: '2px'
-                                        }}
-                                    >
-                                        {getTypeLabel(item.type)}
-                                    </span>
-                                </div>
-                                {hoveredLabel === item.label && (
-                                    <div className="custom-tooltip">
-                                        {item.label}
-                                    </div>
-                                )}
-                            </td>
+                    {comparisonData.map((item) => {
+                        const userConfig = getUserBarConfig(item.userRawScore);
 
-                            {/* Module Bar with Dynamic Color */}
-                            <td className="module-focus-bar-cell">
-                                <div className="flex items-center w-full">
-                                    {/* Bar Container */}
-                                    <div
-                                        className="module-focus-bar-track"
-                                        title={`${(item.moduleScore * 100).toFixed(0)}% focus`}
-                                    >
-                                        {/* Filled Bar */}
-                                        <div
-                                            className="module-focus-bar-fill"
+                        return (
+                            <tr key={item.key} className="module-focus-tr">
+                                {/* Label with Custom Tooltip */}
+                                <td
+                                    className="module-focus-label"
+                                    onMouseEnter={() => setHoveredLabel(item.label)}
+                                    onMouseLeave={() => setHoveredLabel(null)}
+                                >
+                                    <div className="flex flex-col">
+                                        <span className="module-focus-label-text">
+                                            {item.label}
+                                        </span>
+                                        {/* Type Badge */}
+                                        <span
                                             style={{
-                                                width: `${Math.max(item.moduleScore * 100, 5)}%`,
-                                                backgroundColor: getModuleBarColor(item.moduleScore)
+                                                backgroundColor: getTypeColor(item.type) + '20', // 20% opacity background
+                                                color: getTypeColor(item.type),
+                                                fontSize: '0.7rem',
+                                                padding: '2px 6px',
+                                                borderRadius: '4px',
+                                                width: 'fit-content',
+                                                fontWeight: 600,
+                                                marginTop: '2px'
                                             }}
-                                        />
+                                        >
+                                            {getTypeLabel(item.type)}
+                                        </span>
                                     </div>
-                                    <span className="module-focus-text">
-                                        {(item.moduleScore * 100).toFixed(0)}%
-                                    </span>
-                                </div>
-                            </td>
-                        </tr>
-                    ))}
+                                    {hoveredLabel === item.label && (
+                                        <div className="custom-tooltip">
+                                            {item.label}
+                                        </div>
+                                    )}
+                                </td>
+
+                                {/* Module Focus Bar */}
+                                <td className="module-focus-bar-cell">
+                                    <div className="flex flex-col w-full">
+                                        <div className="flex items-center w-full">
+                                            <div
+                                                className="module-focus-bar-track"
+                                                title={`${(item.moduleScore * 100).toFixed(0)}% focus`}
+                                            >
+                                                <div
+                                                    className="module-focus-bar-fill"
+                                                    style={{
+                                                        width: `${Math.max(item.moduleScore * 100, 5)}%`,
+                                                        backgroundColor: getModuleBarColor(item.moduleScore)
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                        <span className="text-xs text-slate-500 mt-1">
+                                            {(item.moduleScore * 100).toFixed(0)}%
+                                        </span>
+                                    </div>
+                                </td>
+
+                                {/* USER Interest Bar */}
+                                <td className="module-focus-bar-cell">
+                                    <div className="flex flex-col w-full">
+                                        <div className="flex items-center w-full">
+                                            <div
+                                                className="module-focus-bar-track"
+                                                title={userConfig.text}
+                                            >
+                                                <div
+                                                    className="module-focus-bar-fill"
+                                                    style={{
+                                                        width: userConfig.width,
+                                                        backgroundColor: userConfig.color
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                        <span className="text-xs text-slate-500 mt-1">
+                                            {userConfig.text}
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        )
+                    })}
                 </tbody>
             </table>
         </div>

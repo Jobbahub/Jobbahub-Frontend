@@ -276,6 +276,11 @@ export const translationsList = {
     interests_label: { nl: "Interesse", en: "Interest" },
     values_label: { nl: "Waarde", en: "Value" },
     goals_label: { nl: "Doel", en: "Goal" },
+    "Jouw Interesse": { nl: "Jouw Interesse", en: "Your Interest" },
+    "Hoge interesse": { nl: "Hoge interesse", en: "High interest" },
+    "Gemiddelde interesse": { nl: "Gemiddelde interesse", en: "Average interest" },
+    "Lage interesse": { nl: "Geen interesse", en: "No interest" },
+    "Vergelijk de focus van de module met jouw eigen interesse-niveau.": { nl: "Vergelijk de focus van de module met jouw eigen interesse-niveau.", en: "Compare the module's focus with your own interest level." },
 
 } as const;
 

@@ -132,7 +132,7 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
 
   // Helper to render priority selection
   const renderPrioritySelection = (title: string, subtitle: string, onNext: () => void, textBtnNext: string, onBack?: () => void) => {
-    const subjects = TOPICS.filter(t => t.type === 'subject');
+    const subjects = TOPICS.filter(t => t.type === 'interest');
     return (
       <div className="form-container form-container-wide">
         <div className="flex justify-end mb-4">
