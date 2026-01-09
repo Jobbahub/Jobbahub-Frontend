@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { IChoiceModule } from '../types';
+import CategoryComparisonChart from './CategoryComparisonChart';
 
 interface ModuleCardProps {
   module: IChoiceModule;
@@ -11,6 +12,8 @@ interface ModuleCardProps {
   matchPercentage?: number | null;
   explanation?: string;
   isCluster?: boolean;
+  categoryScores?: Record<string, number>;
+  userAnswers?: any;
 }
 
 const ModuleCard: React.FC<ModuleCardProps> = ({
@@ -21,7 +24,9 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
   isAuthenticated,
   matchPercentage,
   explanation,
-  isCluster
+  isCluster,
+  categoryScores,
+  userAnswers
 }) => {
   const { t, language } = useLanguage();
   const [tagsExpanded, setTagsExpanded] = useState(false);
@@ -120,9 +125,16 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
           </div>
         )}
 
-        <p className="card-text">
-          {getTranslatedContent('shortdescription') || (getTranslatedContent('description') ? getTranslatedContent('description').substring(0, 100) + '...' : '')}
-        </p>
+        {categoryScores && userAnswers && (
+          <CategoryComparisonChart moduleScores={categoryScores} userAnswers={userAnswers} />
+        )}
+
+        <div className="mb-2">
+          <h5 className="text-sm font-bold text-slate-700">Short description</h5>
+          <p className="card-text">
+            {getTranslatedContent('shortdescription') || (getTranslatedContent('description') ? getTranslatedContent('description').substring(0, 100) + '...' : '')}
+          </p>
+        </div>
 
         <div className="card-meta">
           <span className="credits">{module.studycredit} EC</span>

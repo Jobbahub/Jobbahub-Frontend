@@ -34,7 +34,7 @@ export const translationsList = {
     "••••••••": { nl: "••••••••", en: "••••••••" },
 
     // Home Page
-    "HOME PAGE": { nl: "HOME PAGE", en: "HOME PAGE" },
+    "HOME PAGE": { nl: "Home Pagina", en: "Home Page" },
     home_subtitle: {
         nl: "Ontdek jouw ideale keuzemodule in minuten.",
         en: "Discover your ideal elective module in minutes."
@@ -69,6 +69,7 @@ export const translationsList = {
     nav_help_me_choose: { nl: "Help Mij Kiezen", en: "Help Me Choose" },
     nav_favorites: { nl: "Favorieten", en: "Favorites" },
     nav_about: { nl: "Over ons", en: "About" },
+    nav_profile: { nl: "Profiel", en: "Profile" },
 
     // Modules Page
     "Beschikbare Keuzemodules": { nl: "Beschikbare Keuzemodules", en: "Available Elective Modules" },
@@ -240,6 +241,46 @@ export const translationsList = {
     "Er ging iets mis bij het ophalen van de modules. Probeer het later opnieuw.": { nl: "Er ging iets mis bij het ophalen van de modules. Probeer het later opnieuw.", en: "Something went wrong while fetching modules. Please try again later." },
     "Kon geen aanbevelingen ophalen van de server.": { nl: "Kon geen aanbevelingen ophalen van de server.", en: "Could not retrieve recommendations from the server." },
     "RATE_LIMIT_EXCEEDED": { nl: "Je hebt het limiet van 20 verzoeken per 5 minuten bereikt. Probeer het later opnieuw.", en: "You have reached the limit of 20 requests per 5 minutes. Please try again later." },
+
+    // Profile Page
+    profile_page_title: { nl: "Mijn Profiel", en: "My Profile" },
+    username_label: { nl: "Gebruikersnaam", en: "Username" },
+    new_password_label: { nl: "Nieuw wachtwoord", en: "New password" },
+    current_password_required: { nl: "Huidig wachtwoord is vereist.", en: "Current password is required." },
+    profile_update_success: { nl: "Gegevens succesvol gewijzigd.", en: "Details successfully updated." },
+    profile_update_failed: { nl: "Wijziging mislukt.", en: "Update failed." },
+    save_changes: { nl: "Wijzigingen opslaan", en: "Save changes" },
+    saving: { nl: "Opslaan...", en: "Saving..." },
+    reset_questionnaire_btn: { nl: "Reset vragenlijst", en: "Reset questionnaire" },
+    reset_confirm: { nl: "Weet je zeker dat je je resultaten wilt verwijderen?", en: "Are you sure you want to delete your results?" },
+    reset_success: { nl: "Vragenlijst succesvol gereset.", en: "Questionnaire successfully reset." },
+    reset_failed_msg: { nl: "Kon resultaten niet verwijderen.", en: "Could not remove results." },
+    confirm_change_modal_title: { nl: "Bevestig wijziging", en: "Confirm change" },
+    confirm_change_modal_text: { nl: "Voer je huidige wachtwoord in om de wijzigingen op te slaan.", en: "Enter your current password to save changes." },
+    current_password_placeholder: { nl: "Huidig wachtwoord", en: "Current password" },
+    cancel: { nl: "Annuleren", en: "Cancel" },
+    confirm: { nl: "Bevestigen", en: "Confirm" },
+
+    // Dashboard
+    personal_dashboard: { nl: "Persoonlijk Dashboard", en: "Personal Dashboard" },
+    dashboard_start_questionnaire_title: { nl: "Laten we jouw perfecte keuzemodule vinden", en: "Let's find your perfect elective" },
+    dashboard_start_questionnaire_subtitle: { nl: "Onze vragenlijst helpt je de modules te vinden die het beste passen bij jouw interesses en doelen.", en: "Our questionnaire helps match you with modules that fit your interests and goals." },
+    dashboard_start_button: { nl: "Start de vragenlijst", en: "Start the questionnaire" },
+    dashboard_time_estimate: { nl: "Duurt ongeveer 5 minuten", en: "Takes about 5 minutes" },
+
+    // Category Comparison Chart
+    "Module Focus": { nl: "Module Focus", en: "Module Focus" },
+    "Bekijk hoeveel aandacht deze module besteedt aan de verschillende onderwerpen.": { nl: "Bekijk hoeveel aandacht deze module besteedt aan de verschillende onderwerpen.", en: "View how much attention this module devotes to the different topics." },
+    "Categorie": { nl: "Categorie", en: "Category" },
+    "Percentage": { nl: "Percentage", en: "Percentage" },
+    interests_label: { nl: "Interesse", en: "Interest" },
+    values_label: { nl: "Waarde", en: "Value" },
+    goals_label: { nl: "Doel", en: "Goal" },
+    "Jouw Interesse": { nl: "Jouw Interesse", en: "Your Interest" },
+    "Hoge interesse": { nl: "Hoge interesse", en: "High interest" },
+    "Gemiddelde interesse": { nl: "Gemiddelde interesse", en: "Average interest" },
+    "Lage interesse": { nl: "Geen interesse", en: "No interest" },
+    "Vergelijk de focus van de module met jouw eigen interesse-niveau.": { nl: "Vergelijk de focus van de module met jouw eigen interesse-niveau.", en: "Compare the module's focus with your own interest level." },
 
 } as const;
 
