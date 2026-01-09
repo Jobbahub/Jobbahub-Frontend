@@ -14,6 +14,7 @@ interface ModuleCardProps {
   isCluster?: boolean;
   categoryScores?: Record<string, number>;
   userAnswers?: any;
+  rank?: number;
 }
 
 const ModuleCard: React.FC<ModuleCardProps> = ({
@@ -26,7 +27,8 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
   explanation,
   isCluster,
   categoryScores,
-  userAnswers
+  userAnswers,
+  rank
 }) => {
   const { t, language } = useLanguage();
   const [tagsExpanded, setTagsExpanded] = useState(false);
@@ -83,10 +85,16 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
           className="card-image"
         />
 
-        {matchPercentage !== undefined && matchPercentage !== null && (
+        {rank ? (
           <span className="match-badge">
-            {matchPercentage}% Match
+            #{rank}
           </span>
+        ) : (
+          matchPercentage !== undefined && matchPercentage !== null && (
+            <span className="match-badge">
+              {matchPercentage}% Match
+            </span>
+          )
         )}
 
         {isCluster && (

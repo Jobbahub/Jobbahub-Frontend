@@ -135,6 +135,7 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
                   isCluster={false}
                   categoryScores={rec.category_scores}
                   userAnswers={userAnswers}
+                  rank={index + 1}
                 />
               );
             })}

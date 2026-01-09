@@ -229,6 +229,7 @@ const Dashboard: React.FC = () => {
                       isCluster={false}
                       categoryScores={rec.category_scores}
                       userAnswers={userAnswers}
+                      rank={index + 1}
                     />
                   );
                 })}
