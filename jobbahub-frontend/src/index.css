@@ -1729,18 +1729,6 @@ button {
   margin-top: 4px;
 }
 
-/* --- Result Chart Component --- */
-.result-chart-container {
-  background: var(--white);
-  padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  margin-bottom: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .result-chart-title {
   margin-top: 0;
   margin-bottom: 20px;
@@ -1962,14 +1950,6 @@ button {
   margin-top: 20px;
 }
 
-/* Modifier to remove default card styling from ResultChart */
-.result-chart-container.borderless {
-  box-shadow: none;
-  background: transparent;
-  padding: 0;
-  margin-bottom: 0;
-}
-
 /* Wrapper for individual charts to give them a "card" look on dashboard */
 .dashboard-chart-card {
   /* Previously had background/shadow. Now making it transparent/minimal as requested */
@@ -1988,7 +1968,7 @@ button {
 @media (max-width: 640px) {
 
   /* Result chart on mobile */
-  .result-chart-container {
+  .chart-container {
     padding: 16px;
     margin-bottom: 20px;
   }
@@ -3287,4 +3267,278 @@ textarea.form-input {
   left: 10px;
   bottom: 100%;
   margin-bottom: 5px;
+}
+
+/* --- DARK MODE CHART FIXES --- */
+
+/* Single unified chart container class - applies to ALL chart containers */
+[data-theme="dark"] .chart-container {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+/* Light mode chart container */
+.chart-container {
+  background: var(--white);
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Recharts styles for dark mode */
+[data-theme="dark"] .recharts-wrapper {
+  background-color: var(--surface-color) !important;
+}
+
+[data-theme="dark"] .recharts-surface {
+  background-color: var(--surface-color) !important;
+}
+
+[data-theme="dark"] .recharts-cartesian-axis-tick text {
+  fill: var(--text-color) !important;
+  font-weight: 500;
+}
+
+[data-theme="dark"] .recharts-cartesian-axis line {
+  stroke: var(--border-color) !important;
+}
+
+[data-theme="dark"] .recharts-legend-wrapper {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .recharts-legend-wrapper text {
+  fill: #ffffff !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .recharts-legend-item {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .recharts-legend-item-text {
+  fill: #ffffff !important;
+  color: #ffffff !important;
+  font-size: 14px;
+}
+
+[data-theme="dark"] .recharts-legend-item span {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .recharts-default-tooltip {
+  background-color: var(--surface-color) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+[data-theme="dark"] .recharts-tooltip-label,
+[data-theme="dark"] .recharts-tooltip-label-list {
+  color: var(--text-color) !important;
+}
+
+/* Result Chart Custom Styles - Dark Mode */
+[data-theme="dark"] .result-chart-title {
+  color: var(--text-color) !important;
+  fill: var(--text-color) !important;
+}
+
+[data-theme="dark"] .legend-label-wrapper {
+  color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .legend-label-wrapper text {
+  fill: var(--text-color) !important;
+  color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .legend-label {
+  color: var(--text-color) !important;
+  fill: var(--text-color) !important;
+}
+
+/* SVG text in charts */
+[data-theme="dark"] .recharts-text {
+  fill: var(--text-color) !important;
+  color: var(--text-color) !important;
+}
+
+[data-theme="dark"] svg text {
+  fill: var(--text-color) !important;
+}
+
+/* --- DARK MODE FILTER BUTTON FIXES --- */
+
+[data-theme="dark"] .filter-trigger-btn {
+  background-color: var(--surface-color) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+[data-theme="dark"] .filter-trigger-btn:hover {
+  background-color: var(--bg-color) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--primary-color) !important;
+}
+
+[data-theme="dark"] .filter-badge {
+  background-color: var(--primary-color) !important;
+  color: var(--white) !important;
+}
+
+[data-theme="dark"] .filter-popup-menu {
+  background-color: var(--surface-color) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .filter-section-title {
+  color: var(--text-color) !important;
+  border-bottom-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .filter-option-item {
+  color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .filter-option-item:hover {
+  background-color: var(--bg-color) !important;
+}
+
+[data-theme="dark"] .filter-checkbox {
+  accent-color: var(--primary-color) !important;
+  cursor: pointer;
+}
+
+[data-theme="dark"] .filter-divider {
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .filter-clear-btn {
+  background-color: transparent !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+[data-theme="dark"] .filter-clear-btn:hover {
+  background-color: var(--bg-color) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--primary-color) !important;
+}
+
+/* --- DARK MODE SECONDARY BUTTON FIXES --- */
+/* Specifically for form buttons that are secondary (Previous/Back buttons) */
+[data-theme="dark"] .btn-secondary {
+  background-color: var(--surface-color) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  background-color: var(--bg-color) !important;
+  border-color: var(--text-color) !important;
+}
+
+/* Topic choice buttons (No, Neutral, Yes) */
+[data-theme="dark"] .topic-btn {
+  background-color: var(--surface-color) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+[data-theme="dark"] .topic-btn:hover {
+  background-color: var(--bg-color) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--primary-color) !important;
+}
+
+[data-theme="dark"] .btn-topic-choice.active {
+  background-color: var(--primary-color) !important;
+  color: var(--white) !important;
+  border-color: var(--primary-color) !important;
+}
+
+/* Priority cards in questionnaire */
+[data-theme="dark"] .priority-card {
+  background-color: var(--surface-color) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+[data-theme="dark"] .priority-card:hover {
+  border-color: var(--primary-color) !important;
+  cursor: pointer;
+}
+
+[data-theme="dark"] .priority-card.selected {
+  background-color: var(--primary-color) !important;
+  color: var(--white) !important;
+  border-color: var(--primary-color) !important;
+}
+
+/* Form containers and elements */
+[data-theme="dark"] .form-container {
+  background-color: var(--surface-color) !important;
+  color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .form-input {
+  background-color: var(--surface-color) !important;
+  color: var(--text-color) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .form-input:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1) !important;
+}
+
+[data-theme="dark"] .form-label {
+  color: var(--text-color) !important;
+}
+
+/* Module Focus Container - Dark Mode */
+[data-theme="dark"] .module-focus-container {
+  background-color: var(--surface-color) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .module-focus-header h4 {
+  color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .module-focus-header p {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .module-focus-th {
+  color: var(--text-muted) !important;
+  border-bottom-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .module-focus-label {
+  color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .module-focus-text {
+  color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .module-focus-tr {
+  color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .module-focus-tr:hover {
+  background-color: var(--bg-color) !important;
+}
+
+[data-theme="dark"] .module-focus-bar-track {
+  background-color: var(--surface-color) !important;
+  border-color: var(--border-color) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
 }

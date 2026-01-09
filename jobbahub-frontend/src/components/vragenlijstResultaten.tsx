@@ -203,7 +203,7 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
             </div>
 
             {/* Column 2: Interests Chart */}
-            <div>
+            <div className="chart-container">
               <ResultChart
                 title={t("Interesses (Vakgebieden)")}
                 data={prepareChartData(categories.vakgebieden)}
@@ -212,7 +212,7 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
             </div>
 
             {/* Column 3: Values & Goals Charts */}
-            <div>
+            <div className="chart-container">
               <ResultChart
                 title={t("Waarden")}
                 data={prepareChartData(categories.waarden)}

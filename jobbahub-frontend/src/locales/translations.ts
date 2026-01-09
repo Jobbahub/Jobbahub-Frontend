@@ -124,7 +124,7 @@ export const translationsList = {
     match_on_terms: { nl: "Match op termen", en: "Match on terms" },
     why: { nl: "Waarom", en: "Why" },
 
-    dashboard_welcome_intro: { nl: "Welkom terug! Hieronder vind je jouw persoonlijke dashboard.", en: "Welcome back! Below you will find your personal dashboard." },
+    dashboard_welcome_intro: { nl: "Welkom terug! Hieronder vind je jouw persoonlijke dashboard,", en: "Welcome back! Below you will find your personal dashboard," },
     dashboard_explanation_results: { nl: "Hier vind je jouw aanbevolen modules op basis van je vragenlijst resultaten, en een overzicht van je profiel scores.", en: "Here you can find your recommended modules based on your questionnaire results, and an overview of your profile scores." },
     dashboard_graphs_explanation: { nl: "De grafieken tonen je scores op verschillende categorieën: Interesses, Waarden en Doelen. Een hogere score betekent een betere match met die categorie.", en: "The charts show your scores on different categories: Interests, Values, and Goals. A higher score means a better match with that category." },
     dashboard_recs_explanation: { nl: "De aanbevelingen zijn de top 5 modules die het beste bij jouw profiel passen.", en: "The recommendations are the top 5 modules that best fit your profile." },

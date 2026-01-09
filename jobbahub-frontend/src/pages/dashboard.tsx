@@ -242,18 +242,24 @@ const Dashboard: React.FC = () => {
                 {t("Jouw Profiel Verdeling")}
               </h2>
               <div className="dashboard-charts-grid">
-                <ResultChart
-                  title={t("Interesses (Vakgebieden)")}
-                  data={prepareChartData(categories.vakgebieden)}
-                />
-                <ResultChart
-                  title={t("Waarden")}
-                  data={prepareChartData(categories.waarden)}
-                />
-                <ResultChart
-                  title={t("Doelen")}
-                  data={prepareChartData(categories.doelen)}
-                />
+                <div className="chart-container">
+                  <ResultChart
+                    title={t("Interesses (Vakgebieden)")}
+                    data={prepareChartData(categories.vakgebieden)}
+                  />
+                </div>
+                <div className="chart-container">
+                  <ResultChart
+                    title={t("Waarden")}
+                    data={prepareChartData(categories.waarden)}
+                  />
+                </div>
+                <div className="chart-container">
+                  <ResultChart
+                    title={t("Doelen")}
+                    data={prepareChartData(categories.doelen)}
+                  />
+                </div>
               </div>
             </div>
           </div>

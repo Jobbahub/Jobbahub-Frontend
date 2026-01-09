@@ -113,7 +113,7 @@ const ResultChart: React.FC<ResultChartProps> = ({ title, data, className = '' }
     };
 
     return (
-        <div className={`result-chart-container ${className}`}>
+        <>
             <h3 className="result-chart-title">{title}</h3>
 
             <div className="chart-content">
@@ -217,7 +217,7 @@ const ResultChart: React.FC<ResultChartProps> = ({ title, data, className = '' }
                 </div>
 
             </div>
-        </div>
+        </>
     );
 };
 
