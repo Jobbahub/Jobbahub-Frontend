@@ -20,6 +20,7 @@ export interface IChoiceModule {
   shortdescription_en?: string;
   content_en?: string;
   learningoutcomes_en?: string;
+  taal?: string;
 }
 
 export interface AIRecommendation {
