@@ -3240,12 +3240,12 @@ textarea.form-input {
 }
 
 .module-focus-col-cat {
-  width: 50%;
+  width: 40%;
 }
 
 .module-focus-col-pct {
-  width: 50%;
-  padding-left: 12px;
+  width: 30%;
+  padding-left: 8px;
 }
 
 .custom-tooltip {
