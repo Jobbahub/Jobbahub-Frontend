@@ -273,6 +273,9 @@ export const translationsList = {
     "Bekijk hoeveel aandacht deze module besteedt aan de verschillende onderwerpen.": { nl: "Bekijk hoeveel aandacht deze module besteedt aan de verschillende onderwerpen.", en: "View how much attention this module devotes to the different topics." },
     "Categorie": { nl: "Categorie", en: "Category" },
     "Percentage": { nl: "Percentage", en: "Percentage" },
+    interests_label: { nl: "Interesse", en: "Interest" },
+    values_label: { nl: "Waarde", en: "Value" },
+    goals_label: { nl: "Doel", en: "Goal" },
 
 } as const;
 

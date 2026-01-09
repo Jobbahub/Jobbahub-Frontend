@@ -29,10 +29,12 @@ const CategoryComparisonChart: React.FC<CategoryComparisonChartProps> = ({
 
             const topic = TOPICS.find(t => t.id === catKey);
             const label = topic ? t(topic.label) : catKey;
+            const type = topic ? topic.type : 'unknown'; // interest, value, goal
 
             return {
                 key: catKey,
                 label,
+                type,
                 moduleScore, // 0-1 float
                 userRawScore // -1, 0, 1 integer
             };
@@ -46,6 +48,24 @@ const CategoryComparisonChart: React.FC<CategoryComparisonChartProps> = ({
         if (percentage >= 70) return '#22c55e'; // Green-500
         if (percentage >= 40) return '#eab308'; // Yellow-500
         return '#ef4444'; // Red-500
+    };
+
+    const getTypeLabel = (type: string) => {
+        switch (type) {
+            case 'interest': return t('interests_label');
+            case 'value': return t('values_label');
+            case 'goal': return t('goals_label');
+            default: return '';
+        }
+    };
+
+    const getTypeColor = (type: string) => {
+        switch (type) {
+            case 'interest': return '#3b82f6'; // Blue
+            case 'value': return '#10b981'; // Green
+            case 'goal': return '#a855f7'; // Purple
+            default: return '#64748b'; // Slate
+        }
     };
 
     const [hoveredLabel, setHoveredLabel] = React.useState<string | null>(null);
@@ -75,9 +95,26 @@ const CategoryComparisonChart: React.FC<CategoryComparisonChartProps> = ({
                                 onMouseEnter={() => setHoveredLabel(item.label)}
                                 onMouseLeave={() => setHoveredLabel(null)}
                             >
-                                <span className="module-focus-label-text">
-                                    {item.label}
-                                </span>
+                                <div className="flex flex-col">
+                                    <span className="module-focus-label-text">
+                                        {item.label}
+                                    </span>
+                                    {/* Type Badge */}
+                                    <span
+                                        style={{
+                                            backgroundColor: getTypeColor(item.type) + '20', // 20% opacity background
+                                            color: getTypeColor(item.type),
+                                            fontSize: '0.7rem',
+                                            padding: '2px 6px',
+                                            borderRadius: '4px',
+                                            width: 'fit-content',
+                                            fontWeight: 600,
+                                            marginTop: '2px'
+                                        }}
+                                    >
+                                        {getTypeLabel(item.type)}
+                                    </span>
+                                </div>
                                 {hoveredLabel === item.label && (
                                     <div className="custom-tooltip">
                                         {item.label}
