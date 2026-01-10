@@ -26,6 +26,12 @@
   --header-height: 70px;
   --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+  /* HERO BANNER COLORS (Shared) */
+  --hero-gradient-start: #8a0b1f;
+  /* Deep Crimson */
+  --hero-gradient-end: #3f000a;
+  /* Very Dark Red */
 }
 
 /* DARK MODE VARIABLES */
@@ -48,6 +54,10 @@
   --cluster-text: #fde047;
   --level-bg: #1e1b4b;
   --level-text: #a5b4fc;
+
+  /* HERO BANNER COLORS (Dark Mode) */
+  --hero-gradient-start: #3f000a;
+  --hero-gradient-end: #1a0003;
 }
 
 /* --- Algemene Reset --- */
@@ -100,6 +110,20 @@ button {
 .page-wrapper {
   margin: -40px 0 0 0;
   padding: 0;
+  animation: fadeInUp 0.6s ease-out;
+  /* Smooth Page Transition */
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* AANGEPAST: Hero styles generiek gemaakt */
@@ -109,7 +133,7 @@ button {
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 200'%3E%3Cpath fill='rgba(255,255,255,0.1)' d='M0,100 C400,150 800,50 1600,100 L1600,200 L0,200 Z'%3E%3C/path%3E%3C/svg%3E"),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 200'%3E%3Cpath fill='rgba(255,255,255,0.05)' d='M0,100 C400,50 800,150 1600,100 L1600,200 L0,200 Z'%3E%3C/path%3E%3C/svg%3E"),
-    linear-gradient(135deg, #8a0b1f 0%, #3f000a 100%);
+    linear-gradient(135deg, var(--hero-gradient-start) 0%, var(--hero-gradient-end) 100%);
   background-size: 1600px 200px, 1600px 200px, cover;
   background-position: 0 bottom, 0 bottom, 0 0;
   background-repeat: repeat-x, repeat-x, no-repeat;
@@ -168,7 +192,7 @@ button {
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 200'%3E%3Cpath fill='rgba(255,255,255,0.05)' d='M0,100 C400,150 800,50 1600,100 L1600,200 L0,200 Z'%3E%3C/path%3E%3C/svg%3E"),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 200'%3E%3Cpath fill='rgba(255,255,255,0.02)' d='M0,100 C400,50 800,150 1600,100 L1600,200 L0,200 Z'%3E%3C/path%3E%3C/svg%3E"),
-    linear-gradient(135deg, #3f000a 0%, #1a0003 100%);
+    linear-gradient(135deg, var(--hero-gradient-start) 0%, var(--hero-gradient-end) 100%);
 }
 
 [data-theme='dark'] .page-hero::before {
@@ -182,7 +206,7 @@ button {
 
 /* Static Hero (Old Style) for Detail Pages */
 .static-page-hero {
-  background: linear-gradient(135deg, var(--primary-color) 0%, #8a0b1f 100%);
+  background: linear-gradient(135deg, var(--hero-gradient-start) 0%, var(--hero-gradient-end) 100%);
   padding: 60px 40px;
   margin-bottom: 0;
   text-align: center;
@@ -212,7 +236,7 @@ button {
 
 /* Dark Mode Overrides for Static Hero */
 [data-theme='dark'] .static-page-hero {
-  background: linear-gradient(135deg, #3f000a 0%, #1a0003 100%);
+  background: linear-gradient(135deg, var(--hero-gradient-start) 0%, var(--hero-gradient-end) 100%);
 }
 
 [data-theme='dark'] .static-page-hero::before {
@@ -417,6 +441,141 @@ button {
   justify-content: start;
 }
 
+/* ... existing search styles ... */
+
+/* --- Filters (Standardized) --- */
+.filter-dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-left: 15px;
+}
+
+.filter-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  background-color: var(--white);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow);
+}
+
+.filter-trigger-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.filter-badge {
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+}
+
+.filter-popup-menu {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  width: 280px;
+  background-color: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  z-index: 50;
+  max-height: 400px;
+  overflow-y: auto;
+  animation: fadeInUp 0.2s ease-out;
+}
+
+.filter-section-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--secondary-color);
+  text-transform: uppercase;
+}
+
+.filter-option-item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 5px 0;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--text-color);
+}
+
+.filter-checkbox {
+  accent-color: var(--primary-color);
+  width: 16px;
+  height: 16px;
+}
+
+.filter-divider {
+  border: 0;
+  border-top: 1px solid var(--border-color);
+  margin: 15px 0;
+}
+
+.filter-clear-btn {
+  background: none;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  width: 100%;
+  padding: 8px;
+  border-radius: var(--radius);
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.2s;
+}
+
+.filter-clear-btn:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* --- Form Topic Buttons (Questionnaire) --- */
+.topic-btn {
+  padding: 12px 24px;
+  border: 2px solid var(--border-color);
+  background-color: var(--white);
+  color: var(--text-muted);
+  font-weight: 600;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.topic-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.topic-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+  transform: scale(1.05);
+}
+
+.topic-btn-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
 .search-input {
   width: 100%;
   max-width: 600px;
@@ -441,6 +600,65 @@ button {
   grid-template-columns: 1fr;
   gap: 24px;
   margin-top: 20px;
+}
+
+/* Staggered Grid Entrance */
+.grid-container>*,
+.detail-grid>* {
+  opacity: 0;
+  animation: staggerFadeIn 0.5s ease-out forwards;
+}
+
+.grid-container>*:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.grid-container>*:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.grid-container>*:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.grid-container>*:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.grid-container>*:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+.grid-container>*:nth-child(6) {
+  animation-delay: 0.6s;
+}
+
+.grid-container>*:nth-child(7) {
+  animation-delay: 0.7s;
+}
+
+.grid-container>*:nth-child(8) {
+  animation-delay: 0.8s;
+}
+
+.grid-container>*:nth-child(9) {
+  animation-delay: 0.9s;
+}
+
+.grid-container>*:nth-child(n+10) {
+  animation-delay: 1s;
+}
+
+@keyframes staggerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .grid-container-margin-bottom {
@@ -709,6 +927,7 @@ button {
 .home-wrapper {
   margin: -40px 0 0 0;
   padding: 0;
+  animation: fadeInUp 0.6s ease-out;
 }
 
 /* Flowing Waves Theme for Home */
@@ -717,7 +936,7 @@ button {
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 200'%3E%3Cpath fill='rgba(255,255,255,0.1)' d='M0,100 C400,150 800,50 1600,100 L1600,200 L0,200 Z'%3E%3C/path%3E%3C/svg%3E"),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 200'%3E%3Cpath fill='rgba(255,255,255,0.05)' d='M0,100 C400,50 800,150 1600,100 L1600,200 L0,200 Z'%3E%3C/path%3E%3C/svg%3E"),
-    linear-gradient(135deg, #8a0b1f 0%, #3f000a 100%);
+    linear-gradient(135deg, var(--hero-gradient-start) 0%, var(--hero-gradient-end) 100%);
   background-size: 1600px 200px, 1600px 200px, cover;
   background-position: 0 bottom, 0 bottom, 0 0;
   background-repeat: repeat-x, repeat-x, no-repeat;
@@ -764,7 +983,7 @@ button {
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 200'%3E%3Cpath fill='rgba(255,255,255,0.05)' d='M0,100 C400,150 800,50 1600,100 L1600,200 L0,200 Z'%3E%3C/path%3E%3C/svg%3E"),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 200'%3E%3Cpath fill='rgba(255,255,255,0.02)' d='M0,100 C400,50 800,150 1600,100 L1600,200 L0,200 Z'%3E%3C/path%3E%3C/svg%3E"),
-    linear-gradient(135deg, #3f000a 0%, #1a0003 100%);
+    linear-gradient(135deg, var(--hero-gradient-start) 0%, var(--hero-gradient-end) 100%);
 }
 
 [data-theme='dark'] .home-hero::before {
