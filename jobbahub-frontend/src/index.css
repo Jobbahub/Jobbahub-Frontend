@@ -30,14 +30,15 @@
 
 /* DARK MODE VARIABLES */
 [data-theme="dark"] {
-  --primary-color: #ff2f54;
-  --primary-hover: #ff1a42;
+  --primary-color: #e38094;
+  --primary-hover: #e38094;
   --secondary-color: #e5e7eb;
-  --bg-color: #111827;
+  --bg-color: #131313;
   --text-color: #f3f4f6;
   --text-muted: #9ca3af;
   --white: #ffffff;
-  --surface-color: #1f2937;
+  --surface-color: #333333;
+  --surface-color-hover: #232323;
   --border-color: #374151;
   --purple-link: #c084fc;
   --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
@@ -57,7 +58,7 @@
 }
 
 body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Frutiger LT STD 77 Black Condensed", helvetica, sans-serif;
   background-color: var(--bg-color);
   color: var(--text-color);
   line-height: 1.6;
@@ -920,6 +921,7 @@ button {
 }
 
 .mb-2 {
+  text-align: left;
   margin-bottom: 0.5rem;
 }
 
@@ -1713,6 +1715,7 @@ button {
 }
 
 .chart-score-neutral {
+  align-items: start;
   background-color: #fef9c3;
   color: #854d0e;
   border: 1px solid #fde047;
@@ -1915,7 +1918,7 @@ button {
 .dashboard-section-title {
   text-align: center;
   font-size: 2rem;
-  color: #0f172a;
+  color: var(--text-color);
   margin-bottom: 30px;
   position: relative;
   display: inline-block;
@@ -2344,12 +2347,12 @@ textarea.form-input {
 }
 
 .why-box {
-  background-color: #f0fdf4;
-  border-left: 4px solid #22c55e;
+  background-color: #e063ff20;
+  border-left: 4px solid #e063ff;
   padding: 10px;
   margin-bottom: 15px;
   font-size: 0.9rem;
-  color: #166534;
+  color: #e063ff;
 }
 
 .why-box-cluster {
@@ -2621,7 +2624,7 @@ textarea.form-input {
 
 .mobile-menu-link {
   display: block;
-  padding: 15px 20px;
+  padding: 25px 20px;
   color: var(--text-color);
   text-decoration: none;
   font-weight: 500;
@@ -2718,9 +2721,8 @@ textarea.form-input {
 }
 
 .mobile-menu-footer {
-  padding: 20px;
+  padding: 15px;
   border-top: 1px solid var(--border-color);
-  margin-top: 20px;
 }
 
 .mobile-menu-controls {
@@ -2880,7 +2882,7 @@ textarea.form-input {
 [data-theme="dark"] .text-blue-600,
 [data-theme="dark"] .text-blue-700,
 [data-theme="dark"] .text-blue-800 {
-  color: #93c5fd;
+  color: var(--white);
 }
 
 [data-theme="dark"] .text-gray-700 {
@@ -2906,7 +2908,7 @@ textarea.form-input {
 /* Background utilities - Dark Mode */
 [data-theme="dark"] .bg-blue-50,
 [data-theme="dark"] .bg-blue-100 {
-  background-color: #1e3a8a;
+  background-color: #0b385f;
 }
 
 /* Border utilities - Dark Mode */
@@ -2963,9 +2965,9 @@ textarea.form-input {
 
 /* Why boxes - Dark Mode */
 [data-theme="dark"] .why-box {
-  background-color: #051d0d;
-  color: #86efac;
-  border-left-color: #22c55e;
+  background-color: #debeff20;
+  color: #debeff;
+  border-left-color: #debeff;
 }
 
 /* Dashboard - Dark Mode */
@@ -3104,7 +3106,7 @@ textarea.form-input {
 
 /* Module Focus Comparison Chart */
 .module-focus-container {
-  margin-top: 1.5rem;
+  /* margin-top: rem; */
   /* mt-6 */
   padding: 1.25rem;
   /* p-5 */
@@ -3114,6 +3116,7 @@ textarea.form-input {
   /* rounded-xl */
   border: 1px solid #e2e8f0;
   /* border-slate-200 */
+  margin-bottom: 15px;
 }
 
 .module-focus-header h4 {
@@ -3349,7 +3352,8 @@ textarea.form-input {
 }
 
 [data-theme="dark"] .legend-label-wrapper {
-  color: var(--text-color) !important;
+  text-align: left;
+  color: var(--text-muted) !important;
 }
 
 [data-theme="dark"] .legend-label-wrapper text {
@@ -3534,7 +3538,7 @@ textarea.form-input {
 }
 
 [data-theme="dark"] .module-focus-tr:hover {
-  background-color: var(--bg-color) !important;
+  background-color: var(--surface-color-hover) !important;
 }
 
 [data-theme="dark"] .module-focus-bar-track {

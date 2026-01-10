@@ -32,11 +32,6 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, user, onLogout
 
       {/* Sidebar */}
       <nav className={`mobile-menu ${isOpen ? 'open' : ''}`}>
-        <div className="mobile-menu-header">
-          <button className="mobile-menu-close" onClick={onClose}>
-            ✕
-          </button>
-        </div>
 
         <div className="mobile-menu-content">
           <Link
