@@ -163,6 +163,18 @@ button {
   z-index: 1;
 }
 
+/* Dark Mode Overrides for Page Hero */
+[data-theme='dark'] .page-hero {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 200'%3E%3Cpath fill='rgba(255,255,255,0.05)' d='M0,100 C400,150 800,50 1600,100 L1600,200 L0,200 Z'%3E%3C/path%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 200'%3E%3Cpath fill='rgba(255,255,255,0.02)' d='M0,100 C400,50 800,150 1600,100 L1600,200 L0,200 Z'%3E%3C/path%3E%3C/svg%3E"),
+    linear-gradient(135deg, #3f000a 0%, #1a0003 100%);
+}
+
+[data-theme='dark'] .page-hero::before {
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+}
+
 .hero-title-shadow {
   color: white;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -196,6 +208,23 @@ button {
   text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   position: relative;
   z-index: 1;
+}
+
+/* Dark Mode Overrides for Static Hero */
+[data-theme='dark'] .static-page-hero {
+  background: linear-gradient(135deg, #3f000a 0%, #1a0003 100%);
+}
+
+[data-theme='dark'] .static-page-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  /* Darker overlay for static images */
+  pointer-events: none;
 }
 
 /* --- Header --- */
@@ -728,6 +757,18 @@ button {
   height: 100%;
   background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
   pointer-events: none;
+}
+
+/* Dark Mode Overrides for Home Hero */
+[data-theme='dark'] .home-hero {
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 200'%3E%3Cpath fill='rgba(255,255,255,0.05)' d='M0,100 C400,150 800,50 1600,100 L1600,200 L0,200 Z'%3E%3C/path%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 200'%3E%3Cpath fill='rgba(255,255,255,0.02)' d='M0,100 C400,50 800,150 1600,100 L1600,200 L0,200 Z'%3E%3C/path%3E%3C/svg%3E"),
+    linear-gradient(135deg, #3f000a 0%, #1a0003 100%);
+}
+
+[data-theme='dark'] .home-hero::before {
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
 }
 
 .home-hero-title {
