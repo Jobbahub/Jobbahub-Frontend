@@ -250,6 +250,12 @@ button {
 .centered-btn-container {
   display: flex;
   justify-content: center;
+  margin-top: 5px;
+  margin-bottom: 20px;
+}
+
+.page-intro {
+  font-size: 20px;
   margin-bottom: 30px;
 }
 
@@ -312,7 +318,7 @@ button {
 .search-wrapper {
   margin-bottom: 30px;
   display: flex;
-  justify-content: center;
+  justify-content: start;
 }
 
 .search-input {

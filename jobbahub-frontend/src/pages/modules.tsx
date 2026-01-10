@@ -224,9 +224,6 @@ const ElectiveModules: React.FC = () => {
           )}
         </p>
 
-        <br />
-        <br />
-
         <div className="search-filter-controls">
           <ModuleSearch
             searchTerm={searchTerm}
