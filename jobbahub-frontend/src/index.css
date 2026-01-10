@@ -405,6 +405,7 @@ button {
 }
 
 .card-title {
+  text-align: center;
   font-size: 1.25rem;
   margin-bottom: 10px;
   color: var(--secondary-color);
@@ -1953,7 +1954,7 @@ button {
 }
 
 .dashboard-section-wrapper {
-  text-align: center;
+  text-align: left;
   /* Center the title */
   margin-bottom: 60px;
 }
@@ -3120,17 +3121,18 @@ textarea.form-input {
 
 /* Module Focus Comparison Chart */
 .module-focus-container {
-  /* margin-top: rem; */
-  /* mt-6 */
-  padding: 1.25rem;
-  /* p-5 */
-  background-color: #f8fafc;
-  /* bg-slate-50 */
-  border-radius: 0.75rem;
-  /* rounded-xl */
-  border: 1px solid #e2e8f0;
-  /* border-slate-200 */
   margin-bottom: 15px;
+  padding: 0;
+  background-color: #f8fafc;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+}
+
+.module-focus-header {
+  margin-left: 20px;
+  margin-right: 20px;
+  padding-top: 1.25rem;
 }
 
 .module-focus-header h4 {
@@ -3166,17 +3168,15 @@ textarea.form-input {
 }
 
 .module-focus-th {
+  padding-top: 1.225rem;
   padding-bottom: 0.5rem;
-  /* pb-2 */
+  padding-left: 20px;
+  padding-right: 20px;
   font-weight: 600;
-  /* font-semibold */
   text-align: left;
   font-size: 12px;
-  /* Increased from 10px */
   color: #64748b;
-  /* text-slate-500 */
-  border-bottom: 1px solid #e2e8f0;
-  /* border-slate-200 */
+  border-bottom: 1px solid #e2e8f0;  
 }
 
 .module-focus-tr {
@@ -3192,17 +3192,13 @@ textarea.form-input {
 
 .module-focus-label {
   padding-top: 0.625rem;
-  /* py-2.5 */
   padding-bottom: 0.625rem;
+  padding-left: 20px;
   padding-right: 0.5rem;
-  /* pr-2 */
   vertical-align: middle;
   color: #334155;
-  /* text-slate-700 */
   font-weight: 500;
-  /* font-medium */
   position: relative;
-  /* Anchor for tooltip */
 }
 
 .module-focus-label-text {
@@ -3215,11 +3211,10 @@ textarea.form-input {
 
 .module-focus-bar-cell {
   padding-top: 0.625rem;
-  /* py-2.5 */
   padding-bottom: 0.625rem;
+  padding-left: 0;
+  padding-right: 20px;
   vertical-align: middle;
-  padding-left: 0.75rem;
-  /* pl-3 */
 }
 
 .module-focus-bar-track {
