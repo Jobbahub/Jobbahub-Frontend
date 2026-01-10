@@ -2573,9 +2573,9 @@ textarea.form-input {
 }
 
 .why-box-cluster {
-  border-left-color: var(--cluster-border);
-  background-color: var(--cluster-bg);
-  color: var(--cluster-text);
+  /*border-left-color: var(--cluster-border);*/
+  /*background-color: var(--cluster-bg);*/
+  /*color: var(--cluster-text);*/
 }
 
 /* --- Loading Spinner --- */
