@@ -7,107 +7,111 @@ interface PaginationProps {
   onPageChange: (pageNumber: number) => void;
 }
 
-const MAX_PAGE_BUTTONS = 5; // Hoeveel paginanummers er maximaal direct getoond mogen worden
-
 const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   currentPage,
   onPageChange,
 }) => {
-  // 1. Array van alle mogelijke paginanummers
-  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
-
-  // 2. Logica om een beperkt aantal pagina's te tonen (bijv. 5) rondom de huidige pagina
-  const getVisiblePageNumbers = () => {
-    if (totalPages <= MAX_PAGE_BUTTONS) {
-      return pageNumbers;
-    }
-
-    let start = Math.max(1, currentPage - Math.floor(MAX_PAGE_BUTTONS / 2));
-    let end = Math.min(totalPages, start + MAX_PAGE_BUTTONS - 1);
-
-    if (end === totalPages) {
-      start = Math.max(1, totalPages - MAX_PAGE_BUTTONS + 1);
-    }
-
-    // Zorgt ervoor dat we alleen de nummers van 'start' tot 'end' nemen
-    return pageNumbers.slice(start - 1, end);
-  };
-
-  const visiblePages = getVisiblePageNumbers();
-
-  // De handler voor de knoppen
   const handlePageClick = (pageNumber: number) => {
-    // Alleen wijzigen als het een geldig nummer is en niet de huidige pagina
     if (pageNumber > 0 && pageNumber <= totalPages && pageNumber !== currentPage) {
       onPageChange(pageNumber);
     }
   };
 
+  // Generate the page numbers to display with priority classes
+  const getPageNumbers = (): { value: number | "ellipsis"; priority: string }[] => {
+    const pages: { value: number | "ellipsis"; priority: string }[] = [];
+    
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) {
+        const priority = i === 1 ? "first" : i === totalPages ? "last" : "middle";
+        pages.push({ value: i, priority });
+      }
+      return pages;
+    }
+
+    // Always include page 1 (highest priority)
+    pages.push({ value: 1, priority: "first" });
+
+    // Calculate window around current page
+    const windowStart = Math.max(2, currentPage - 1);
+    const windowEnd = Math.min(totalPages - 1, currentPage + 1);
+
+    // Add ellipsis after 1 if needed
+    if (windowStart > 2) {
+      pages.push({ value: "ellipsis", priority: "ellipsis-start" });
+    }
+
+    // Add pages in the window with appropriate priorities
+    for (let i = windowStart; i <= windowEnd; i++) {
+      if (i !== 1 && i !== totalPages) {
+        let priority = "neighbor"; // Adjacent pages
+        if (i === currentPage) {
+          priority = "current"; // Current page - medium priority
+        }
+        pages.push({ value: i, priority });
+      }
+    }
+
+    // Add ellipsis before last if needed
+    if (windowEnd < totalPages - 1) {
+      pages.push({ value: "ellipsis", priority: "ellipsis-end" });
+    }
+
+    // Always include last page (highest priority)
+    if (totalPages > 1) {
+      pages.push({ value: totalPages, priority: "last" });
+    }
+
+    return pages;
+  };
+
+  const pageNumbers = getPageNumbers();
+
   return (
-    <nav className="pagination-nav flex justify-center items-center mt-6">
-      <ul className="flex list-none p-0 m-0">
-        {/* Vorige knop */}
-        <li>
+    <nav className="pagination-nav" aria-label="Paginering">
+      <ul className="pagination-list">
+        {/* Previous button */}
+        <li className="pagination-item pagination-item-arrow">
           <button
             onClick={() => handlePageClick(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`pagination-button ${currentPage === 1 ? 'disabled' : ''}`}
+            className={`pagination-btn pagination-arrow ${currentPage === 1 ? "disabled" : ""}`}
             aria-label="Vorige pagina"
           >
-            &laquo;
+            ‹
           </button>
         </li>
 
-        {/* Eerste pagina en ellips (indien nodig) */}
-        {visiblePages[0] > 1 && (
-            <>
-                <li>
-                    <button 
-                        onClick={() => handlePageClick(1)}
-                        className="pagination-button"
-                    >1</button>
-                </li>
-                {visiblePages[0] > 2 && <li className="px-2">...</li>}
-            </>
-        )}
-
-
-        {/* Zichtbare Paginanummers */}
-        {visiblePages.map((number) => (
-          <li key={number}>
-            <button
-              onClick={() => handlePageClick(number)}
-              className={`pagination-button ${number === currentPage ? 'active' : ''}`}
-              aria-current={number === currentPage ? 'page' : undefined}
-            >
-              {number}
-            </button>
+        {/* Page numbers */}
+        {pageNumbers.map((item, index) => (
+          <li 
+            key={`${item.value}-${index}`} 
+            className={`pagination-item pagination-item-${item.priority}`}
+          >
+            {item.value === "ellipsis" ? (
+              <span className={`pagination-ellipsis pagination-ellipsis-${item.priority}`}>…</span>
+            ) : (
+              <button
+                onClick={() => handlePageClick(item.value as number)}
+                className={`pagination-btn pagination-btn-${item.priority} ${item.value === currentPage ? "active" : ""}`}
+                aria-current={item.value === currentPage ? "page" : undefined}
+              >
+                {item.value}
+              </button>
+            )}
           </li>
         ))}
 
-        {/* Ellips en laatste pagina (indien nodig) */}
-        {visiblePages[visiblePages.length - 1] < totalPages && (
-            <>
-                {visiblePages[visiblePages.length - 1] < totalPages - 1 && <li className="px-2">...</li>}
-                <li>
-                    <button 
-                        onClick={() => handlePageClick(totalPages)}
-                        className="pagination-button"
-                    >{totalPages}</button>
-                </li>
-            </>
-        )}
-
-        {/* Volgende knop */}
-        <li>
+        {/* Next button */}
+        <li className="pagination-item pagination-item-arrow">
           <button
             onClick={() => handlePageClick(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`pagination-button ${currentPage === totalPages ? 'disabled' : ''}`}
+            className={`pagination-btn pagination-arrow ${currentPage === totalPages ? "disabled" : ""}`}
             aria-label="Volgende pagina"
           >
-            &raquo;
+            ›
           </button>
         </li>
       </ul>
