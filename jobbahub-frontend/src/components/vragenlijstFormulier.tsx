@@ -135,9 +135,6 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
     const subjects = TOPICS.filter(t => t.type === 'interest');
     return (
       <div className="form-container form-container-wide">
-        <div className="flex justify-end mb-4">
-          <LanguageSwitcher />
-        </div>
         <h2 className="form-title">{title}</h2>
         <p className="form-description">{subtitle}</p>
 
