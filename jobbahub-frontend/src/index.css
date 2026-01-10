@@ -12,7 +12,7 @@
   --purple-link: #a855f7;
 
   /* Specifieke kleuren voor badges/clusters */
-  --cluster-bg: #fefce8;
+  --cluster-bg: #e8fee8;
   --cluster-border: #eab308;
   --cluster-text: #854d0e;
   --level-bg: #e0e7ff;
@@ -37,8 +37,8 @@
   --text-color: #f3f4f6;
   --text-muted: #9ca3af;
   --white: #ffffff;
-  --surface-color: #333333;
-  --surface-color-hover: #232323;
+  --surface-color: #1f1f1f;
+  --surface-color-hover: #1a1a1a;
   --border-color: #374151;
   --purple-link: #c084fc;
   --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
@@ -3199,7 +3199,7 @@ textarea.form-input {
   justify-content: center;
   text-align: center;
   padding: 60px 40px;
-  background-color: var(--white);
+  background-color: var(--surface-color);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   max-width: 800px;

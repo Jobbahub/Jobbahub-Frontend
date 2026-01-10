@@ -136,9 +136,13 @@ const Dashboard: React.FC = () => {
       {!hasResults ? (
         <div className="page-wrapper">
           {/* Hero Section */}
-          <div className="page-hero">
-            <h1 className="page-hero-title">{t("personal_dashboard")}</h1>
-          </div>
+    <div className="page-hero" style={{
+      backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(/images/heroes/trees.jpg)`,
+    }}>
+      <h1 className="page-hero-title hero-title-shadow">
+        {t("Persoonlijk Dashboard")}
+      </h1>
+    </div>
 
           <div className="container" style={{ marginTop: '40px' }}>
             <div className="dashboard-welcome-card" style={{ marginBottom: '40px' }}>

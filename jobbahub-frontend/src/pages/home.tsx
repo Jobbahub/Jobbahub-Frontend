@@ -6,8 +6,10 @@ const Home: React.FC = () => {
   return (
     <div className="home-wrapper">
       {/* Hero Section */}
-      <div className="home-hero">
-        <h1 className="home-hero-title">
+      <div className="home-hero" style={{
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(/images/heroes/trees.jpg)`,
+      }}>
+        <h1 className="home-hero-title hero-title-shadow">
           {t("HOME PAGE")}
         </h1>
       </div>
