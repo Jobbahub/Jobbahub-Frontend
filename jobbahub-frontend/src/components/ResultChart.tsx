@@ -186,15 +186,15 @@ const ResultChart: React.FC<ResultChartProps> = ({ title, data, className = '' }
                                         className="legend-color-dot"
                                         style={{ backgroundColor: slice.color }}
                                     />
-                                    <span className="legend-label-wrapper">
-                                        {t(slice.label)}
-                                        {renderScoreBadge(slice.score)}
-                                        {slice.isWeighted && (
-                                            <span className="badge badge-weighted ml-2" style={{ fontSize: '0.7rem', padding: '2px 6px' }}>
-                                                2x
-                                            </span>
-                                        )}
-                                    </span>
+                    <span className="legend-label-wrapper">
+                    <span className="legend-text">{t(slice.label)}</span>
+                    {renderScoreBadge(slice.score)}
+                    {slice.isWeighted && (
+                    <span className="badge badge-weighted" style={{ fontSize: '0.7rem', padding: '2px 6px' }}>
+                    2x
+                    </span>
+                    )}
+                    </span>
                                     <span className="legend-percent">{(slice.percent * 100).toFixed(0)}%</span>
                                 </li>
                             );
