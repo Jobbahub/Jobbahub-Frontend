@@ -85,8 +85,10 @@ const Profile: React.FC = () => {
 
   return (
     <div className="page-wrapper">
-      <div className="page-hero">
-        <h1 className="page-hero-title">{t("profile_page_title")}</h1>
+      <div className="page-hero" style={{
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(/images/heroes/trees.jpg)`,
+      }}>
+        <h1 className="page-hero-title hero-title-shadow">{t("profile_page_title")}</h1>
       </div>
 
       <div className="container profile-container">
