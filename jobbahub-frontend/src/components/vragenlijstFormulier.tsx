@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import LoadingSpinner from './LoadingSpinner';
 // import { useNavigate } from 'react-router-dom';
 import { apiService, VragenlijstData, AIRecommendation, ApiError } from '../services/apiService';
 import { IChoiceModule, ClusterRecommendation } from '../types';
@@ -121,7 +122,7 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
   if (loading) {
     return (
       <div className="container loading-container">
-        <div className="loading-spinner"></div>
+        <LoadingSpinner size="large" />
         <h2 className="form-title">{t('loading')}</h2>
         <p className="form-description loading-text">
           {t('ai_analyzing')}

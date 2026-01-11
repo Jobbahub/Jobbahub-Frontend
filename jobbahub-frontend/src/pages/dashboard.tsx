@@ -7,6 +7,7 @@ import { IChoiceModule } from '../types';
 import { TOPICS } from '../data/constants';
 import ModuleCard from '../components/moduleCard';
 import ResultChart, { ChartDataPoint } from '../components/ResultChart';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -126,7 +127,7 @@ const Dashboard: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="loading-spinner container" style={{ margin: '50px auto' }}></div>;
+    return <LoadingSpinner size="large" />;
   }
 
   const hasResults = aiRecs.length > 0 && userAnswers;
