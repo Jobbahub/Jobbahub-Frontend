@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import { useLanguage } from "../context/LanguageContext";
-import { ApiError, apiService } from "../services/apiService";
+import { ApiError, apiService, AIRecommendation } from "../services/apiService";
+import { IChoiceModule } from "../types";
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
   const { user, updateUser } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const [userName, setUserName] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -18,11 +19,37 @@ const Profile: React.FC = () => {
   const [formError, setFormError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  // Module swap state
+  const [allModules, setAllModules] = useState<IChoiceModule[]>([]);
+  const [recommendations, setRecommendations] = useState<AIRecommendation[]>([]);
+  const [showSwapModal, setShowSwapModal] = useState(false);
+  const [swapIndex, setSwapIndex] = useState<number | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [savingSwap, setSavingSwap] = useState(false);
+
   useEffect(() => {
     if (user) {
       setUserName(user.name || "");
+      
+      // Load recommendations from user data
+      if (user.vragenlijst_resultaten?.aanbevelingen) {
+        setRecommendations(user.vragenlijst_resultaten.aanbevelingen);
+      }
     }
   }, [user]);
+
+  // Fetch all modules for the swap search
+  useEffect(() => {
+    const fetchModules = async () => {
+      try {
+        const modules = await apiService.getModules();
+        setAllModules(modules);
+      } catch (err) {
+        console.error("Failed to fetch modules:", err);
+      }
+    };
+    fetchModules();
+  }, []);
 
   const handleOpenConfirmModal = (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,6 +96,7 @@ const Profile: React.FC = () => {
         const updatedUser = { ...user };
         delete updatedUser.vragenlijst_resultaten;
         updateUser(updatedUser);
+        setRecommendations([]);
         setSuccessMessage(t("reset_success"));
       } catch (e: any) {
         navigate("/error", {
@@ -83,10 +111,87 @@ const Profile: React.FC = () => {
     }
   };
 
+  // Module swap functions
+  const openSwapModal = (index: number) => {
+    setSwapIndex(index);
+    setSearchTerm("");
+    setShowSwapModal(true);
+  };
+
+  const closeSwapModal = () => {
+    setShowSwapModal(false);
+    setSwapIndex(null);
+    setSearchTerm("");
+  };
+
+  const getModuleName = (module: IChoiceModule) => {
+    if (language === 'en' && module.name_en) {
+      return module.name_en;
+    }
+    return module.name;
+  };
+
+  const filteredModules = allModules.filter((module) => {
+    const name = getModuleName(module).toLowerCase();
+    const search = searchTerm.toLowerCase();
+    return name.includes(search);
+  });
+
+  const handleSelectModule = async (module: IChoiceModule) => {
+    if (swapIndex === null || !user?.vragenlijst_resultaten) return;
+
+    setSavingSwap(true);
+
+    try {
+      // Create updated recommendations
+      const updatedRecs = [...recommendations];
+      updatedRecs[swapIndex] = {
+        name: module.name,
+        match_percentage: updatedRecs[swapIndex]?.match_percentage || 0,
+        waarom: t("Handmatig geselecteerd"),
+        studycredit: module.studycredit || 0,
+        category_scores: {}
+      };
+
+      // Save to backend
+      const updatedResults = {
+        ...user.vragenlijst_resultaten,
+        aanbevelingen: updatedRecs
+      };
+
+      await apiService.saveQuestionnaireResults(updatedResults);
+
+      // Update local state
+      setRecommendations(updatedRecs);
+      
+      // Update user context
+      const updatedUser = {
+        ...user,
+        vragenlijst_resultaten: updatedResults
+      };
+      updateUser(updatedUser);
+
+      setSuccessMessage(t("Module succesvol gewijzigd"));
+      closeSwapModal();
+    } catch (err: any) {
+      setFormError(err.message || t("Kon module niet wijzigen"));
+    } finally {
+      setSavingSwap(false);
+    }
+  };
+
+  // Find full module data for recommendations
+  const getModuleForRec = (rec: AIRecommendation): IChoiceModule | undefined => {
+    return allModules.find(m => 
+      m.name.toLowerCase().includes(rec.name.toLowerCase()) ||
+      rec.name.toLowerCase().includes(m.name.toLowerCase())
+    );
+  };
+
   return (
     <div className="page-wrapper">
       <div className="page-hero">
-        <h1 className="page-hero-title hero-title-shadow">{t("profile_page_title")}</h1>
+        <h1 className="page-hero-title">{t("profile_page_title")}</h1>
       </div>
 
       <div className="container profile-container">
@@ -95,9 +200,7 @@ const Profile: React.FC = () => {
           <div className="profile-form-success">{successMessage}</div>
         )}
 
-        <div
-          className="about-content-box profile-content-box"
-        >
+        <div className="about-content-box profile-content-box">
           <form onSubmit={handleOpenConfirmModal} className="login-form">
             <div className="form-group">
               <label className="form-label">{t("username_label")}</label>
@@ -133,8 +236,7 @@ const Profile: React.FC = () => {
 
             <button
               type="submit"
-              className={`btn btn-primary w-full ${loading ? "btn-disabled" : ""
-                }`}
+              className={`btn btn-primary w-full ${loading ? "btn-disabled" : ""}`}
               disabled={loading}
             >
               {loading ? t("saving") : t("save_changes")}
@@ -151,8 +253,46 @@ const Profile: React.FC = () => {
             </button>
           </form>
         </div>
+
+        {/* Recommended Modules Section */}
+        {recommendations.length > 0 && (
+          <div className="profile-modules-section">
+            <h2 className="profile-modules-title">{t("Jouw Aanbevolen Modules")}</h2>
+            <p className="profile-modules-subtitle">
+              {t("Klik op 'Wijzigen' om een module te vervangen door een andere.")}
+            </p>
+            
+            <div className="profile-modules-list">
+              {recommendations.map((rec, index) => {
+                const moduleData = getModuleForRec(rec);
+                return (
+                  <div key={index} className="profile-module-item">
+                    <div className="profile-module-info">
+                      <span className="profile-module-rank">#{index + 1}</span>
+                      <div className="profile-module-details">
+                        <span className="profile-module-name">
+                          {moduleData ? getModuleName(moduleData) : rec.name}
+                        </span>
+                        <span className="profile-module-match">
+                          {rec.match_percentage}% match
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      className="btn btn-swap"
+                      onClick={() => openSwapModal(index)}
+                    >
+                      {t("Wijzigen")}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
+      {/* Password Confirm Modal */}
       {showModal && (
         <div className="profile-modal-overlay">
           <div className="profile-modal-content">
@@ -184,6 +324,61 @@ const Profile: React.FC = () => {
               >
                 {t("confirm")}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Swap Module Modal */}
+      {showSwapModal && (
+        <div className="profile-modal-overlay">
+          <div className="swap-modal-content">
+            <div className="swap-modal-header">
+              <h3>{t("Module Wijzigen")}</h3>
+              <button className="swap-modal-close" onClick={closeSwapModal}>
+                ×
+              </button>
+            </div>
+            
+            <div className="swap-modal-body">
+              <p className="swap-modal-subtitle">
+                {t("Zoek en selecteer een nieuwe module")}
+              </p>
+              
+              <input
+                type="text"
+                className="form-input swap-search-input"
+                placeholder={t("Zoek op modulenaam...")}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                autoFocus
+              />
+
+              <div className="swap-results-list">
+                {searchTerm.length > 0 && filteredModules.length === 0 && (
+                  <div className="swap-no-results">
+                    {t("Geen modules gevonden")}
+                  </div>
+                )}
+                
+                {filteredModules.slice(0, 10).map((module) => (
+                  <div
+                    key={module._id}
+                    className="swap-result-item"
+                    onClick={() => !savingSwap && handleSelectModule(module)}
+                  >
+                    <div className="swap-result-info">
+                      <span className="swap-result-name">{getModuleName(module)}</span>
+                      <span className="swap-result-meta">
+                        {module.studycredit} EC • {module.location || t("Onbekend")}
+                      </span>
+                    </div>
+                    <span className="swap-result-select">
+                      {savingSwap ? "..." : t("Selecteer")}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
