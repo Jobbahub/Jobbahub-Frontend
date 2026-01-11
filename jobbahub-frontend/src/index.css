@@ -4344,3 +4344,119 @@ textarea.form-input {
   border-color: var(--primary-color);
   background-color: rgba(227, 128, 148, 0.1);
 }
+
+/* Additional styles for add/remove module functionality */
+.profile-module-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-remove {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-remove:hover {
+  background-color: #dc2626;
+  border-color: #dc2626;
+  color: white;
+}
+
+.btn-add-module {
+  width: 100%;
+  margin-top: 16px;
+  padding: 14px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  background-color: transparent;
+  border: 2px dashed var(--primary-color);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-add-module:hover {
+  background-color: var(--primary-color);
+  border-style: solid;
+  color: white;
+}
+
+.profile-modules-empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-muted);
+  background-color: var(--bg-color);
+  border: 1px dashed var(--border-color);
+  border-radius: 12px;
+}
+
+.profile-module-manual {
+  font-style: italic;
+}
+
+/* Dark mode additions */
+[data-theme="dark"] .btn-remove {
+  border-color: var(--border-color);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .btn-remove:hover {
+  background-color: #dc2626;
+  border-color: #dc2626;
+  color: white;
+}
+
+[data-theme="dark"] .btn-add-module {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+[data-theme="dark"] .btn-add-module:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+[data-theme="dark"] .profile-modules-empty {
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
+}
+
+/* Dashboard questionnaire prompt for manual module users */
+.dashboard-questionnaire-prompt {
+  text-align: center;
+  padding: 40px 30px;
+  background-color: var(--surface-color);
+  border-radius: var(--radius);
+  border: 2px dashed var(--border-color);
+}
+
+.dashboard-questionnaire-prompt h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 8px;
+}
+
+.dashboard-questionnaire-prompt p {
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+[data-theme="dark"] .dashboard-questionnaire-prompt {
+  background-color: var(--surface-color);
+  border-color: var(--border-color);
+}

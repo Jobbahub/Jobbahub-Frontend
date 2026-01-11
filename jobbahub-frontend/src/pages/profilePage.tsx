@@ -5,6 +5,8 @@ import { useLanguage } from "../context/LanguageContext";
 import { ApiError, apiService, AIRecommendation } from "../services/apiService";
 import { IChoiceModule } from "../types";
 
+const MAX_MODULES = 5;
+
 const Profile: React.FC = () => {
   const navigate = useNavigate();
   const { user, updateUser } = useAuth();
@@ -24,6 +26,7 @@ const Profile: React.FC = () => {
   const [recommendations, setRecommendations] = useState<AIRecommendation[]>([]);
   const [showSwapModal, setShowSwapModal] = useState(false);
   const [swapIndex, setSwapIndex] = useState<number | null>(null);
+  const [isAddingNew, setIsAddingNew] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [savingSwap, setSavingSwap] = useState(false);
 
@@ -114,6 +117,14 @@ const Profile: React.FC = () => {
   // Module swap functions
   const openSwapModal = (index: number) => {
     setSwapIndex(index);
+    setIsAddingNew(false);
+    setSearchTerm("");
+    setShowSwapModal(true);
+  };
+
+  const openAddModal = () => {
+    setSwapIndex(null);
+    setIsAddingNew(true);
     setSearchTerm("");
     setShowSwapModal(true);
   };
@@ -121,6 +132,7 @@ const Profile: React.FC = () => {
   const closeSwapModal = () => {
     setShowSwapModal(false);
     setSwapIndex(null);
+    setIsAddingNew(false);
     setSearchTerm("");
   };
 
@@ -138,24 +150,50 @@ const Profile: React.FC = () => {
   });
 
   const handleSelectModule = async (module: IChoiceModule) => {
-    if (swapIndex === null || !user?.vragenlijst_resultaten) return;
+    if (!user) return;
 
     setSavingSwap(true);
+    setFormError(null);
 
     try {
-      // Create updated recommendations
-      const updatedRecs = [...recommendations];
-      updatedRecs[swapIndex] = {
-        name: module.name,
-        match_percentage: updatedRecs[swapIndex]?.match_percentage || 0,
-        waarom: t("Handmatig geselecteerd"),
-        studycredit: module.studycredit || 0,
-        category_scores: {}
-      };
+      let updatedRecs = [...recommendations];
 
-      // Save to backend
+      if (isAddingNew) {
+        // Add new module
+        const newRec: AIRecommendation = {
+          name: module.name,
+          match_percentage: 0,
+          waarom: "Handmatig toegevoegd",
+          studycredit: module.studycredit || 0,
+          category_scores: {}
+        };
+        updatedRecs.push(newRec);
+      } else if (swapIndex !== null) {
+        // Swap existing module
+        updatedRecs[swapIndex] = {
+          name: module.name,
+          match_percentage: updatedRecs[swapIndex]?.match_percentage || 0,
+          waarom: "Handmatig geselecteerd",
+          studycredit: module.studycredit || 0,
+          category_scores: {}
+        };
+      }
+
+      // Build the complete results object with all required fields
+      const existingResults = user.vragenlijst_resultaten || {};
+      
       const updatedResults = {
-        ...user.vragenlijst_resultaten,
+        // Provide default empty antwoorden if not present
+        antwoorden: existingResults.antwoorden || {
+          keuze_taal: null,
+          keuze_locatie: null,
+          keuze_punten: null,
+          open_antwoord: "",
+          knoppen_input: {}
+        },
+        // Keep existing cluster_suggesties or empty array
+        cluster_suggesties: existingResults.cluster_suggesties || [],
+        // Updated aanbevelingen
         aanbevelingen: updatedRecs
       };
 
@@ -171,12 +209,49 @@ const Profile: React.FC = () => {
       };
       updateUser(updatedUser);
 
-      setSuccessMessage(t("Module succesvol gewijzigd"));
+      setSuccessMessage(isAddingNew ? t("Module succesvol toegevoegd") : t("Module succesvol gewijzigd"));
       closeSwapModal();
     } catch (err: any) {
+      console.error("Error saving module:", err);
       setFormError(err.message || t("Kon module niet wijzigen"));
     } finally {
       setSavingSwap(false);
+    }
+  };
+
+  const handleRemoveModule = async (index: number) => {
+    if (!user || !window.confirm(t("Weet je zeker dat je deze module wilt verwijderen?"))) return;
+
+    try {
+      const updatedRecs = recommendations.filter((_, i) => i !== index);
+
+      const existingResults = user.vragenlijst_resultaten || {};
+      
+      const updatedResults = {
+        antwoorden: existingResults.antwoorden || {
+          keuze_taal: null,
+          keuze_locatie: null,
+          keuze_punten: null,
+          open_antwoord: "",
+          knoppen_input: {}
+        },
+        cluster_suggesties: existingResults.cluster_suggesties || [],
+        aanbevelingen: updatedRecs
+      };
+
+      await apiService.saveQuestionnaireResults(updatedResults);
+
+      setRecommendations(updatedRecs);
+      
+      const updatedUser = {
+        ...user,
+        vragenlijst_resultaten: updatedResults
+      };
+      updateUser(updatedUser);
+
+      setSuccessMessage(t("Module verwijderd"));
+    } catch (err: any) {
+      setFormError(err.message || t("Kon module niet verwijderen"));
     }
   };
 
@@ -254,42 +329,73 @@ const Profile: React.FC = () => {
           </form>
         </div>
 
-        {/* Recommended Modules Section */}
-        {recommendations.length > 0 && (
-          <div className="profile-modules-section">
-            <h2 className="profile-modules-title">{t("Jouw Aanbevolen Modules")}</h2>
-            <p className="profile-modules-subtitle">
-              {t("Klik op 'Wijzigen' om een module te vervangen door een andere.")}
-            </p>
-            
-            <div className="profile-modules-list">
-              {recommendations.map((rec, index) => {
-                const moduleData = getModuleForRec(rec);
-                return (
-                  <div key={index} className="profile-module-item">
-                    <div className="profile-module-info">
-                      <span className="profile-module-rank">#{index + 1}</span>
-                      <div className="profile-module-details">
-                        <span className="profile-module-name">
-                          {moduleData ? getModuleName(moduleData) : rec.name}
-                        </span>
+        {/* Modules Section - Always visible */}
+        <div className="profile-modules-section">
+          <h2 className="profile-modules-title">{t("Mijn Modules")}</h2>
+          <p className="profile-modules-subtitle">
+            {recommendations.length > 0 
+              ? t("Beheer je geselecteerde modules. Je kunt modules wijzigen, verwijderen of toevoegen.")
+              : t("Je hebt nog geen modules geselecteerd. Voeg modules toe of vul de vragenlijst in voor aanbevelingen.")}
+          </p>
+          
+          <div className="profile-modules-list">
+            {recommendations.map((rec, index) => {
+              const moduleData = getModuleForRec(rec);
+              return (
+                <div key={index} className="profile-module-item">
+                  <div className="profile-module-info">
+                    <span className="profile-module-rank">#{index + 1}</span>
+                    <div className="profile-module-details">
+                      <span className="profile-module-name">
+                        {moduleData ? getModuleName(moduleData) : rec.name}
+                      </span>
+                      {rec.match_percentage > 0 ? (
                         <span className="profile-module-match">
                           {rec.match_percentage}% match
                         </span>
-                      </div>
+                      ) : (
+                        <span className="profile-module-match profile-module-manual">
+                          {t("Handmatig toegevoegd")}
+                        </span>
+                      )}
                     </div>
+                  </div>
+                  <div className="profile-module-actions">
                     <button
                       className="btn btn-swap"
                       onClick={() => openSwapModal(index)}
                     >
                       {t("Wijzigen")}
                     </button>
+                    <button
+                      className="btn btn-remove"
+                      onClick={() => handleRemoveModule(index)}
+                    >
+                      ×
+                    </button>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
+
+            {/* Empty state */}
+            {recommendations.length === 0 && (
+              <div className="profile-modules-empty">
+                <p>{t("Nog geen modules toegevoegd")}</p>
+              </div>
+            )}
           </div>
-        )}
+
+          {/* Add module button */}
+          {recommendations.length < MAX_MODULES && (
+            <button
+              className="btn btn-add-module"
+              onClick={openAddModal}
+            >
+              + {t("Module toevoegen")}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Password Confirm Modal */}
@@ -329,12 +435,12 @@ const Profile: React.FC = () => {
         </div>
       )}
 
-      {/* Swap Module Modal */}
+      {/* Swap/Add Module Modal */}
       {showSwapModal && (
         <div className="profile-modal-overlay">
           <div className="swap-modal-content">
             <div className="swap-modal-header">
-              <h3>{t("Module Wijzigen")}</h3>
+              <h3>{isAddingNew ? t("Module Toevoegen") : t("Module Wijzigen")}</h3>
               <button className="swap-modal-close" onClick={closeSwapModal}>
                 ×
               </button>
@@ -342,7 +448,7 @@ const Profile: React.FC = () => {
             
             <div className="swap-modal-body">
               <p className="swap-modal-subtitle">
-                {t("Zoek en selecteer een nieuwe module")}
+                {t("Zoek en selecteer een module")}
               </p>
               
               <input

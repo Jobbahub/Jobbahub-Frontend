@@ -21,23 +21,25 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     const loadDashboardData = async () => {
-      // 1. Get latest user data to ensure we have results
-      // The user object from context might be stale or partial depending on implementation, 
-      // but usually strictly updated. We'll trust context or fetch me if needed. 
-      // Let's use context user first, but check if we need modules.
       if (user?.vragenlijst_resultaten) {
         const results = user.vragenlijst_resultaten;
+        
+        // Load recommendations if they exist
         if (results.aanbevelingen && results.aanbevelingen.length > 0) {
           setAiRecs(results.aanbevelingen.slice(0, 5)); // Top 5
+        }
+        
+        // Load answers if they exist (may not exist for manually added modules)
+        if (results.antwoorden) {
           setUserAnswers(results.antwoorden);
+        }
 
-          // We need modules to display cards
-          try {
-            const modules = await apiService.getModules();
-            setDbModules(modules);
-          } catch (error) {
-            console.error("Failed to fetch modules", error);
-          }
+        // We need modules to display cards
+        try {
+          const modules = await apiService.getModules();
+          setDbModules(modules);
+        } catch (error) {
+          console.error("Failed to fetch modules", error);
         }
       }
       setLoading(false);
@@ -63,31 +65,12 @@ const Dashboard: React.FC = () => {
   };
 
   // --- Chart Logic Duplication (from VragenlijstResultaten) ---
-  // Ideally this should be a hook or util
-
   const generateGlobalColorMap = (ids: string[]) => {
-    // Kelly's colors for maximum contrast
     const KELLY_COLORS = [
-      "#FFB300", // Vivid Yellow
-      "#803E75", // Strong Purple
-      "#FF6800", // Vivid Orange
-      "#A6BDD7", // Very Light Blue
-      "#C10020", // Vivid Red
-      "#CEA262", // Grayish Yellow
-      "#817066", // Medium Gray
-      "#007D34", // Vivid Green
-      "#F6768E", // Strong Purplish Pink
-      "#00538A", // Strong Blue
-      "#FF7A5C", // Strong Yellowish Pink
-      "#53377A", // Strong Violet
-      "#FF8E00", // Vivid Orange Yellow
-      "#B32851", // Strong Purplish Red
-      "#F4C800", // Vivid Greenish Yellow
-      "#7F180D", // Strong Reddish Brown
-      "#93AA00", // Vivid Yellowish Green
-      "#593315", // Deep Yellowish Brown
-      "#F13A13", // Vivid Reddish Orange
-      "#232C16", // Dark Olive Green
+      "#FFB300", "#803E75", "#FF6800", "#A6BDD7", "#C10020",
+      "#CEA262", "#817066", "#007D34", "#F6768E", "#00538A",
+      "#FF7A5C", "#53377A", "#FF8E00", "#B32851", "#F4C800",
+      "#7F180D", "#93AA00", "#593315", "#F13A13", "#232C16",
     ];
 
     return ids.reduce((acc, id, index) => {
@@ -130,15 +113,18 @@ const Dashboard: React.FC = () => {
     return <LoadingSpinner size="large" />;
   }
 
-  const hasResults = aiRecs.length > 0 && userAnswers;
+  // Check if user has any modules (either from questionnaire or manually added)
+  const hasModules = aiRecs.length > 0;
+  // Check if user has questionnaire results (for showing charts)
+  const hasQuestionnaireResults = userAnswers !== null;
 
   return (
     <div className="page-wrapper">
-      {!hasResults ? (
+      {!hasModules ? (
+        // No modules at all - show questionnaire prompt
         <div className="page-wrapper dashboard-wrapper">
-          {/* Hero Section */}
-          <div className="home-hero">
-            <h1 className="page-hero-title hero-title-shadow">
+          <div className="page-hero">
+            <h1 className="page-hero-title">
               {t("Persoonlijk Dashboard")}
             </h1>
           </div>
@@ -189,13 +175,12 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       ) : (
+        // Has modules - show dashboard with modules
         <>
-          {/* Hero Section */}
           <div className="page-hero">
             <h1 className="page-hero-title">{t("personal_dashboard")}</h1>
           </div>
 
-          {/* Main Content */}
           <div className="container" style={{ marginTop: '40px' }}>
             <div className="dashboard-welcome-card">
               <h2 className="text-2xl font-bold mb-2">
@@ -214,12 +199,17 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
 
-            {/* Top 5 Recommendations */}
+            {/* Modules Section */}
             <div className="dashboard-section-wrapper">
-              <h2 className="dashboard-section-title">{t("Aanbevolen voor jou (Top 5)")}</h2>
+              <h2 className="dashboard-section-title">
+                {hasQuestionnaireResults ? t("Aanbevolen voor jou (Top 5)") : t("Mijn Modules")}
+              </h2>
               <div className="centered-modules-grid">
                 {aiRecs.map((rec, index) => {
-                  const foundModule = dbModules.find(m => m.name.toLowerCase().includes(rec.name.toLowerCase()));
+                  const foundModule = dbModules.find(m => 
+                    m.name.toLowerCase().includes(rec.name.toLowerCase()) ||
+                    rec.name.toLowerCase().includes(m.name.toLowerCase())
+                  );
                   if (!foundModule) return null;
 
                   return (
@@ -227,8 +217,8 @@ const Dashboard: React.FC = () => {
                       key={`dash-rec-${index}`}
                       module={foundModule}
                       onClick={handleViewDetails}
-                      matchPercentage={rec.match_percentage}
-                      explanation={getExplanation(rec.waarom)}
+                      matchPercentage={rec.match_percentage > 0 ? rec.match_percentage : undefined}
+                      explanation={rec.match_percentage > 0 ? getExplanation(rec.waarom) : undefined}
                       isCluster={false}
                       categoryScores={rec.category_scores}
                       userAnswers={userAnswers}
@@ -239,32 +229,50 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
 
-            {/* Charts */}
-            <div className="dashboard-section-wrapper">
-              <h2 className="dashboard-section-title">
-                {t("Jouw Profiel Verdeling")}
-              </h2>
-              <div className="dashboard-charts-grid">
-                <div className="chart-container">
-                  <ResultChart
-                    title={t("Interesses (Vakgebieden)")}
-                    data={prepareChartData(categories.vakgebieden)}
-                  />
-                </div>
-                <div className="chart-container">
-                  <ResultChart
-                    title={t("Waarden")}
-                    data={prepareChartData(categories.waarden)}
-                  />
-                </div>
-                <div className="chart-container">
-                  <ResultChart
-                    title={t("Doelen")}
-                    data={prepareChartData(categories.doelen)}
-                  />
+            {/* Charts - Only show if user has questionnaire results */}
+            {hasQuestionnaireResults && (
+              <div className="dashboard-section-wrapper">
+                <h2 className="dashboard-section-title">
+                  {t("Jouw Profiel Verdeling")}
+                </h2>
+                <div className="dashboard-charts-grid">
+                  <div className="chart-container">
+                    <ResultChart
+                      title={t("Interesses (Vakgebieden)")}
+                      data={prepareChartData(categories.vakgebieden)}
+                    />
+                  </div>
+                  <div className="chart-container">
+                    <ResultChart
+                      title={t("Waarden")}
+                      data={prepareChartData(categories.waarden)}
+                    />
+                  </div>
+                  <div className="chart-container">
+                    <ResultChart
+                      title={t("Doelen")}
+                      data={prepareChartData(categories.doelen)}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
+
+            {/* Show prompt to take questionnaire if user only has manual modules */}
+            {!hasQuestionnaireResults && (
+              <div className="dashboard-section-wrapper">
+                <div className="dashboard-questionnaire-prompt">
+                  <h3>{t("Wil je gepersonaliseerde aanbevelingen?")}</h3>
+                  <p>{t("Vul de vragenlijst in om modules te ontdekken die perfect bij jouw interesses passen.")}</p>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => navigate('/vragenlijst')}
+                  >
+                    {t("Start de vragenlijst")}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </>
       )}
