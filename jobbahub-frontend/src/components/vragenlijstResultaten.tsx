@@ -101,132 +101,137 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
   };
 
   return (
-    <div className="container">
-      <h1 className="page-header center-text">{t("Jouw Resultaten")}</h1>
-
-      <div className="centered-btn-container">
-        <button className="btn btn-secondary" onClick={onRetry}>
-          {t("Opnieuw invullen")}
-        </button>
+    <div className="page-wrapper">
+      <div className="page-hero">
+        <h1 className="page-hero-title hero-title-shadow">{t("Jouw Resultaten")}</h1>
       </div>
 
-      {aiRecs.length === 0 ? (
-        <div className="form-container no-matches-box">
-          <h3 className="form-title">{t("Geen matches gevonden")}</h3>
-          <p>{t("Helaas heeft de AI geen modules kunnen vinden.")}</p>
+      <div className="container" style={{ marginTop: '40px' }}>
+
+        <div className="centered-btn-container">
+          <button className="btn btn-secondary" onClick={onRetry}>
+            {t("Opnieuw invullen")}
+          </button>
         </div>
-      ) : (
-        <>
-          <p className="page-intro center-text">
-            {t("Op basis van jouw antwoorden passen deze modules het beste bij jou.")}
-          </p>
-          <div className="centered-modules-grid grid-container-margin-bottom">
-            {aiRecs.map((rec, index) => {
-              const foundModule = dbModules.find(m => m.name.toLowerCase().includes(rec.name.toLowerCase()));
-              if (!foundModule) return null;
 
-              return (
-                <ModuleCard
-                  key={`rec-${index}`}
-                  module={foundModule}
-                  onClick={handleViewDetails}
-                  matchPercentage={rec.match_percentage}
-                  explanation={getExplanation(rec.waarom)}
-                  isCluster={false}
-                  categoryScores={rec.category_scores}
-                  userAnswers={userAnswers}
-                  rank={index + 1}
-                />
-              );
-            })}
+        {aiRecs.length === 0 ? (
+          <div className="form-container no-matches-box">
+            <h3 className="form-title">{t("Geen matches gevonden")}</h3>
+            <p>{t("Helaas heeft de AI geen modules kunnen vinden.")}</p>
           </div>
+        ) : (
+          <>
+            <p className="page-intro center-text">
+              {t("Op basis van jouw antwoorden passen deze modules het beste bij jou.")}
+            </p>
+            <div className="centered-modules-grid grid-container-margin-bottom">
+              {aiRecs.map((rec, index) => {
+                const foundModule = dbModules.find(m => m.name.toLowerCase().includes(rec.name.toLowerCase()));
+                if (!foundModule) return null;
 
-          {clusterRecs.length > 0 && (
-            <div className="section-divider">
-              <h2 className="form-title center-text section-title-large">{t("Ook interessant voor jou")}</h2>
-              <div className="section-intro-text">
-                <p dangerouslySetInnerHTML={{ __html: t("Naast je directe matches hebben we ook gekeken naar je <strong>nummer 1 match</strong>. De onderstaande modules vallen binnen hetzelfde vakgebied (cluster) als die match. Binnen dit cluster hebben we de <strong>populairste modules</strong> geselecteerd die ook aansluiten bij jouw trefwoorden.") }} />
-              </div>
-
-              <div className="centered-modules-grid">
-                {clusterRecs.map((rec, index) => {
-                  const foundModule = dbModules.find(m => m.name.toLowerCase().includes(rec.name.toLowerCase()));
-                  if (!foundModule) return null;
-
-                  return (
-                    <ModuleCard
-                      key={`cluster-${index}`}
-                      module={foundModule}
-                      onClick={handleViewDetails}
-                      explanation={getExplanation(rec.waarom)}
-                      isCluster={true}
-                    />
-                  );
-                })}
-              </div>
+                return (
+                  <ModuleCard
+                    key={`rec-${index}`}
+                    module={foundModule}
+                    onClick={handleViewDetails}
+                    matchPercentage={rec.match_percentage}
+                    explanation={getExplanation(rec.waarom)}
+                    isCluster={false}
+                    categoryScores={rec.category_scores}
+                    userAnswers={userAnswers}
+                    rank={index + 1}
+                  />
+                );
+              })}
             </div>
-          )}
-        </>
-      )}
 
-      {userAnswers && (
-        <div className="profile-section-container">
-          <h2 className="form-title center-text section-title-large">
-            {t("Jouw Profiel")}
-          </h2>
-
-          <div className="results-summary-grid">
-            <div className="result-column">
-              <h4>{t("Algemeen & Voorkeuren")}</h4>
-              <ul className="detail-list detail-list-clean">
-                <li>
-                  <strong>{t("Taal")}</strong>
-                  <span>{userAnswers.keuze_taal ? t(userAnswers.keuze_taal) : t("Geen voorkeur")}</span>
-                </li>
-                <li>
-                  <strong>{t("Locatie")}</strong>
-                  <span>{userAnswers.keuze_locatie ? t(userAnswers.keuze_locatie) : t("Geen voorkeur")}</span>
-                </li>
-                <li>
-                  <strong>{t("Studiepunten")}</strong>
-                  <span>{userAnswers.keuze_punten ? `${userAnswers.keuze_punten} EC` : t("Geen voorkeur")}</span>
-                </li>
-              </ul>
-              {userAnswers.open_antwoord && (
-                <div className="profile-answer-block">
-                  <span className="profile-answer-label">{t("Jouw Toelichting")}:</span>
-                  <div className="profile-answer-text">
-                    "{userAnswers.open_antwoord}"
-                  </div>
+            {clusterRecs.length > 0 && (
+              <div className="section-divider">
+                <h2 className="form-title center-text section-title-large">{t("Ook interessant voor jou")}</h2>
+                <div className="section-intro-text">
+                  <p dangerouslySetInnerHTML={{ __html: t("Naast je directe matches hebben we ook gekeken naar je <strong>nummer 1 match</strong>. De onderstaande modules vallen binnen hetzelfde vakgebied (cluster) als die match. Binnen dit cluster hebben we de <strong>populairste modules</strong> geselecteerd die ook aansluiten bij jouw trefwoorden.") }} />
                 </div>
-              )}
-            </div>
 
-            {/* Column 2: Interests Chart */}
-            <div className="chart-container">
-              <ResultChart
-                title={t("Interesses (Vakgebieden)")}
-                data={prepareChartData(categories.vakgebieden)}
-                colorTheme="blue"
-              />
-            </div>
+                <div className="centered-modules-grid">
+                  {clusterRecs.map((rec, index) => {
+                    const foundModule = dbModules.find(m => m.name.toLowerCase().includes(rec.name.toLowerCase()));
+                    if (!foundModule) return null;
 
-            {/* Column 3: Values & Goals Charts */}
-            <div className="chart-container">
-              <ResultChart
-                title={t("Waarden")}
-                data={prepareChartData(categories.waarden)}
-                colorTheme="green"
-              />
-              <ResultChart
-                title={t("Doelen")}
-                data={prepareChartData(categories.doelen)}
-                colorTheme="purple"
-              />
+                    return (
+                      <ModuleCard
+                        key={`cluster-${index}`}
+                        module={foundModule}
+                        onClick={handleViewDetails}
+                        explanation={getExplanation(rec.waarom)}
+                        isCluster={true}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
+        {userAnswers && (
+          <div className="profile-section-container">
+            <h2 className="form-title center-text section-title-large">
+              {t("Jouw Profiel")}
+            </h2>
+
+            <div className="results-summary-grid">
+              <div className="result-column">
+                <h4>{t("Algemeen & Voorkeuren")}</h4>
+                <ul className="detail-list detail-list-clean">
+                  <li>
+                    <strong>{t("Taal")}</strong>
+                    <span>{userAnswers.keuze_taal ? t(userAnswers.keuze_taal) : t("Geen voorkeur")}</span>
+                  </li>
+                  <li>
+                    <strong>{t("Locatie")}</strong>
+                    <span>{userAnswers.keuze_locatie ? t(userAnswers.keuze_locatie) : t("Geen voorkeur")}</span>
+                  </li>
+                  <li>
+                    <strong>{t("Studiepunten")}</strong>
+                    <span>{userAnswers.keuze_punten ? `${userAnswers.keuze_punten} EC` : t("Geen voorkeur")}</span>
+                  </li>
+                </ul>
+                {userAnswers.open_antwoord && (
+                  <div className="profile-answer-block">
+                    <span className="profile-answer-label">{t("Jouw Toelichting")}:</span>
+                    <div className="profile-answer-text">
+                      "{userAnswers.open_antwoord}"
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Column 2: Interests Chart */}
+              <div className="chart-container">
+                <ResultChart
+                  title={t("Interesses (Vakgebieden)")}
+                  data={prepareChartData(categories.vakgebieden)}
+                  colorTheme="blue"
+                />
+              </div>
+
+              {/* Column 3: Values & Goals Charts */}
+              <div className="chart-container">
+                <ResultChart
+                  title={t("Waarden")}
+                  data={prepareChartData(categories.waarden)}
+                  colorTheme="green"
+                />
+                <ResultChart
+                  title={t("Doelen")}
+                  data={prepareChartData(categories.doelen)}
+                  colorTheme="purple"
+                />
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

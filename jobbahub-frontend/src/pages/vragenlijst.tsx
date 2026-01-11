@@ -109,26 +109,28 @@ const Vragenlijst: React.FC = () => {
   };
 
   return (
-    <div className="page-content">
-      {saveError && (
-        <div className="container form-error" style={{ marginBottom: '20px', padding: '10px', background: '#fee2e2', color: '#b91c1c', borderRadius: '4px' }}>
-          {saveError}
-        </div>
-      )}
-      {!showResults ? (
-        // We moeten de VragenlijstFormulier component ook vertellen dat hij cluster data moet doorgeven. 
-        // Zie stap 2b hieronder voor de aanpassing in VragenlijstFormulier.
-        <VragenlijstFormulier onComplete={handleFormComplete} />
-      ) : (
-        <VragenlijstResultaten
-          aiRecs={aiRecs}
-          clusterRecs={clusterRecs} // NIEUW: Doorgeven
-          dbModules={dbModules}
-          userAnswers={userAnswers}
-          onRetry={handleRetry}
-        />
-      )}
-    </div>
+    <>
+      <div className="page-content-inner">
+        {saveError && (
+          <div className="container form-error" style={{ marginBottom: '20px', padding: '10px', background: '#fee2e2', color: '#b91c1c', borderRadius: '4px' }}>
+            {saveError}
+          </div>
+        )}
+        {!showResults ? (
+          // We moeten de VragenlijstFormulier component ook vertellen dat hij cluster data moet doorgeven. 
+          // Zie stap 2b hieronder voor de aanpassing in VragenlijstFormulier.
+          <VragenlijstFormulier onComplete={handleFormComplete} />
+        ) : (
+          <VragenlijstResultaten
+            aiRecs={aiRecs}
+            clusterRecs={clusterRecs} // NIEUW: Doorgeven
+            dbModules={dbModules}
+            userAnswers={userAnswers}
+            onRetry={handleRetry}
+          />
+        )}
+      </div>
+    </>
   );
 };
 

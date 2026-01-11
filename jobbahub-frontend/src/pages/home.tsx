@@ -6,8 +6,8 @@ const Home: React.FC = () => {
   return (
     <div className="home-wrapper">
       {/* Hero Section */}
-      <div className="home-hero">
-        <h1 className="home-hero-title hero-title-shadow">
+      <div className="page-hero">
+        <h1 className="page-hero-title hero-title-shadow">
           {t("HOME PAGE")}
         </h1>
       </div>
