@@ -91,13 +91,10 @@ const ModuleDetail: React.FC = () => {
   if (error || !module) return <div className="container form-error">{error || t("Ongeldig dataformaat ontvangen.")}</div>;
 
   const tags = parseTags(module.tags_list);
-  const heroImageUrl = getHeroImageUrl(module.id);
 
   return (
     <div className="page-wrapper">
-      <div className="static-page-hero" style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${heroImageUrl})`,
-      }}>
+      <div className="static-page-hero">
         <h1 className="page-hero-title hero-title-shadow">
           {getTranslatedContent('name')}
         </h1>
