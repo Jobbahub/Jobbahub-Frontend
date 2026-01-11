@@ -70,8 +70,14 @@
 body {
   font-family: "Frutiger LT STD 77 Black Condensed", helvetica, sans-serif;
   background-color: var(--bg-color);
-  color: var(--text-color);
   line-height: 1.6;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.02em;
+  /* Modern, tighter tracking */
 }
 
 a {
@@ -180,7 +186,7 @@ button {
 .page-hero-title {
   font-size: 3rem;
   font-weight: bold;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   color: white;
   text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   position: relative;
@@ -253,14 +259,26 @@ button {
 
 /* --- Header --- */
 .site-header {
-  background-color: var(--surface-color);
+  background-color: rgba(255, 255, 255, 0.85);
+  /* Glassmorphism */
+  backdrop-filter: blur(12px);
+  /* Frosted Glass */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  /* Subtle border */
   height: var(--header-height);
-  box-shadow: var(--shadow);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  /* Softer shadow */
   display: flex;
   align-items: center;
   position: sticky;
   top: 0;
   z-index: 100;
+}
+
+[data-theme='dark'] .site-header {
+  background-color: rgba(19, 19, 19, 0.85);
+  /* Dark Glassmorphism */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .header-grid {
@@ -680,8 +698,9 @@ button {
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px) scale(1.01);
+  box-shadow: 0 15px 30px -5px rgba(200, 16, 46, 0.25);
+  /* Premium Red Glow */
   border-color: var(--primary-color);
 }
 
