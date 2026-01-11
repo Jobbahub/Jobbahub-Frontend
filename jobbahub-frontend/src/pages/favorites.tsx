@@ -78,9 +78,7 @@ const Favorites: React.FC = () => {
     return (
         <div className="page-wrapper">
             {/* Hero Section */}
-            <div className="page-hero" style={{
-                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(/images/heroes/trees.jpg)`,
-            }}>
+            <div className="page-hero">
                 <h1 className="page-hero-title hero-title-shadow">{t("Mijn Favorieten")}</h1>
             </div>
 
