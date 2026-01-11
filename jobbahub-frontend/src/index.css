@@ -215,10 +215,10 @@ button {
   position: relative;
   overflow: hidden;
   color: white;
+  background: linear-gradient(135deg, var(--hero-gradient-start) 0%, var(--hero-gradient-end) 100%);
+  background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-
-  background: linear-gradient(135deg, var(--hero-gradient-start) 0%, var(--hero-gradient-end) 100%);
   border-bottom: 1px solid var(--border-color);
 }
 

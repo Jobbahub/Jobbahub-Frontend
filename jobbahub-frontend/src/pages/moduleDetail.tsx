@@ -94,7 +94,9 @@ const ModuleDetail: React.FC = () => {
 
   return (
     <div className="page-wrapper">
-      <div className="static-page-hero">
+      <div className="static-page-hero" style={{
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${getHeroImageUrl(parseInt(id || '0'))})`
+      }}>
         <h1 className="page-hero-title hero-title-shadow">
           {getTranslatedContent('name')}
         </h1>
