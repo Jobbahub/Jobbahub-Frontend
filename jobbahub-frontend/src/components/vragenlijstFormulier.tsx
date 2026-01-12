@@ -173,7 +173,7 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
   if (step === 1) {
     return renderPrioritySelection(
       t('Intake Vragenlijst'),
-      t('Vul deze vragenlijst in zodat wij je beter kunnen helpen.'),
+      t('priority_selection_intro'),
       () => setStep(2),
       t('next') + " →"
     );

@@ -11,6 +11,7 @@ export const translationsList = {
 
     // Vragenlijst (Keys)
     questionnaire_title: { nl: "Intake Vragenlijst", en: "Intake Questionnaire" },
+    priority_selection_intro: { nl: "Klik op de onderwerpen die jij extra belangrijk vindt. Deze tellen dan dubbel (2x) mee in je resultaat.", en: "Click on the subjects that are extra important to you. These will count double (2x) in your result." },
     questionnaire_intro: { nl: "Vul deze vragenlijst in zodat wij je beter kunnen helpen.", en: "Please fill out this questionnaire so we can help you better." },
     personal_details: { nl: "Persoonlijke Gegevens", en: "Personal Details" },
     name: { nl: "Naam", en: "Name" },
