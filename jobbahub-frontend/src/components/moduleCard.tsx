@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FALLBACK_IMAGE_DATA_URI } from '../utils/imageUtils';
 import { useLanguage } from '../context/LanguageContext';
 import { IChoiceModule } from '../types';
 import CategoryComparisonChart from './CategoryComparisonChart';
@@ -63,7 +64,12 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
   };
 
   const tags = parseTags(module.tags_list);
-  const imageUrl = `https://picsum.photos/id/${module.id % 1084}/600/400`;
+  const initialImageUrl = `https://picsum.photos/id/${module.id % 1084}/600/400`;
+  const [imageSrc, setImageSrc] = useState(initialImageUrl);
+
+  const handleImageError = () => {
+    setImageSrc(FALLBACK_IMAGE_DATA_URI);
+  };
 
   return (
     <div className="card clickable-card" onClick={() => onClick(String(module.id))}>
@@ -80,9 +86,10 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
         )}
 
         <img
-          src={imageUrl}
+          src={imageSrc}
           alt={module.name}
           className="card-image"
+          onError={handleImageError}
         />
 
         {rank ? (

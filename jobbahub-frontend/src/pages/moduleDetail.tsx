@@ -4,6 +4,7 @@ import { IChoiceModule } from '../types';
 import { apiService, ApiError } from '../services/apiService';
 import { useAuth } from '../context/authContext';
 import { useLanguage } from '../context/LanguageContext';
+import { FALLBACK_IMAGE_DATA_URI } from '../utils/imageUtils';
 
 const getHeroImageUrl = (id: number) => {
   const picsumId = id % 1084;
@@ -30,6 +31,7 @@ const ModuleDetail: React.FC = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [heroImage, setHeroImage] = useState<string>('');
 
   useEffect(() => {
     const fetchModuleAndFav = async () => {
@@ -59,6 +61,15 @@ const ModuleDetail: React.FC = () => {
 
     fetchModuleAndFav();
   }, [id, isAuthenticated]);
+
+  useEffect(() => {
+    if (!id) return;
+    const url = getHeroImageUrl(parseInt(id));
+    const img = new Image();
+    img.src = url;
+    img.onload = () => setHeroImage(url);
+    img.onerror = () => setHeroImage(FALLBACK_IMAGE_DATA_URI);
+  }, [id]);
 
   const handleToggleFavorite = async () => {
     if (!module || !isAuthenticated) return;
@@ -95,7 +106,7 @@ const ModuleDetail: React.FC = () => {
   return (
     <div className="page-wrapper">
       <div className="static-page-hero" style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${getHeroImageUrl(parseInt(id || '0'))})`
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${heroImage})`
       }}>
         <h1 className="page-hero-title hero-title-shadow">
           {getTranslatedContent('name')}
