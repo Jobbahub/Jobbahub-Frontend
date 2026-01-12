@@ -122,7 +122,9 @@ const ResultChart: React.FC<ResultChartProps> = ({ title, data, className = '' }
                 <div className="chart-pie-wrapper">
                     {activeData.length === 0 ? (
                         <div className="chart-no-data">
-                            {t('Geen data')}
+                            {data.length > 0 && data.every(d => d.score < 0)
+                                ? t('alles_nee_beantwoord')
+                                : t('Geen data')}
                         </div>
                     ) : (
                         <>
@@ -186,15 +188,15 @@ const ResultChart: React.FC<ResultChartProps> = ({ title, data, className = '' }
                                         className="legend-color-dot"
                                         style={{ backgroundColor: slice.color }}
                                     />
-                    <span className="legend-label-wrapper">
-                    <span className="legend-text">{t(slice.label)}</span>
-                    {renderScoreBadge(slice.score)}
-                    {slice.isWeighted && (
-                    <span className="badge badge-weighted" style={{ fontSize: '0.7rem', padding: '2px 6px' }}>
-                    2x
-                    </span>
-                    )}
-                    </span>
+                                    <span className="legend-label-wrapper">
+                                        <span className="legend-text">{t(slice.label)}</span>
+                                        {renderScoreBadge(slice.score)}
+                                        {slice.isWeighted && (
+                                            <span className="badge badge-weighted" style={{ fontSize: '0.7rem', padding: '2px 6px' }}>
+                                                2x
+                                            </span>
+                                        )}
+                                    </span>
                                     <span className="legend-percent">{(slice.percent * 100).toFixed(0)}%</span>
                                 </li>
                             );

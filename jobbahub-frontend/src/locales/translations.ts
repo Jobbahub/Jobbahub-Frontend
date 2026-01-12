@@ -11,6 +11,7 @@ export const translationsList = {
 
     // Vragenlijst (Keys)
     questionnaire_title: { nl: "Intake Vragenlijst", en: "Intake Questionnaire" },
+    priority_selection_intro: { nl: "Klik op de onderwerpen die jij extra belangrijk vindt. Deze tellen dan dubbel (2x) mee in je resultaat.", en: "Click on the subjects that are extra important to you. These will count double (2x) in your result." },
     questionnaire_intro: { nl: "Vul deze vragenlijst in zodat wij je beter kunnen helpen.", en: "Please fill out this questionnaire so we can help you better." },
     personal_details: { nl: "Persoonlijke Gegevens", en: "Personal Details" },
     name: { nl: "Naam", en: "Name" },
@@ -139,6 +140,7 @@ export const translationsList = {
     "Opnieuw invullen": { nl: "Opnieuw invullen", en: "Fill out again" },
     "Geen matches gevonden": { nl: "Geen matches gevonden", en: "No matches found" },
     "Helaas heeft de AI geen modules kunnen vinden.": { nl: "Helaas heeft de AI geen modules kunnen vinden.", en: "Unfortunately, the AI could not find any modules." },
+    alles_nee_beantwoord: { nl: "Je hebt alles met 'Nee' beantwoord.", en: "You answered 'No' to everything." },
     "Op basis van jouw antwoorden passen deze modules het beste bij jou.": { nl: "Op basis van jouw antwoorden passen deze modules het beste bij jou.", en: "Based on your answers, these modules suit you best." },
     "Ook interessant voor jou": { nl: "Ook interessant voor jou", en: "Also interesting for you" },
     "Naast je directe matches hebben we ook gekeken naar je <strong>nummer 1 match</strong>. De onderstaande modules vallen binnen hetzelfde vakgebied (cluster) als die match. Binnen dit cluster hebben we de <strong>populairste modules</strong> geselecteerd die ook aansluiten bij jouw trefwoorden.": {
@@ -281,6 +283,12 @@ export const translationsList = {
     "Gemiddelde interesse": { nl: "Gemiddelde interesse", en: "Average interest" },
     "Lage interesse": { nl: "Geen interesse", en: "No interest" },
     "Vergelijk de focus van de module met jouw eigen interesse-niveau.": { nl: "Vergelijk de focus van de module met jouw eigen interesse-niveau.", en: "Compare the module's focus with your own interest level." },
+
+    // Module Filter
+    "Categorieën": { nl: "Categorieën", en: "Categories" },
+    "Locaties": { nl: "Locaties", en: "Locations" },
+    "Filters": { nl: "Filters", en: "Filters" },
+    "Alle filters wissen": { nl: "Alle filters wissen", en: "Clear all filters" },
 
 } as const;
 
