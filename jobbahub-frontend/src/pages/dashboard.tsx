@@ -137,7 +137,7 @@ const Dashboard: React.FC = () => {
       {!hasResults ? (
         <div className="page-wrapper dashboard-wrapper">
           {/* Hero Section */}
-          <div className="home-hero">
+          <div className="page-hero">
             <h1 className="page-hero-title hero-title-shadow">
               {t("Persoonlijk Dashboard")}
             </h1>
