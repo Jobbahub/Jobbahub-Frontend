@@ -283,6 +283,12 @@ export const translationsList = {
     "Lage interesse": { nl: "Geen interesse", en: "No interest" },
     "Vergelijk de focus van de module met jouw eigen interesse-niveau.": { nl: "Vergelijk de focus van de module met jouw eigen interesse-niveau.", en: "Compare the module's focus with your own interest level." },
 
+    // Module Filter
+    "Categorieën": { nl: "Categorieën", en: "Categories" },
+    "Locaties": { nl: "Locaties", en: "Locations" },
+    "Filters": { nl: "Filters", en: "Filters" },
+    "Alle filters wissen": { nl: "Alle filters wissen", en: "Clear all filters" },
+
 } as const;
 
 export const nl = Object.fromEntries(
