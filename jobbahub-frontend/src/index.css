@@ -4044,3 +4044,396 @@ textarea.form-input {
   border-color: var(--border-color) !important;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
 }
+
+/* ========================================
+   INTERESTS EDITOR SECTION STYLES
+   Add these to your index.css file
+   ======================================== */
+
+/* Main Section Container */
+.interests-editor-section {
+  margin-top: 24px;
+}
+
+.interests-main-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--text-color);
+}
+
+/* Interests Grid - Single Column Rows */
+.interests-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Individual Interest Item - Row Style */
+.interest-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
+}
+
+.interest-item:hover {
+  border-color: var(--primary-color);
+}
+
+/* Edit Mode Item */
+.interest-item-edit {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  padding: 16px;
+}
+
+.interest-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+}
+
+.interest-label {
+  font-weight: 500;
+  color: var(--text-color);
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.interest-score {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Priority Badge (Small) */
+.priority-badge-small {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Weight Toggle Button */
+.weight-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-muted);
+}
+
+.weight-toggle-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.weight-toggle-btn.active {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+/* Score Buttons Row */
+.interest-score-buttons {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.interest-score-buttons .btn-small {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+}
+
+/* No Questionnaire Message */
+.no-questionnaire-message {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: var(--bg-color);
+  border-radius: var(--radius);
+  border: 1px dashed var(--border-color);
+}
+
+.no-questionnaire-message p {
+  margin-bottom: 16px;
+  color: var(--text-muted);
+}
+
+/* Action Buttons */
+.interests-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* ========================================
+   DARK MODE STYLES
+   ======================================== */
+
+[data-theme="dark"] .interests-main-title {
+  color: var(--text-color);
+}
+
+[data-theme="dark"] .interest-item {
+  background-color: var(--surface-color);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .interest-item:hover {
+  border-color: var(--primary-color);
+}
+
+[data-theme="dark"] .interest-label {
+  color: var(--text-color);
+}
+
+[data-theme="dark"] .weight-toggle-btn {
+  border-color: var(--border-color);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .weight-toggle-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+[data-theme="dark"] .weight-toggle-btn.active {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+[data-theme="dark"] .no-questionnaire-message {
+  background-color: var(--bg-color);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .no-questionnaire-message p {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .interests-actions {
+  border-top-color: var(--border-color);
+}
+
+/* ========================================
+   RESPONSIVE STYLES
+   ======================================== */
+
+@media (max-width: 480px) {
+  .interest-item {
+    padding: 10px 12px;
+  }
+
+  .interest-item-edit {
+    padding: 12px;
+  }
+
+  .interests-main-title {
+    font-size: 1.25rem;
+  }
+
+  .interests-actions {
+    flex-direction: column;
+  }
+
+  .interests-actions .btn {
+    width: 100%;
+  }
+
+  .interest-score-buttons {
+    flex-direction: column;
+  }
+}
+
+/* ========================================
+   RECENTLY VIEWED SECTION STYLES
+   Add these to your index.css file
+   ======================================== */
+
+.recently-viewed-section {
+  margin-top: 60px;
+  padding: 40px 0;
+  background-color: var(--bg-color);
+  border-top: 1px solid var(--border-color);
+}
+
+.recently-viewed-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 24px;
+}
+
+.recently-viewed-loading {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.recently-viewed-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.recently-viewed-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.recently-viewed-card:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateX(4px);
+}
+
+.recently-viewed-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.recently-viewed-card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recently-viewed-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.recently-viewed-badge {
+  background-color: var(--badge-bg-blue);
+  color: var(--badge-text-blue);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.recently-viewed-location {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.recently-viewed-card-arrow {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+  margin-left: 16px;
+}
+
+.recently-viewed-card:hover .recently-viewed-card-arrow {
+  color: var(--primary-color);
+  transform: translateX(4px);
+}
+
+/* ========================================
+   DARK MODE STYLES
+   ======================================== */
+
+[data-theme="dark"] .recently-viewed-section {
+  background-color: var(--bg-color);
+  border-top-color: var(--border-color);
+}
+
+[data-theme="dark"] .recently-viewed-title {
+  color: var(--text-color);
+}
+
+[data-theme="dark"] .recently-viewed-card {
+  background-color: var(--surface-color);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .recently-viewed-card:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .recently-viewed-card-title {
+  color: var(--text-color);
+}
+
+[data-theme="dark"] .recently-viewed-location {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .recently-viewed-card-arrow {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .recently-viewed-card:hover .recently-viewed-card-arrow {
+  color: var(--primary-color);
+}
+
+/* ========================================
+   RESPONSIVE STYLES
+   ======================================== */
+
+@media (max-width: 768px) {
+  .recently-viewed-section {
+    margin-top: 40px;
+    padding: 30px 0;
+  }
+
+  .recently-viewed-title {
+    font-size: 1.25rem;
+  }
+
+  .recently-viewed-card {
+    padding: 12px 16px;
+  }
+
+  .recently-viewed-card-title {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .recently-viewed-card-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .recently-viewed-card-arrow {
+    display: none;
+  }
+}

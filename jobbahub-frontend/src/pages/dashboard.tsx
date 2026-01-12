@@ -8,6 +8,7 @@ import { TOPICS } from '../data/constants';
 import ModuleCard from '../components/moduleCard';
 import ResultChart, { ChartDataPoint } from '../components/ResultChart';
 import LoadingSpinner from '../components/LoadingSpinner';
+import RecentlyViewed from '../components/RecentlyViewed';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -187,6 +188,9 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Recently Viewed Section */}
+          <RecentlyViewed />
         </div>
       ) : (
         <>
@@ -266,6 +270,9 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Recently Viewed Section */}
+          <RecentlyViewed />
         </>
       )}
     </div>

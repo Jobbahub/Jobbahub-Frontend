@@ -5,6 +5,7 @@ import { apiService, ApiError } from '../services/apiService';
 import { useAuth } from '../context/authContext';
 import { useLanguage } from '../context/LanguageContext';
 import { FALLBACK_IMAGE_DATA_URI } from '../utils/imageUtils';
+import useRecentlyViewed from '../hooks/useRecentlyViewed';
 
 const getHeroImageUrl = (id: number) => {
   const picsumId = id % 1084;
@@ -17,6 +18,7 @@ const ModuleDetail: React.FC = () => {
   const location = useLocation();
   const { isAuthenticated } = useAuth();
   const { t, language } = useLanguage();
+  const { addRecentlyViewed } = useRecentlyViewed();
 
   const getTranslatedContent = (key: 'name' | 'shortdescription' | 'description' | 'content' | 'learningoutcomes', fallback?: string) => {
     if (!module) return '';
@@ -40,6 +42,11 @@ const ModuleDetail: React.FC = () => {
         const data = await apiService.getModuleById(id);
         setModule(data);
 
+        // Save to recently viewed when module is loaded
+        if (data?._id) {
+          addRecentlyViewed(data._id);
+        }
+
         if (isAuthenticated && data) {
           const favorites = await apiService.getFavorites();
           setIsFavorite(favorites.includes(data._id));
@@ -60,7 +67,7 @@ const ModuleDetail: React.FC = () => {
     };
 
     fetchModuleAndFav();
-  }, [id, isAuthenticated]);
+  }, [id, isAuthenticated, addRecentlyViewed]);
 
   useEffect(() => {
     if (!id) return;

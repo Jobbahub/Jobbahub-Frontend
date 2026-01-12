@@ -5,6 +5,7 @@ import ModuleGrid from '../components/moduleGrid';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 import { useLanguage } from '../context/LanguageContext';
+import RecentlyViewed from '../components/RecentlyViewed';
 
 const Favorites: React.FC = () => {
     const [favoriteModules, setFavoriteModules] = useState<IChoiceModule[]>([]);
@@ -71,6 +72,9 @@ const Favorites: React.FC = () => {
                 <div className="container" style={{ textAlign: 'center', marginTop: '50px' }}>
                     <p>{t("Je moet ingelogd zijn om favorieten te bekijken.")}</p>
                 </div>
+
+                {/* Recently Viewed Section */}
+                <RecentlyViewed />
             </div>
         );
     }
@@ -97,6 +101,9 @@ const Favorites: React.FC = () => {
                 onToggleFavorite={handleToggleFavorite}
                 isAuthenticated={isAuthenticated}
             />
+
+            {/* Recently Viewed Section */}
+            <RecentlyViewed />
         </div>
     );
 };

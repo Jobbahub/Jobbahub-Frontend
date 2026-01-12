@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import RecentlyViewed from '../components/RecentlyViewed';
 
 const Home: React.FC = () => {
   const { t } = useLanguage();
@@ -25,6 +26,9 @@ const Home: React.FC = () => {
           {t("home_intro")}
         </p>
       </div>
+
+      {/* Recently Viewed Section */}
+      <RecentlyViewed />
     </div>
   );
 };

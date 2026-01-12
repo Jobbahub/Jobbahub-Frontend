@@ -9,6 +9,7 @@ import ModuleSearch from "../components/moduleSearch";
 import { useNavigate } from "react-router-dom";
 import ModuleFilter from "../components/moduleFilter";
 import { useAuth } from "../context/authContext";
+import RecentlyViewed from "../components/RecentlyViewed";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -263,6 +264,9 @@ const ElectiveModules: React.FC = () => {
           {searchTerm}".
         </div>
       )}
+
+      {/* Recently Viewed Section */}
+      <RecentlyViewed />
     </div>
   );
 };
