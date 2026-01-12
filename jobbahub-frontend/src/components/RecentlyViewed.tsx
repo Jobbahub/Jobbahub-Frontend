@@ -27,14 +27,14 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ excludeModuleId }) => {
 
       try {
         const allModules = await apiService.getModules();
-        
+
         // Filter to only recently viewed and maintain order
-        const filteredIds = excludeModuleId 
+        const filteredIds = excludeModuleId
           ? recentlyViewedIds.filter(id => id !== excludeModuleId)
           : recentlyViewedIds;
 
         const recentModules = filteredIds
-          .map(id => allModules.find(m => m._id === id))
+          .map(id => allModules.find(m => m.id === parseInt(id, 10)))
           .filter((m): m is IChoiceModule => m !== undefined)
           .slice(0, 5);
 
@@ -49,7 +49,7 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ excludeModuleId }) => {
     fetchModules();
   }, [recentlyViewedIds, excludeModuleId]);
 
-  const handleModuleClick = (id: string) => {
+  const handleModuleClick = (id: string | number) => {
     navigate(`/modules/${id}`);
   };
 
@@ -62,7 +62,7 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ excludeModuleId }) => {
     <div className="recently-viewed-section">
       <div className="container">
         <h2 className="recently-viewed-title">{t("Laatst bekeken")}</h2>
-        
+
         {loading ? (
           <div className="recently-viewed-loading">
             <LoadingSpinner size="small" />
@@ -71,9 +71,9 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ excludeModuleId }) => {
           <div className="recently-viewed-grid">
             {modules.map((module) => (
               <div
-                key={module._id}
+                key={module.id}
                 className="recently-viewed-card"
-                onClick={() => handleModuleClick(module._id)}
+                onClick={() => handleModuleClick(module.id)}
               >
                 <div className="recently-viewed-card-content">
                   <h3 className="recently-viewed-card-title">{module.name}</h3>

@@ -43,8 +43,8 @@ const ModuleDetail: React.FC = () => {
         setModule(data);
 
         // Save to recently viewed when module is loaded
-        if (data?._id) {
-          addRecentlyViewed(data._id);
+        if (data?.id) {
+          addRecentlyViewed(data.id.toString());
         }
 
         if (isAuthenticated && data) {
