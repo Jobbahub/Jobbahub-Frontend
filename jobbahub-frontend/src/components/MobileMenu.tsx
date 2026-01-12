@@ -63,6 +63,16 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, user, onLogout
             {t('nav_about')}
           </Link>
 
+          {user && (
+            <Link
+              to="/profile"
+              className="mobile-menu-link"
+              onClick={handleLinkClick}
+            >
+              {t('nav_profile')}
+            </Link>
+          )}
+
           {!user ? (
             <Link
               to="/login"
