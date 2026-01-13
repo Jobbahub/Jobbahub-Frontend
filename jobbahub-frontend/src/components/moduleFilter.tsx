@@ -26,7 +26,7 @@ const ModuleFilter: React.FC<ModuleFilterProps> = ({
     modules.forEach((mod) => {
       if (mod.main_filter) {
         mod.main_filter.split(",").forEach((c) => {
-          const cleanCategory = c.replace(/[\[\]']/g, "").trim();
+          const cleanCategory = c.replace(/[[\]']/g, "").trim();
           if (cleanCategory) categories.add(cleanCategory);
         });
       }
@@ -76,7 +76,11 @@ const ModuleFilter: React.FC<ModuleFilterProps> = ({
             onChange={() => onTagToggle(item)}
             className="filter-checkbox"
           />
-          <span>{t(item)}</span>
+          <span>
+            {title === "Locaties"
+              ? t(item).replace(/\s+en\s+/i, " & ")
+              : t(item)}
+          </span>
         </label>
       ))}
     </div>

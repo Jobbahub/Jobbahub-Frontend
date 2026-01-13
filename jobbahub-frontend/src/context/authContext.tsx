@@ -1,13 +1,9 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { apiService } from '../services/apiService';
+import { apiService, ApiError } from '../services/apiService';
+import type { User } from '../types/questionnaire';
 
-// Definieer hoe een Gebruiker eruit ziet
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  vragenlijst_resultaten?: any;
-}
+// Re-export User type for convenience
+export type { User };
 
 // Definieer wat er in de Context beschikbaar is
 interface AuthContextType {
@@ -25,8 +21,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-
-
   // Restore user session on mount
   React.useEffect(() => {
     const token = localStorage.getItem('token');
@@ -35,8 +29,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         .then(userData => {
           setUser(userData);
         })
-        .catch(err => {
-          console.error("Session restore failed:", err);
+        .catch((err: unknown) => {
+          const errorMessage = err instanceof Error ? err.message : 'Session restore failed';
+          console.error("Session restore failed:", errorMessage);
           localStorage.removeItem('token');
           setUser(null);
         });
@@ -54,9 +49,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       // 2. Zet de gebruiker in de state
       setUser(data.user);
       return data.user;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof ApiError 
+        ? err.message 
+        : err instanceof Error 
+          ? err.message 
+          : "Er is een fout opgetreden bij het inloggen.";
+      
       console.error("Login error:", err);
-      setError(err.message || "Er is een fout opgetreden bij het inloggen.");
+      setError(errorMessage);
       throw err; // Gooi door zodat de Login pagina dit ook weet
     }
   };

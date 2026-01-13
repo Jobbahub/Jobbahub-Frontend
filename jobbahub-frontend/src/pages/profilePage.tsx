@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import { useLanguage } from "../context/LanguageContext";
 import { ApiError, apiService } from "../services/apiService";
+import type { VragenlijstData, ChangeCredentialsPayload } from "../types/questionnaire";
+import { TOPICS } from "../data/constants";
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
@@ -18,11 +20,43 @@ const Profile: React.FC = () => {
   const [formError, setFormError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  // Interests editor state
+  const [isEditingInterests, setIsEditingInterests] = useState(false);
+  const [editedAnswers, setEditedAnswers] = useState<VragenlijstData | null>(null);
+  const [savingInterests, setSavingInterests] = useState(false);
+  const [interestsError, setInterestsError] = useState<string | null>(null);
+  const [interestsSuccess, setInterestsSuccess] = useState<string | null>(null);
+
+  // Get the actual questionnaire answers from the correct path
+  const questionnaireResults = user?.vragenlijst_resultaten;
+  const userAnswers: VragenlijstData | null = questionnaireResults?.antwoorden || null;
+
+  // Memoize translated topics
+  const translatedTopics = useMemo(() => {
+    return TOPICS.map(topic => ({
+      ...topic,
+      label: t(topic.label),
+      question: t(topic.question)
+    }));
+  }, [t]);
+
+  // Group topics by type
+  const interestTopics = translatedTopics.filter(topic => topic.type === 'interest');
+  const valueTopics = translatedTopics.filter(topic => topic.type === 'value');
+  const goalTopics = translatedTopics.filter(topic => topic.type === 'goal');
+
   useEffect(() => {
     if (user) {
       setUserName(user.name || "");
     }
   }, [user]);
+
+  // Initialize edited answers when entering edit mode
+  useEffect(() => {
+    if (isEditingInterests && userAnswers) {
+      setEditedAnswers({ ...userAnswers });
+    }
+  }, [isEditingInterests, userAnswers]);
 
   const handleOpenConfirmModal = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +75,7 @@ const Profile: React.FC = () => {
     setShowModal(false);
 
     try {
-      const payload: any = { currentPassword };
+      const payload: ChangeCredentialsPayload = { currentPassword };
       if (userName !== user?.name) payload.newNaam = userName;
       if (newPassword) payload.newPassword = newPassword;
 
@@ -52,8 +86,13 @@ const Profile: React.FC = () => {
       setSuccessMessage(t("profile_update_success"));
       setNewPassword("");
       setCurrentPassword("");
-    } catch (err: any) {
-      setFormError(err.message || t("profile_update_failed"));
+    } catch (err: unknown) {
+      const errorMessage = err instanceof ApiError
+        ? err.message
+        : err instanceof Error
+          ? err.message
+          : t("profile_update_failed");
+      setFormError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -70,12 +109,15 @@ const Profile: React.FC = () => {
         delete updatedUser.vragenlijst_resultaten;
         updateUser(updatedUser);
         setSuccessMessage(t("reset_success"));
-      } catch (e: any) {
+        setIsEditingInterests(false);
+        setEditedAnswers(null);
+      } catch (e: unknown) {
+        const errorCode = e instanceof ApiError ? e.status : "RESET_ERROR";
         navigate("/error", {
           state: {
             title: t("reset_failed_msg"),
             message: t("reset_failed_msg"),
-            code: e instanceof ApiError ? e.status : "RESET_ERROR",
+            code: errorCode,
             from: window.location.pathname,
           },
         });
@@ -83,11 +125,182 @@ const Profile: React.FC = () => {
     }
   };
 
+  // Interest editing handlers
+  const handleScoreChange = (topicId: string, score: number) => {
+    if (!editedAnswers) return;
+    setEditedAnswers(prev => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        knoppen_input: {
+          ...prev.knoppen_input,
+          [topicId]: { ...prev.knoppen_input[topicId], score }
+        }
+      };
+    });
+  };
+
+  const handleWeightToggle = (topicId: string) => {
+    if (!editedAnswers) return;
+    setEditedAnswers(prev => {
+      if (!prev) return prev;
+      const currentWeight = prev.knoppen_input[topicId]?.weight || 1;
+      return {
+        ...prev,
+        knoppen_input: {
+          ...prev.knoppen_input,
+          [topicId]: { ...prev.knoppen_input[topicId], weight: currentWeight === 2 ? 1 : 2 }
+        }
+      };
+    });
+  };
+
+  const handleSaveInterests = async () => {
+    if (!editedAnswers || !user || !questionnaireResults) return;
+
+    setSavingInterests(true);
+    setInterestsError(null);
+    setInterestsSuccess(null);
+
+    try {
+      // 1. Fetch new recommendations based on updated answers
+      const aiResponse = await apiService.verstuurVragenlijst(editedAnswers);
+
+      // 2. Prepare data to save (answers + NEW recommendations)
+      const dataToSave = {
+        antwoorden: editedAnswers,
+        aanbevelingen: aiResponse.aanbevelingen || [],
+        cluster_suggesties: aiResponse.cluster_suggesties || []
+      };
+
+      // 3. Save everything to backend
+      const updatedStudent = await apiService.saveQuestionnaireResults(dataToSave);
+
+      updateUser({
+        ...user,
+        vragenlijst_resultaten: updatedStudent.vragenlijst_resultaten
+      });
+
+      setInterestsSuccess(t("interests_saved_success"));
+      setIsEditingInterests(false);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof ApiError
+        ? err.message
+        : err instanceof Error
+          ? err.message
+          : t("interests_save_error");
+      setInterestsError(errorMessage);
+    } finally {
+      setSavingInterests(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditingInterests(false);
+    setEditedAnswers(null);
+    setInterestsError(null);
+  };
+
+  const getScoreLabel = (score: number) => {
+    switch (score) {
+      case -1: return t("Nee");
+      case 0: return t("Neutraal");
+      case 1: return t("Ja");
+      default: return t("Neutraal");
+    }
+  };
+
+
+
+  const getScoreClassName = (score: number) => {
+    switch (score) {
+      case -1: return "chart-score-badge chart-score-negative";
+      case 0: return "chart-score-badge chart-score-neutral";
+      case 1: return "chart-score-badge chart-score-positive";
+      default: return "";
+    }
+  };
+
+  // Render a topic item (either view or edit mode)
+  const renderTopicItem = (topic: typeof translatedTopics[0], answers: VragenlijstData) => {
+    const answer = answers.knoppen_input?.[topic.id];
+    if (!answer) return null;
+
+    const isWeighted = answer.weight === 2;
+
+    if (isEditingInterests && editedAnswers) {
+      const editedAnswer = editedAnswers.knoppen_input?.[topic.id];
+      const editedIsWeighted = editedAnswer?.weight === 2;
+
+      return (
+        <div key={topic.id} className="interest-item interest-item-edit">
+          <div className="interest-header">
+            <span className="interest-label">
+              {topic.label}
+              {topic.type === 'interest' && (
+                <button
+                  className={`weight-toggle-btn ${editedIsWeighted ? 'active' : ''}`}
+                  onClick={() => handleWeightToggle(topic.id)}
+                  title={t("Telt 2x mee")}
+                >
+                  ★ {editedIsWeighted ? '2x' : '1x'}
+                </button>
+              )}
+            </span>
+          </div>
+          <div className="interest-score-buttons">
+            <button
+              type="button"
+              className={`btn topic-btn btn-topic-choice btn-small ${editedAnswer?.score === -1 ? 'active-negative' : ''}`}
+              onClick={() => handleScoreChange(topic.id, -1)}
+            >
+              {t("Nee")}
+            </button>
+            <button
+              type="button"
+              className={`btn topic-btn btn-topic-choice btn-small ${editedAnswer?.score === 0 ? 'active-neutral' : ''}`}
+              onClick={() => handleScoreChange(topic.id, 0)}
+            >
+              {t("Neutraal")}
+            </button>
+            <button
+              type="button"
+              className={`btn topic-btn btn-topic-choice btn-small ${editedAnswer?.score === 1 ? 'active-positive' : ''}`}
+              onClick={() => handleScoreChange(topic.id, 1)}
+            >
+              {t("Ja")}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // View mode
+    return (
+      <div key={topic.id} className="interest-item">
+        <div className="interest-header">
+          <span className="interest-label">
+            {topic.label}
+            {isWeighted && topic.type === 'interest' && (
+              <span className="priority-badge-small">★ 2x</span>
+            )}
+          </span>
+        </div>
+        <span
+          className={getScoreClassName(answer.score)}
+        >
+          {getScoreLabel(answer.score)}
+        </span>
+      </div>
+    );
+  };
+
+  // Check if user has completed the questionnaire
+  const hasQuestionnaireResults = userAnswers?.knoppen_input && Object.keys(userAnswers.knoppen_input).length > 0;
+
   return (
     <div className="page-wrapper">
-      <div className="page-hero" style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(/images/heroes/trees.jpg)`,
-      }}>
+      <div className="page-hero">
         <h1 className="page-hero-title hero-title-shadow">{t("profile_page_title")}</h1>
       </div>
 
@@ -97,9 +310,8 @@ const Profile: React.FC = () => {
           <div className="profile-form-success">{successMessage}</div>
         )}
 
-        <div
-          className="about-content-box profile-content-box"
-        >
+        {/* Account Settings Box */}
+        <div className="about-content-box profile-content-box">
           <form onSubmit={handleOpenConfirmModal} className="login-form">
             <div className="form-group">
               <label className="form-label">{t("username_label")}</label>
@@ -135,8 +347,7 @@ const Profile: React.FC = () => {
 
             <button
               type="submit"
-              className={`btn btn-primary w-full ${loading ? "btn-disabled" : ""
-                }`}
+              className={`btn btn-primary w-full ${loading ? "btn-disabled" : ""}`}
               disabled={loading}
             >
               {loading ? t("saving") : t("save_changes")}
@@ -152,6 +363,77 @@ const Profile: React.FC = () => {
               {t("reset_questionnaire_btn")}
             </button>
           </form>
+        </div>
+
+        {/* Interests Section - Below Account Settings */}
+        <div className="about-content-box profile-content-box interests-editor-section">
+          <h3 className="interests-main-title">{t("Jouw Interesses")}</h3>
+
+          {interestsError && <div className="form-error">{interestsError}</div>}
+          {interestsSuccess && <div className="profile-form-success">{interestsSuccess}</div>}
+
+          {!hasQuestionnaireResults ? (
+            <div className="no-questionnaire-message">
+              <p>{t("Je hebt de vragenlijst nog niet ingevuld.")}</p>
+              <button
+                className="btn btn-primary"
+                onClick={() => navigate('/vragenlijst')}
+              >
+                {t("Vragenlijst invullen")}
+              </button>
+            </div>
+          ) : (
+            <>
+              {/* Interest Topics */}
+              <div className="interests-grid">
+                {interestTopics.map(topic => renderTopicItem(topic, isEditingInterests && editedAnswers ? editedAnswers : userAnswers!))}
+              </div>
+
+              {/* Values Section */}
+              <h3 className="interests-main-title mt-8">{t("Jouw Waarden")}</h3>
+              <div className="interests-grid">
+                {valueTopics.map(topic => renderTopicItem(topic, isEditingInterests && editedAnswers ? editedAnswers : userAnswers!))}
+              </div>
+
+              {/* Goals Section */}
+              <h3 className="interests-main-title mt-8">{t("Jouw Doelen")}</h3>
+              <div className="interests-grid">
+                {goalTopics.map(topic => renderTopicItem(topic, isEditingInterests && editedAnswers ? editedAnswers : userAnswers!))}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="interests-actions">
+                {isEditingInterests ? (
+                  <>
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={handleCancelEdit}
+                      disabled={savingInterests}
+                    >
+                      {t("cancel")}
+                    </button>
+                    <button
+                      type="button"
+                      className={`btn btn-primary ${savingInterests ? 'btn-disabled' : ''}`}
+                      onClick={handleSaveInterests}
+                      disabled={savingInterests}
+                    >
+                      {savingInterests ? t("saving") : t("save_changes")}
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => setIsEditingInterests(true)}
+                  >
+                    {t("edit_interests")}
+                  </button>
+                )}
+              </div>
+            </>
+          )}
         </div>
       </div>
 

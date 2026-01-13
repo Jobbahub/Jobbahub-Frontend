@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { FALLBACK_IMAGE_DATA_URI } from '../utils/imageUtils';
 import { useLanguage } from '../context/LanguageContext';
 import { IChoiceModule } from '../types';
 import CategoryComparisonChart from './CategoryComparisonChart';
+import type { VragenlijstData } from '../types/questionnaire';
 
 interface ModuleCardProps {
   module: IChoiceModule;
@@ -13,7 +15,7 @@ interface ModuleCardProps {
   explanation?: string;
   isCluster?: boolean;
   categoryScores?: Record<string, number>;
-  userAnswers?: any;
+  userAnswers?: VragenlijstData | null;
   rank?: number;
 }
 
@@ -56,14 +58,19 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
   const parseTags = (tagString?: string): string[] => {
     if (!tagString) return [];
     try {
-      return tagString.replace(/[\[\]']/g, '').split(',').map(t => t.trim()).filter(t => t !== "");
+      return tagString.replace(/[[\]']/g, '').split(',').map(t => t.trim()).filter(t => t !== "");
     } catch {
       return [];
     }
   };
 
   const tags = parseTags(module.tags_list);
-  const imageUrl = `https://picsum.photos/id/${module.id % 1084}/600/400`;
+  const initialImageUrl = `https://picsum.photos/id/${module.id % 1084}/600/400`;
+  const [imageSrc, setImageSrc] = useState(initialImageUrl);
+
+  const handleImageError = () => {
+    setImageSrc(FALLBACK_IMAGE_DATA_URI);
+  };
 
   return (
     <div className="card clickable-card" onClick={() => onClick(String(module.id))}>
@@ -80,9 +87,10 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
         )}
 
         <img
-          src={imageUrl}
+          src={imageSrc}
           alt={module.name}
           className="card-image"
+          onError={handleImageError}
         />
 
         {rank ? (

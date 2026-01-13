@@ -11,7 +11,7 @@ const LanguageSwitcher: React.FC = () => {
     return (
         <button
             onClick={toggleLanguage}
-            className="theme-toggle" // Reusing the theme-toggle class for consistent round button style
+            className="theme-toggle language-btn" // Reusing the theme-toggle class for consistent round button style
             title={language === 'nl' ? "Switch to English" : "Schakel naar Nederlands"}
             aria-label="Switch language"
         >

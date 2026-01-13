@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import ThemeToggle from './ThemeToggle';
 import LanguageSwitcher from './LanguageSwitcher';
+import type { User } from '../types/questionnaire';
 
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
-  user: any;
+  user: User | null;
   onLogout: () => void;
 }
 
@@ -62,6 +63,16 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, user, onLogout
           >
             {t('nav_about')}
           </Link>
+
+          {user && (
+            <Link
+              to="/profile"
+              className="mobile-menu-link"
+              onClick={handleLinkClick}
+            >
+              {t('nav_profile')}
+            </Link>
+          )}
 
           {!user ? (
             <Link

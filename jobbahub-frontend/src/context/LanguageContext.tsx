@@ -28,7 +28,6 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
 
     const t = (key: string) => {
         const dict = dictionaries[language];
-        // @ts-ignore
         return dict[key] || key;
     };
 

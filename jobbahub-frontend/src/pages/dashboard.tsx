@@ -7,6 +7,8 @@ import { IChoiceModule } from '../types';
 import { TOPICS } from '../data/constants';
 import ModuleCard from '../components/moduleCard';
 import ResultChart, { ChartDataPoint } from '../components/ResultChart';
+import LoadingSpinner from '../components/LoadingSpinner';
+import RecentlyViewed from '../components/RecentlyViewed';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -126,7 +128,7 @@ const Dashboard: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="loading-spinner container" style={{ margin: '50px auto' }}></div>;
+    return <LoadingSpinner size="large" />;
   }
 
   const hasResults = aiRecs.length > 0 && userAnswers;
@@ -134,15 +136,13 @@ const Dashboard: React.FC = () => {
   return (
     <div className="page-wrapper">
       {!hasResults ? (
-        <div className="page-wrapper">
+        <div className="page-wrapper dashboard-wrapper">
           {/* Hero Section */}
-    <div className="page-hero" style={{
-      backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(/images/heroes/trees.jpg)`,
-    }}>
-      <h1 className="page-hero-title hero-title-shadow">
-        {t("Persoonlijk Dashboard")}
-      </h1>
-    </div>
+          <div className="page-hero">
+            <h1 className="page-hero-title hero-title-shadow">
+              {t("Persoonlijk Dashboard")}
+            </h1>
+          </div>
 
           <div className="container" style={{ marginTop: '40px' }}>
             <div className="dashboard-welcome-card" style={{ marginBottom: '40px' }}>
@@ -188,6 +188,9 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Recently Viewed Section */}
+          <RecentlyViewed />
         </div>
       ) : (
         <>
@@ -267,6 +270,9 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Recently Viewed Section */}
+          <RecentlyViewed />
         </>
       )}
     </div>

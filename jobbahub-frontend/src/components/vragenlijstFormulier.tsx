@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
-// import { useNavigate } from 'react-router-dom';
-import { apiService, VragenlijstData, AIRecommendation, ApiError } from '../services/apiService';
-import { IChoiceModule, ClusterRecommendation } from '../types';
+import DOMPurify from 'dompurify';
+import LoadingSpinner from './LoadingSpinner';
+import { apiService, ApiError } from '../services/apiService';
+import type { VragenlijstData, AIRecommendation, ClusterRecommendation } from '../types/questionnaire';
+import { IChoiceModule } from '../types';
 import { useLanguage } from '../context/LanguageContext';
-import LanguageSwitcher from './LanguageSwitcher';
 import { TOPICS as SHARED_TOPICS } from '../data/constants';
 
 interface VragenlijstFormulierProps {
@@ -15,21 +16,40 @@ interface VragenlijstFormulierProps {
   ) => void;
 }
 
+// Type for form field values
+type VragenlijstFieldValue = string | number | null;
+
+// ✅ SECURITY: Sanitize user input to prevent XSS
+const sanitizeInput = (input: string): string => {
+  return DOMPurify.sanitize(input, {
+    ALLOWED_TAGS: [], // No HTML tags allowed
+    ALLOWED_ATTR: [], // No attributes allowed
+  }).trim();
+};
+
+// ✅ SECURITY: Validate and sanitize select values
+const sanitizeSelectValue = (value: string, allowedValues: string[]): string | null => {
+  if (value === '' || value === null) return null;
+  // Only allow predefined values
+  return allowedValues.includes(value) ? value : null;
+};
+
 const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete }) => {
   const { t } = useLanguage();
-  // const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [topicIndex, setTopicIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  // Allowed values for select inputs
+  const ALLOWED_TAAL = ['Nederlands', 'Engels'];
+  const ALLOWED_LOCATIE = ['Den Bosch', 'Breda'];
+  const ALLOWED_PUNTEN = [15, 30];
+
   // Memoize topics to use translations
   const TOPICS = useMemo(() => {
     return SHARED_TOPICS.map(topic => ({
       ...topic,
-      // Use the topic label/question as key if possible, or defined keys. 
-      // Since we use natural language keys, we can just use the Dutch text if it matches what's in SHARED_TOPICS.
-      // Assuming SHARED_TOPICS contains Dutch text.
       label: t(topic.label),
       question: t(topic.question)
     }));
@@ -41,17 +61,28 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
     keuze_locatie: null,
     keuze_punten: null,
     open_antwoord: '',
-    knoppen_input: TOPICS.reduce((acc, topic) => ({
+    knoppen_input: SHARED_TOPICS.reduce((acc, topic) => ({
       ...acc,
       [topic.id]: { score: 0, weight: 1 }
     }), {})
   }));
 
-  const handleChange = (field: keyof VragenlijstData, value: any) => {
+  const handleChange = (field: keyof VragenlijstData, value: VragenlijstFieldValue) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  // ✅ SECURITY: Sanitized handler for text input
+  const handleTextChange = (field: keyof VragenlijstData, value: string) => {
+    // Limit input length to prevent DoS
+    const maxLength = 1000;
+    const truncatedValue = value.slice(0, maxLength);
+    setFormData(prev => ({ ...prev, [field]: truncatedValue }));
+  };
+
   const handleScoreChange = (topicId: string, score: number) => {
+    // ✅ SECURITY: Validate score is within allowed range
+    if (![-1, 0, 1].includes(score)) return;
+    
     setFormData(prev => ({
       ...prev,
       knoppen_input: {
@@ -78,7 +109,7 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
     if (topicIndex < TOPICS.length - 1) {
       setTopicIndex(prev => prev + 1);
     } else {
-      setStep(3); // Go to Re-confirmation step
+      setStep(3);
     }
   };
 
@@ -86,27 +117,44 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
     if (topicIndex > 0) {
       setTopicIndex(prev => prev - 1);
     } else {
-      setStep(1); // Back to Priority Selection
+      setStep(1);
     }
   };
 
   const handleSubmit = async () => {
     setLoading(true);
+    setSubmitError(null);
+    
     try {
+      // ✅ SECURITY: Sanitize all user input before sending to API
+      const sanitizedData: VragenlijstData = {
+        keuze_taal: formData.keuze_taal 
+          ? sanitizeSelectValue(formData.keuze_taal, ALLOWED_TAAL) 
+          : null,
+        keuze_locatie: formData.keuze_locatie 
+          ? sanitizeSelectValue(formData.keuze_locatie, ALLOWED_LOCATIE) 
+          : null,
+        keuze_punten: formData.keuze_punten !== null && ALLOWED_PUNTEN.includes(formData.keuze_punten) 
+          ? formData.keuze_punten 
+          : null,
+        open_antwoord: sanitizeInput(formData.open_antwoord),
+        knoppen_input: formData.knoppen_input, // Already validated via handleScoreChange
+      };
+
       const modules = await apiService.getModules();
-      const aiResponse = await apiService.verstuurVragenlijst(formData);
+      const aiResponse = await apiService.verstuurVragenlijst(sanitizedData);
 
       if (aiResponse && aiResponse.aanbevelingen) {
         onComplete(
           aiResponse.aanbevelingen,
           modules,
-          formData,
+          sanitizedData, // Pass sanitized data
           aiResponse.cluster_suggesties
         );
       } else {
-        onComplete([], modules, formData, []);
+        onComplete([], modules, sanitizedData, []);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
       const errorMessage = error instanceof ApiError && error.message
         ? error.message
@@ -121,7 +169,7 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
   if (loading) {
     return (
       <div className="container loading-container">
-        <div className="loading-spinner"></div>
+        <LoadingSpinner size="large" />
         <h2 className="form-title">{t('loading')}</h2>
         <p className="form-description loading-text">
           {t('ai_analyzing')}
@@ -172,7 +220,7 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
   if (step === 1) {
     return renderPrioritySelection(
       t('Intake Vragenlijst'),
-      t('Vul deze vragenlijst in zodat wij je beter kunnen helpen.'),
+      t('priority_selection_intro'),
       () => setStep(2),
       t('next') + " →"
     );
@@ -181,14 +229,14 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
   // Step 2: Questions Loop
   if (step === 2) {
     const topic = TOPICS[topicIndex];
-    const currentScore = (formData.knoppen_input[topic.id] as any)?.score;
+    const currentScore = formData.knoppen_input[topic.id]?.score;
     const progressPercentage = ((topicIndex + 1) / TOPICS.length) * 100;
     const isWeighted = formData.knoppen_input[topic.id]?.weight === 2;
 
     return (
       <div className="container question-container">
         <div className="flex justify-end mb-4 absolute top-4 right-4">
-          {/* Language switcher can be sticky or just at start/end, leaving it out here to avoid clutter or putting it absolute */}
+          {/* Language switcher placeholder */}
         </div>
         <div className="progress-bar">
           <div className="progress-fill" style={{ width: `${progressPercentage}%` }}></div>
@@ -284,10 +332,12 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
           <textarea
             className="form-input"
             rows={4}
+            maxLength={1000}
             placeholder={t("Bijvoorbeeld: Ik wil graag iets doen met AI en duurzaamheid...")}
             value={formData.open_antwoord}
-            onChange={(e) => handleChange('open_antwoord', e.target.value)}
+            onChange={(e) => handleTextChange('open_antwoord', e.target.value)}
           />
+          <small className="text-muted">{formData.open_antwoord.length}/1000</small>
         </div>
         <div className="nav-buttons-container">
           {submitError && (
@@ -297,7 +347,7 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
               left: '50%',
               transform: 'translateX(-50%)',
               backgroundColor: '#fee2e2',
-              color: '#991b1b', // Red-800
+              color: '#991b1b',
               padding: '12px 24px',
               borderRadius: '8px',
               boxShadow: '0 4px 12px rgba(0,0,0,0.15)',

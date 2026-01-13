@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { IChoiceModule } from '../types';
 import { apiService, ApiError } from '../services/apiService';
 import ModuleGrid from '../components/moduleGrid';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 import { useLanguage } from '../context/LanguageContext';
+import RecentlyViewed from '../components/RecentlyViewed';
 
 const Favorites: React.FC = () => {
     const [favoriteModules, setFavoriteModules] = useState<IChoiceModule[]>([]);
@@ -25,12 +26,13 @@ const Favorites: React.FC = () => {
 
             try {
                 setLoading(true);
+                setError(null);
                 const allModules = await apiService.getModules();
                 const favIds = await apiService.getFavorites();
                 setFavoriteIds(favIds);
                 const filtered = allModules.filter(mod => favIds.includes(mod._id));
                 setFavoriteModules(filtered);
-            } catch (err: any) {
+            } catch (err: unknown) {
                 console.error(err);
                 const status = err instanceof ApiError ? err.status : "FAVORITES_LOAD_ERROR";
                 navigate('/error', {
@@ -46,33 +48,34 @@ const Favorites: React.FC = () => {
         };
 
         fetchData();
-    }, [isAuthenticated, t]);
+    }, [isAuthenticated, t, navigate]);
 
-    const handleDetailsClick = (id: string) => {
+    const handleDetailsClick = useCallback((id: string) => {
         navigate(`/modules/${id}`);
-    };
+    }, [navigate]);
 
     const handleToggleFavorite = async (moduleId: string) => {
         try {
             await apiService.removeFavorite(moduleId);
             setFavoriteIds(prev => prev.filter(id => id !== moduleId));
             setFavoriteModules(prev => prev.filter(mod => mod._id !== moduleId));
-        } catch (error) {
-            console.error("Fout bij verwijderen favoriet:", error);
+        } catch (err: unknown) {
+            console.error("Fout bij verwijderen favoriet:", err);
         }
     };
 
     if (!isAuthenticated) {
         return (
             <div className="page-wrapper">
-                <div className="page-hero" style={{
-                    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(/images/heroes/trees.jpg)`,
-                }}>
+                <div className="page-hero">
                     <h1 className="page-hero-title hero-title-shadow">{t("Mijn Favorieten")}</h1>
                 </div>
                 <div className="container" style={{ textAlign: 'center', marginTop: '50px' }}>
                     <p>{t("Je moet ingelogd zijn om favorieten te bekijken.")}</p>
                 </div>
+
+                {/* Recently Viewed Section */}
+                <RecentlyViewed />
             </div>
         );
     }
@@ -80,9 +83,7 @@ const Favorites: React.FC = () => {
     return (
         <div className="page-wrapper">
             {/* Hero Section */}
-            <div className="page-hero" style={{
-                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(/images/heroes/trees.jpg)`,
-            }}>
+            <div className="page-hero">
                 <h1 className="page-hero-title hero-title-shadow">{t("Mijn Favorieten")}</h1>
             </div>
 
@@ -101,6 +102,9 @@ const Favorites: React.FC = () => {
                 onToggleFavorite={handleToggleFavorite}
                 isAuthenticated={isAuthenticated}
             />
+
+            {/* Recently Viewed Section */}
+            <RecentlyViewed />
         </div>
     );
 };

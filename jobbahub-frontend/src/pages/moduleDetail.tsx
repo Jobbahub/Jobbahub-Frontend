@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { IChoiceModule } from '../types';
 import { apiService, ApiError } from '../services/apiService';
 import { useAuth } from '../context/authContext';
 import { useLanguage } from '../context/LanguageContext';
+import { FALLBACK_IMAGE_DATA_URI } from '../utils/imageUtils';
+import useRecentlyViewed from '../hooks/useRecentlyViewed';
 
 const getHeroImageUrl = (id: number) => {
   const picsumId = id % 1084;
@@ -16,38 +18,48 @@ const ModuleDetail: React.FC = () => {
   const location = useLocation();
   const { isAuthenticated } = useAuth();
   const { t, language } = useLanguage();
+  const { addRecentlyViewed } = useRecentlyViewed();
 
-  const getTranslatedContent = (key: 'name' | 'shortdescription' | 'description' | 'content' | 'learningoutcomes', fallback?: string) => {
+  const [module, setModule] = useState<IChoiceModule | null>(null);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [heroImage, setHeroImage] = useState<string>('');
+
+  const getTranslatedContent = useCallback((key: 'name' | 'shortdescription' | 'description' | 'content' | 'learningoutcomes', fallback?: string) => {
     if (!module) return '';
     if (language === 'en') {
       const enKey = `${key}_en` as keyof IChoiceModule;
       if (module[enKey]) return module[enKey] as string;
     }
     return module[key] as string || fallback || '';
-  };
-
-  const [module, setModule] = useState<IChoiceModule | null>(null);
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  }, [module, language]);
 
   useEffect(() => {
     const fetchModuleAndFav = async () => {
       if (!id) return;
       try {
+        setError(null);
         const data = await apiService.getModuleById(id);
         setModule(data);
+
+        // Save to recently viewed when module is loaded
+        if (data?.id) {
+          addRecentlyViewed(data.id.toString());
+        }
 
         if (isAuthenticated && data) {
           const favorites = await apiService.getFavorites();
           setIsFavorite(favorites.includes(data._id));
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         const status = err instanceof ApiError ? err.status : "MODULE_DETAIL_LOAD_ERROR";
+        const errorMessage = err instanceof Error ? err.message : "Er ging iets mis bij het ophalen van de module details.";
+        setError(errorMessage);
         navigate('/error', {
           state: {
             title: "Kon module details niet laden",
-            message: "Er ging iets mis bij het ophalen van de module details.",
+            message: errorMessage,
             code: status,
             from: location.pathname
           }
@@ -58,7 +70,16 @@ const ModuleDetail: React.FC = () => {
     };
 
     fetchModuleAndFav();
-  }, [id, isAuthenticated]);
+  }, [id, isAuthenticated, addRecentlyViewed, navigate, location.pathname]);
+
+  useEffect(() => {
+    if (!id) return;
+    const url = getHeroImageUrl(parseInt(id));
+    const img = new Image();
+    img.src = url;
+    img.onload = () => setHeroImage(url);
+    img.onerror = () => setHeroImage(FALLBACK_IMAGE_DATA_URI);
+  }, [id]);
 
   const handleToggleFavorite = async () => {
     if (!module || !isAuthenticated) return;
@@ -78,7 +99,7 @@ const ModuleDetail: React.FC = () => {
   const parseTags = (tagString?: string): string[] => {
     if (!tagString) return [];
     try {
-      return tagString.replace(/[\[\]']/g, '').split(',').map(t => t.trim()).filter(t => t !== "");
+      return tagString.replace(/[[\]']/g, '').split(',').map(t => t.trim()).filter(t => t !== "");
     } catch { return []; }
   };
 
@@ -91,12 +112,11 @@ const ModuleDetail: React.FC = () => {
   if (error || !module) return <div className="container form-error">{error || t("Ongeldig dataformaat ontvangen.")}</div>;
 
   const tags = parseTags(module.tags_list);
-  const heroImageUrl = getHeroImageUrl(module.id);
 
   return (
     <div className="page-wrapper">
-      <div className="page-hero" style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${heroImageUrl})`,
+      <div className="static-page-hero" style={{
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(${heroImage})`
       }}>
         <h1 className="page-hero-title hero-title-shadow">
           {getTranslatedContent('name')}

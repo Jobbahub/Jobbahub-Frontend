@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/authContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useNavigate } from 'react-router-dom';
+import { ApiError } from '../services/apiService';
 
 const Login: React.FC = () => {
   const { login } = useAuth();
@@ -19,11 +20,15 @@ const Login: React.FC = () => {
     setFormError(null);
 
     try {
-      const loggedInUser = await login(email, wachtwoord);
-
+      await login(email, wachtwoord);
       navigate('/dashboard');
-    } catch (err: any) {
-      setFormError(err.message || t("Inloggen mislukt. Controleer je gegevens."));
+    } catch (err: unknown) {
+      const errorMessage = err instanceof ApiError
+        ? err.message
+        : err instanceof Error
+          ? err.message
+          : t("Inloggen mislukt. Controleer je gegevens.");
+      setFormError(errorMessage);
     } finally {
       setLoading(false);
     }
