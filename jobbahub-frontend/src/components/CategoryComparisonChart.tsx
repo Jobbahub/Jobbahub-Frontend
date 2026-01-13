@@ -1,10 +1,21 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { TOPICS } from '../data/constants';
 
+interface VragenlijstKnoppenInput {
+    [key: string]: {
+        score: number;
+        weight: number;
+    };
+}
+
+interface UserAnswers {
+    knoppen_input?: VragenlijstKnoppenInput;
+}
+
 interface CategoryComparisonChartProps {
     moduleScores: Record<string, number>;
-    userAnswers: any; // Using any for VragenlijstData to avoid circular imports or strict coupling
+    userAnswers: UserAnswers | null; // Properly typed instead of any
     limit?: number;
 }
 
@@ -14,6 +25,10 @@ const CategoryComparisonChart: React.FC<CategoryComparisonChartProps> = ({
     limit = 3
 }) => {
     const { t } = useLanguage();
+    
+    // ✅ FIX: Moved useState BEFORE any conditional returns
+    // React Hooks must be called in the same order every render
+    const [hoveredLabel, setHoveredLabel] = useState<string | null>(null);
 
     const comparisonData = useMemo(() => {
         if (!userAnswers || !userAnswers.knoppen_input) return [];
@@ -24,7 +39,7 @@ const CategoryComparisonChart: React.FC<CategoryComparisonChartProps> = ({
             .slice(0, limit);
 
         return relevantCategories.map(([catKey, moduleScore]) => {
-            const userCategoryData = userAnswers.knoppen_input[catKey];
+            const userCategoryData = userAnswers.knoppen_input?.[catKey];
             const userRawScore = userCategoryData ? userCategoryData.score : 0; // -1, 0, 1
 
             const topic = TOPICS.find(t => t.id === catKey);
@@ -41,6 +56,7 @@ const CategoryComparisonChart: React.FC<CategoryComparisonChartProps> = ({
         });
     }, [moduleScores, userAnswers, t, limit]);
 
+    // Early return AFTER all hooks are called
     if (comparisonData.length === 0) return null;
 
     const getModuleBarColor = (score: number) => {
@@ -80,8 +96,6 @@ const CategoryComparisonChart: React.FC<CategoryComparisonChartProps> = ({
             default: return '#64748b'; // Slate
         }
     };
-
-    const [hoveredLabel, setHoveredLabel] = React.useState<string | null>(null);
 
     return (
         <div className="module-focus-container">

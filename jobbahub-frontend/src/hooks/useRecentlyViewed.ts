@@ -1,5 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
-import { IChoiceModule } from '../types';
+import { useState, useCallback } from 'react';
 
 const STORAGE_KEY = 'recentlyViewedModules';
 const MAX_RECENT_MODULES = 5;
@@ -9,26 +8,27 @@ interface RecentlyViewedItem {
   viewedAt: number;
 }
 
-export const useRecentlyViewed = () => {
-  const [recentlyViewedIds, setRecentlyViewedIds] = useState<string[]>([]);
-
-  // Load from localStorage on mount
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed: RecentlyViewedItem[] = JSON.parse(stored);
-        // Sort by viewedAt descending and get IDs
-        const sortedIds = parsed
-          .sort((a, b) => b.viewedAt - a.viewedAt)
-          .map(item => item.moduleId);
-        setRecentlyViewedIds(sortedIds);
-      }
-    } catch (error) {
-      console.error('Error loading recently viewed modules:', error);
-      localStorage.removeItem(STORAGE_KEY);
+// ✅ FIX: Helper function to load from localStorage (used for lazy init)
+const loadFromStorage = (): string[] => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      const parsed: RecentlyViewedItem[] = JSON.parse(stored);
+      return parsed
+        .sort((a, b) => b.viewedAt - a.viewedAt)
+        .map(item => item.moduleId);
     }
-  }, []);
+  } catch (error) {
+    console.error('Error loading recently viewed modules:', error);
+    localStorage.removeItem(STORAGE_KEY);
+  }
+  return [];
+};
+
+export const useRecentlyViewed = () => {
+  // ✅ FIX: Use lazy initialization instead of useEffect + setState
+  // This runs only once during initial render, avoiding cascading renders
+  const [recentlyViewedIds, setRecentlyViewedIds] = useState<string[]>(loadFromStorage);
 
   // Add a module to recently viewed
   const addRecentlyViewed = useCallback((moduleId: string) => {

@@ -1,12 +1,11 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { useSearchParams, useLocation } from "react-router-dom";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
+import { useSearchParams, useLocation, useNavigate } from "react-router-dom";
 import { useLanguage } from "../context/LanguageContext";
 import { IChoiceModule } from "../types";
 import { apiService, ApiError } from "../services/apiService";
 import ModuleGrid from "../components/moduleGrid";
 import Pagination from "../components/modulePagination";
 import ModuleSearch from "../components/moduleSearch";
-import { useNavigate } from "react-router-dom";
 import ModuleFilter from "../components/moduleFilter";
 import { useAuth } from "../context/authContext";
 import RecentlyViewed from "../components/RecentlyViewed";
@@ -23,11 +22,6 @@ const ElectiveModules: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
-  // We can still keep these as derived state or just use the params directly.
-  // Using params directly or syncing state is fine.
-  // For simplicity and reactivity, let's use the params as the source of truth for rendering,
-  // but we might need local state if we want controlled inputs that don't update URL on every keystroke (debounce).
-  // However, the original code updated `searchTerm` on every change. Let's keep it simple first.
   const searchTerm = searchParams.get("search") || "";
   const currentPage = parseInt(searchParams.get("page") || "1", 10);
 
@@ -49,15 +43,13 @@ const ElectiveModules: React.FC = () => {
           const favData = await apiService.getFavorites();
           setFavorites(favData);
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Failed to load modules:", err);
-        const status =
-          err instanceof ApiError ? err.status : "MODULES_LOAD_ERROR";
+        const status = err instanceof ApiError ? err.status : "MODULES_LOAD_ERROR";
         navigate("/error", {
           state: {
             title: "Kon modules niet laden",
-            message:
-              "Er ging iets mis bij het ophalen van de modules. Probeer het later opnieuw.",
+            message: "Er ging iets mis bij het ophalen van de modules. Probeer het later opnieuw.",
             code: status,
             from: location.pathname,
           },
@@ -68,7 +60,7 @@ const ElectiveModules: React.FC = () => {
     };
 
     fetchData();
-  }, [isAuthenticated]);
+  }, [isAuthenticated, navigate, location.pathname, t]);
 
   const filteredModules = useMemo(() => {
     return allModules.filter((module) => {
@@ -92,9 +84,9 @@ const ElectiveModules: React.FC = () => {
                 cleaned.trim().endsWith("]")
               ) {
                 const parsed: string[] = JSON.parse(cleaned);
-                parsed.forEach((t) => tags.add(t));
+                parsed.forEach((tag) => tags.add(tag));
               } else {
-                mod.main_filter.split(",").forEach((t) => tags.add(t.trim()));
+                mod.main_filter.split(",").forEach((tag) => tags.add(tag.trim()));
               }
             } catch {
               tags.add(mod.main_filter.trim());
@@ -122,19 +114,6 @@ const ElectiveModules: React.FC = () => {
       indexOfLastItem
     );
 
-    // If we're on a page that doesn't exist anymore (e.g. after search), redirect to last valid page
-    if (
-      currentModules.length === 0 &&
-      totalPages > 0 &&
-      currentPage > totalPages
-    ) {
-      // This is a side effect in render, providing a better UX requires handling this in useEffect or handlers.
-      // For now, let's just show the last page logic or reset.
-      // The original code managed this via `setCurrentPage`.
-      // With URL params, we should update the URL.
-      // We'll handle this in a useEffect to avoid render loops or bad patterns.
-    }
-
     return { currentModules, totalPages };
   }, [filteredModules, currentPage]);
 
@@ -153,7 +132,7 @@ const ElectiveModules: React.FC = () => {
     }
   }, [filteredModules.length, currentPage, setSearchParams]);
 
-  const handleSearchChange = (value: string) => {
+  const handleSearchChange = useCallback((value: string) => {
     setSearchParams(
       (prev: URLSearchParams) => {
         if (value) {
@@ -161,24 +140,24 @@ const ElectiveModules: React.FC = () => {
         } else {
           prev.delete("search");
         }
-        prev.set("page", "1"); // Reset to page 1 on search
+        prev.set("page", "1");
         return prev;
       },
       { replace: true }
     );
-  };
+  }, [setSearchParams]);
 
-  const handlePageChange = (pageNumber: number) => {
+  const handlePageChange = useCallback((pageNumber: number) => {
     setSearchParams((prev: URLSearchParams) => {
       prev.set("page", pageNumber.toString());
       return prev;
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  }, [setSearchParams]);
 
-  const handleDetailsClick = (id: string) => {
+  const handleDetailsClick = useCallback((id: string) => {
     navigate(`/modules/${id}`);
-  };
+  }, [navigate]);
 
   const handleToggleFavorite = async (moduleId: string) => {
     if (!isAuthenticated) return;
@@ -192,16 +171,15 @@ const ElectiveModules: React.FC = () => {
         await apiService.addFavorite(moduleId);
         setFavorites((prev) => [...prev, moduleId]);
       }
-    } catch (error) {
-      console.error("Fout bij updaten favoriet:", error);
+    } catch (err: unknown) {
+      console.error("Fout bij updaten favoriet:", err);
     }
   };
 
-  const handleTagToggle = (tag: string) => {
+  const handleTagToggle = useCallback((tag: string) => {
     setSelectedTags((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
-    // Reset page to 1
     setSearchParams(
       (prev: URLSearchParams) => {
         prev.set("page", "1");
@@ -209,7 +187,7 @@ const ElectiveModules: React.FC = () => {
       },
       { replace: true }
     );
-  };
+  }, [setSearchParams]);
 
   return (
     <div className="page-wrapper">

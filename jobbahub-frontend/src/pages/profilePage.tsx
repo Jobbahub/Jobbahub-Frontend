@@ -2,7 +2,8 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import { useLanguage } from "../context/LanguageContext";
-import { ApiError, apiService, VragenlijstData } from "../services/apiService";
+import { ApiError, apiService } from "../services/apiService";
+import type { VragenlijstData, ChangeCredentialsPayload } from "../types/questionnaire";
 import { TOPICS } from "../data/constants";
 
 const Profile: React.FC = () => {
@@ -27,7 +28,6 @@ const Profile: React.FC = () => {
   const [interestsSuccess, setInterestsSuccess] = useState<string | null>(null);
 
   // Get the actual questionnaire answers from the correct path
-  // Structure: user.vragenlijst_resultaten = { antwoorden, aanbevelingen, cluster_suggesties }
   const questionnaireResults = user?.vragenlijst_resultaten;
   const userAnswers: VragenlijstData | null = questionnaireResults?.antwoorden || null;
 
@@ -73,7 +73,7 @@ const Profile: React.FC = () => {
     setShowModal(false);
 
     try {
-      const payload: any = { currentPassword };
+      const payload: ChangeCredentialsPayload = { currentPassword };
       if (userName !== user?.name) payload.newNaam = userName;
       if (newPassword) payload.newPassword = newPassword;
 
@@ -84,8 +84,13 @@ const Profile: React.FC = () => {
       setSuccessMessage(t("profile_update_success"));
       setNewPassword("");
       setCurrentPassword("");
-    } catch (err: any) {
-      setFormError(err.message || t("profile_update_failed"));
+    } catch (err: unknown) {
+      const errorMessage = err instanceof ApiError 
+        ? err.message 
+        : err instanceof Error 
+          ? err.message 
+          : t("profile_update_failed");
+      setFormError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -104,12 +109,13 @@ const Profile: React.FC = () => {
         setSuccessMessage(t("reset_success"));
         setIsEditingInterests(false);
         setEditedAnswers(null);
-      } catch (e: any) {
+      } catch (e: unknown) {
+        const errorCode = e instanceof ApiError ? e.status : "RESET_ERROR";
         navigate("/error", {
           state: {
             title: t("reset_failed_msg"),
             message: t("reset_failed_msg"),
-            code: e instanceof ApiError ? e.status : "RESET_ERROR",
+            code: errorCode,
             from: window.location.pathname,
           },
         });
@@ -155,7 +161,6 @@ const Profile: React.FC = () => {
     setInterestsSuccess(null);
 
     try {
-      // Keep the existing recommendations but update the answers
       const dataToSave = {
         antwoorden: editedAnswers,
         aanbevelingen: questionnaireResults.aanbevelingen || [],
@@ -164,7 +169,6 @@ const Profile: React.FC = () => {
 
       const updatedStudent = await apiService.saveQuestionnaireResults(dataToSave);
 
-      // Update user context with new questionnaire results
       updateUser({
         ...user,
         vragenlijst_resultaten: updatedStudent.vragenlijst_resultaten
@@ -172,8 +176,13 @@ const Profile: React.FC = () => {
 
       setInterestsSuccess(t("Interesses succesvol opgeslagen!"));
       setIsEditingInterests(false);
-    } catch (err: any) {
-      setInterestsError(err.message || t("Kon interesses niet opslaan"));
+    } catch (err: unknown) {
+      const errorMessage = err instanceof ApiError 
+        ? err.message 
+        : err instanceof Error 
+          ? err.message 
+          : t("Kon interesses niet opslaan");
+      setInterestsError(errorMessage);
     } finally {
       setSavingInterests(false);
     }

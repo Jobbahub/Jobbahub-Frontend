@@ -3,6 +3,7 @@ import { FALLBACK_IMAGE_DATA_URI } from '../utils/imageUtils';
 import { useLanguage } from '../context/LanguageContext';
 import { IChoiceModule } from '../types';
 import CategoryComparisonChart from './CategoryComparisonChart';
+import type { VragenlijstData } from '../types/questionnaire';
 
 interface ModuleCardProps {
   module: IChoiceModule;
@@ -14,7 +15,7 @@ interface ModuleCardProps {
   explanation?: string;
   isCluster?: boolean;
   categoryScores?: Record<string, number>;
-  userAnswers?: any;
+  userAnswers?: VragenlijstData | null;
   rank?: number;
 }
 
@@ -57,7 +58,7 @@ const ModuleCard: React.FC<ModuleCardProps> = ({
   const parseTags = (tagString?: string): string[] => {
     if (!tagString) return [];
     try {
-      return tagString.replace(/[\[\]']/g, '').split(',').map(t => t.trim()).filter(t => t !== "");
+      return tagString.replace(/[[\]']/g, '').split(',').map(t => t.trim()).filter(t => t !== "");
     } catch {
       return [];
     }

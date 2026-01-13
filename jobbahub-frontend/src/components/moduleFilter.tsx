@@ -26,7 +26,7 @@ const ModuleFilter: React.FC<ModuleFilterProps> = ({
     modules.forEach((mod) => {
       if (mod.main_filter) {
         mod.main_filter.split(",").forEach((c) => {
-          const cleanCategory = c.replace(/[\[\]']/g, "").trim();
+          const cleanCategory = c.replace(/[[\]']/g, "").trim();
           if (cleanCategory) categories.add(cleanCategory);
         });
       }

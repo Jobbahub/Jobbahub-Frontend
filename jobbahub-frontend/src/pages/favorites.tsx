@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { IChoiceModule } from '../types';
 import { apiService, ApiError } from '../services/apiService';
 import ModuleGrid from '../components/moduleGrid';
@@ -26,12 +26,13 @@ const Favorites: React.FC = () => {
 
             try {
                 setLoading(true);
+                setError(null);
                 const allModules = await apiService.getModules();
                 const favIds = await apiService.getFavorites();
                 setFavoriteIds(favIds);
                 const filtered = allModules.filter(mod => favIds.includes(mod._id));
                 setFavoriteModules(filtered);
-            } catch (err: any) {
+            } catch (err: unknown) {
                 console.error(err);
                 const status = err instanceof ApiError ? err.status : "FAVORITES_LOAD_ERROR";
                 navigate('/error', {
@@ -47,19 +48,19 @@ const Favorites: React.FC = () => {
         };
 
         fetchData();
-    }, [isAuthenticated, t]);
+    }, [isAuthenticated, t, navigate]);
 
-    const handleDetailsClick = (id: string) => {
+    const handleDetailsClick = useCallback((id: string) => {
         navigate(`/modules/${id}`);
-    };
+    }, [navigate]);
 
     const handleToggleFavorite = async (moduleId: string) => {
         try {
             await apiService.removeFavorite(moduleId);
             setFavoriteIds(prev => prev.filter(id => id !== moduleId));
             setFavoriteModules(prev => prev.filter(mod => mod._id !== moduleId));
-        } catch (error) {
-            console.error("Fout bij verwijderen favoriet:", error);
+        } catch (err: unknown) {
+            console.error("Fout bij verwijderen favoriet:", err);
         }
     };
 

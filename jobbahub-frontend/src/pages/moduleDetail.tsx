@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { IChoiceModule } from '../types';
 import { apiService, ApiError } from '../services/apiService';
@@ -20,25 +20,26 @@ const ModuleDetail: React.FC = () => {
   const { t, language } = useLanguage();
   const { addRecentlyViewed } = useRecentlyViewed();
 
-  const getTranslatedContent = (key: 'name' | 'shortdescription' | 'description' | 'content' | 'learningoutcomes', fallback?: string) => {
-    if (!module) return '';
-    if (language === 'en') {
-      const enKey = `${key}_en` as keyof IChoiceModule;
-      if (module[enKey]) return module[enKey] as string;
-    }
-    return module[key] as string || fallback || '';
-  };
-
   const [module, setModule] = useState<IChoiceModule | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [heroImage, setHeroImage] = useState<string>('');
 
+  const getTranslatedContent = useCallback((key: 'name' | 'shortdescription' | 'description' | 'content' | 'learningoutcomes', fallback?: string) => {
+    if (!module) return '';
+    if (language === 'en') {
+      const enKey = `${key}_en` as keyof IChoiceModule;
+      if (module[enKey]) return module[enKey] as string;
+    }
+    return module[key] as string || fallback || '';
+  }, [module, language]);
+
   useEffect(() => {
     const fetchModuleAndFav = async () => {
       if (!id) return;
       try {
+        setError(null);
         const data = await apiService.getModuleById(id);
         setModule(data);
 
@@ -51,12 +52,14 @@ const ModuleDetail: React.FC = () => {
           const favorites = await apiService.getFavorites();
           setIsFavorite(favorites.includes(data._id));
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         const status = err instanceof ApiError ? err.status : "MODULE_DETAIL_LOAD_ERROR";
+        const errorMessage = err instanceof Error ? err.message : "Er ging iets mis bij het ophalen van de module details.";
+        setError(errorMessage);
         navigate('/error', {
           state: {
             title: "Kon module details niet laden",
-            message: "Er ging iets mis bij het ophalen van de module details.",
+            message: errorMessage,
             code: status,
             from: location.pathname
           }
@@ -67,7 +70,7 @@ const ModuleDetail: React.FC = () => {
     };
 
     fetchModuleAndFav();
-  }, [id, isAuthenticated, addRecentlyViewed]);
+  }, [id, isAuthenticated, addRecentlyViewed, navigate, location.pathname]);
 
   useEffect(() => {
     if (!id) return;
@@ -96,7 +99,7 @@ const ModuleDetail: React.FC = () => {
   const parseTags = (tagString?: string): string[] => {
     if (!tagString) return [];
     try {
-      return tagString.replace(/[\[\]']/g, '').split(',').map(t => t.trim()).filter(t => t !== "");
+      return tagString.replace(/[[\]']/g, '').split(',').map(t => t.trim()).filter(t => t !== "");
     } catch { return []; }
   };
 
