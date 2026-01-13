@@ -4550,3 +4550,84 @@ textarea.form-input {
   background-color: #e5e5e5 !important;
   filter: grayscale(100%);
 }
+
+/* ========================================
+   RELATED MODULES SECTION STYLES
+   Add these to your index.css file
+   ======================================== */
+
+.related-modules-section {
+  margin-top: 60px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border-color);
+}
+
+.related-modules-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+
+.related-modules-subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 24px;
+}
+
+.related-modules-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* ========================================
+   DARK MODE STYLES
+   ======================================== */
+
+[data-theme="dark"] .related-modules-section {
+  border-top-color: var(--border-color);
+}
+
+[data-theme="dark"] .related-modules-title {
+  color: var(--text-color);
+}
+
+[data-theme="dark"] .related-modules-subtitle {
+  color: var(--text-muted);
+}
+
+/* ========================================
+   RESPONSIVE STYLES
+   ======================================== */
+
+@media (max-width: 1024px) {
+  .related-modules-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .related-modules-section {
+    margin-top: 40px;
+    padding-top: 30px;
+  }
+
+  .related-modules-title {
+    font-size: 1.25rem;
+  }
+
+  .related-modules-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .related-modules-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}

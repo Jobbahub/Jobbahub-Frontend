@@ -6,6 +6,7 @@ import { useAuth } from '../context/authContext';
 import { useLanguage } from '../context/LanguageContext';
 import { FALLBACK_IMAGE_DATA_URI } from '../utils/imageUtils';
 import useRecentlyViewed from '../hooks/useRecentlyViewed';
+import ModuleCard from '../components/moduleCard';
 
 const getHeroImageUrl = (id: number) => {
   const picsumId = id % 1084;
@@ -25,6 +26,10 @@ const ModuleDetail: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [heroImage, setHeroImage] = useState<string>('');
+  
+  // Related modules state
+  const [relatedModules, setRelatedModules] = useState<IChoiceModule[]>([]);
+  const [relatedFavorites, setRelatedFavorites] = useState<string[]>([]);
 
   const getTranslatedContent = useCallback((key: 'name' | 'shortdescription' | 'description' | 'content' | 'learningoutcomes', fallback?: string) => {
     if (!module) return '';
@@ -51,6 +56,7 @@ const ModuleDetail: React.FC = () => {
         if (isAuthenticated && data) {
           const favorites = await apiService.getFavorites();
           setIsFavorite(favorites.includes(data._id));
+          setRelatedFavorites(favorites);
         }
       } catch (err: unknown) {
         const status = err instanceof ApiError ? err.status : "MODULE_DETAIL_LOAD_ERROR";
@@ -72,6 +78,33 @@ const ModuleDetail: React.FC = () => {
     fetchModuleAndFav();
   }, [id, isAuthenticated, addRecentlyViewed, navigate, location.pathname]);
 
+  // Fetch related modules based on main_filter
+  useEffect(() => {
+    const fetchRelatedModules = async () => {
+      if (!module?.main_filter) return;
+      
+      try {
+        const allModules = await apiService.getModules();
+        
+        // Filter modules with same main_filter, exclude current module
+        const related = allModules
+          .filter(m => 
+            m.main_filter === module.main_filter && 
+            m.id !== module.id
+          )
+          // Shuffle and take 3
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 3);
+        
+        setRelatedModules(related);
+      } catch (err) {
+        console.error('Kon gerelateerde modules niet ophalen:', err);
+      }
+    };
+
+    fetchRelatedModules();
+  }, [module]);
+
   useEffect(() => {
     if (!id) return;
     const url = getHeroImageUrl(parseInt(id));
@@ -90,6 +123,26 @@ const ModuleDetail: React.FC = () => {
       } else {
         await apiService.addFavorite(module._id);
         setIsFavorite(true);
+      }
+    } catch (e) {
+      console.error("Fout bij favoriet togglen", e);
+    }
+  };
+
+  const handleRelatedModuleClick = (moduleId: string) => {
+    navigate(`/modules/${moduleId}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleToggleRelatedFavorite = async (moduleId: string) => {
+    if (!isAuthenticated) return;
+    try {
+      if (relatedFavorites.includes(moduleId)) {
+        await apiService.removeFavorite(moduleId);
+        setRelatedFavorites(prev => prev.filter(id => id !== moduleId));
+      } else {
+        await apiService.addFavorite(moduleId);
+        setRelatedFavorites(prev => [...prev, moduleId]);
       }
     } catch (e) {
       console.error("Fout bij favoriet togglen", e);
@@ -187,10 +240,33 @@ const ModuleDetail: React.FC = () => {
                   <li><strong>{t("Beschikbare plaatsen")}:</strong> <span>{module.available_spots ?? '-'}</span></li>
                   <li><strong>{t("Moeilijkheidsgraad")}:</strong> <span>{module.estimated_difficulty ? `${module.estimated_difficulty}/5` : '-'}</span></li>
                 </ul>
-
               </div>
             </div>
           </div>
+
+          {/* Related Modules Section */}
+          {relatedModules.length > 0 && (
+            <section className="related-modules-section">
+              <h3 className="related-modules-title">
+                {t("Gerelateerde modules")}
+              </h3>
+              <p className="related-modules-subtitle">
+                {t("Andere modules binnen")} {module.main_filter}
+              </p>
+              <div className="related-modules-grid">
+                {relatedModules.map((relatedModule) => (
+                  <ModuleCard
+                    key={relatedModule.id}
+                    module={relatedModule}
+                    onClick={handleRelatedModuleClick}
+                    isFavorite={relatedFavorites.includes(relatedModule._id)}
+                    onToggleFavorite={handleToggleRelatedFavorite}
+                    isAuthenticated={isAuthenticated}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       </div>
     </div>
