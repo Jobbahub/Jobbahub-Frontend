@@ -2,7 +2,7 @@
 # Automated security scanning for React/TypeScript frontend
 # Runs on every push and PR to main/develop
 
-name: 🔒 Security Scan
+name: Frontend Security CI
 
 on:
   push:
