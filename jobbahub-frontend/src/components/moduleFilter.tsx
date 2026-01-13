@@ -76,7 +76,11 @@ const ModuleFilter: React.FC<ModuleFilterProps> = ({
             onChange={() => onTagToggle(item)}
             className="filter-checkbox"
           />
-          <span>{t(item)}</span>
+          <span>
+            {title === "Locaties"
+              ? t(item).replace(/\s+en\s+/i, " & ")
+              : t(item)}
+          </span>
         </label>
       ))}
     </div>

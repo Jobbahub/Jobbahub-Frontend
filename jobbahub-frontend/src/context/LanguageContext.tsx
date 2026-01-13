@@ -28,7 +28,6 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
 
     const t = (key: string) => {
         const dict = dictionaries[language];
-        // @ts-expect-error - dynamic import for translations - dynamic import
         return dict[key] || key;
     };
 
