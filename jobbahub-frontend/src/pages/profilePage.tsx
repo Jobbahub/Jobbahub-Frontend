@@ -40,8 +40,10 @@ const Profile: React.FC = () => {
     }));
   }, [t]);
 
-  // Group topics by type - only interests needed
+  // Group topics by type
   const interestTopics = translatedTopics.filter(topic => topic.type === 'interest');
+  const valueTopics = translatedTopics.filter(topic => topic.type === 'value');
+  const goalTopics = translatedTopics.filter(topic => topic.type === 'goal');
 
   useEffect(() => {
     if (user) {
@@ -85,10 +87,10 @@ const Profile: React.FC = () => {
       setNewPassword("");
       setCurrentPassword("");
     } catch (err: unknown) {
-      const errorMessage = err instanceof ApiError 
-        ? err.message 
-        : err instanceof Error 
-          ? err.message 
+      const errorMessage = err instanceof ApiError
+        ? err.message
+        : err instanceof Error
+          ? err.message
           : t("profile_update_failed");
       setFormError(errorMessage);
     } finally {
@@ -161,12 +163,17 @@ const Profile: React.FC = () => {
     setInterestsSuccess(null);
 
     try {
+      // 1. Fetch new recommendations based on updated answers
+      const aiResponse = await apiService.verstuurVragenlijst(editedAnswers);
+
+      // 2. Prepare data to save (answers + NEW recommendations)
       const dataToSave = {
         antwoorden: editedAnswers,
-        aanbevelingen: questionnaireResults.aanbevelingen || [],
-        cluster_suggesties: questionnaireResults.cluster_suggesties || []
+        aanbevelingen: aiResponse.aanbevelingen || [],
+        cluster_suggesties: aiResponse.cluster_suggesties || []
       };
 
+      // 3. Save everything to backend
       const updatedStudent = await apiService.saveQuestionnaireResults(dataToSave);
 
       updateUser({
@@ -174,14 +181,14 @@ const Profile: React.FC = () => {
         vragenlijst_resultaten: updatedStudent.vragenlijst_resultaten
       });
 
-      setInterestsSuccess(t("Interesses succesvol opgeslagen!"));
+      setInterestsSuccess(t("interests_saved_success"));
       setIsEditingInterests(false);
     } catch (err: unknown) {
-      const errorMessage = err instanceof ApiError 
-        ? err.message 
-        : err instanceof Error 
-          ? err.message 
-          : t("Kon interesses niet opslaan");
+      const errorMessage = err instanceof ApiError
+        ? err.message
+        : err instanceof Error
+          ? err.message
+          : t("interests_save_error");
       setInterestsError(errorMessage);
     } finally {
       setSavingInterests(false);
@@ -203,12 +210,14 @@ const Profile: React.FC = () => {
     }
   };
 
-  const getScoreColor = (score: number) => {
+
+
+  const getScoreClassName = (score: number) => {
     switch (score) {
-      case -1: return "var(--text-muted)";
-      case 0: return "var(--text-color)";
-      case 1: return "var(--primary-color)";
-      default: return "var(--text-color)";
+      case -1: return "chart-score-badge chart-score-negative";
+      case 0: return "chart-score-badge chart-score-neutral";
+      case 1: return "chart-score-badge chart-score-positive";
+      default: return "";
     }
   };
 
@@ -226,36 +235,37 @@ const Profile: React.FC = () => {
       return (
         <div key={topic.id} className="interest-item interest-item-edit">
           <div className="interest-header">
-            <span className="interest-label">{topic.label}</span>
-            {topic.type === 'interest' && (
-              <button
-                type="button"
-                className={`weight-toggle-btn ${editedIsWeighted ? 'active' : ''}`}
-                onClick={() => handleWeightToggle(topic.id)}
-                title={editedIsWeighted ? t("Klik om prioriteit te verwijderen") : t("Klik om als prioriteit te markeren")}
-              >
-                {editedIsWeighted ? '★ 2x' : '☆'}
-              </button>
-            )}
+            <span className="interest-label">
+              {topic.label}
+              {topic.type === 'interest' && (
+                <button
+                  className={`weight-toggle-btn ${editedIsWeighted ? 'active' : ''}`}
+                  onClick={() => handleWeightToggle(topic.id)}
+                  title={t("Telt 2x mee")}
+                >
+                  ★ {editedIsWeighted ? '2x' : '1x'}
+                </button>
+              )}
+            </span>
           </div>
           <div className="interest-score-buttons">
             <button
               type="button"
-              className={`btn topic-btn btn-topic-choice btn-small ${editedAnswer?.score === -1 ? 'active' : ''}`}
+              className={`btn topic-btn btn-topic-choice btn-small ${editedAnswer?.score === -1 ? 'active-negative' : ''}`}
               onClick={() => handleScoreChange(topic.id, -1)}
             >
               {t("Nee")}
             </button>
             <button
               type="button"
-              className={`btn topic-btn btn-topic-choice btn-small ${editedAnswer?.score === 0 ? 'active' : ''}`}
+              className={`btn topic-btn btn-topic-choice btn-small ${editedAnswer?.score === 0 ? 'active-neutral' : ''}`}
               onClick={() => handleScoreChange(topic.id, 0)}
             >
               {t("Neutraal")}
             </button>
             <button
               type="button"
-              className={`btn topic-btn btn-topic-choice btn-small ${editedAnswer?.score === 1 ? 'active' : ''}`}
+              className={`btn topic-btn btn-topic-choice btn-small ${editedAnswer?.score === 1 ? 'active-positive' : ''}`}
               onClick={() => handleScoreChange(topic.id, 1)}
             >
               {t("Ja")}
@@ -271,14 +281,13 @@ const Profile: React.FC = () => {
         <div className="interest-header">
           <span className="interest-label">
             {topic.label}
-            {isWeighted && (
+            {isWeighted && topic.type === 'interest' && (
               <span className="priority-badge-small">★ 2x</span>
             )}
           </span>
         </div>
         <span
-          className="interest-score"
-          style={{ color: getScoreColor(answer.score) }}
+          className={getScoreClassName(answer.score)}
         >
           {getScoreLabel(answer.score)}
         </span>
@@ -375,9 +384,21 @@ const Profile: React.FC = () => {
             </div>
           ) : (
             <>
-              {/* Interest Topics Only */}
+              {/* Interest Topics */}
               <div className="interests-grid">
                 {interestTopics.map(topic => renderTopicItem(topic, isEditingInterests && editedAnswers ? editedAnswers : userAnswers!))}
+              </div>
+
+              {/* Values Section */}
+              <h3 className="interests-main-title mt-8">{t("Jouw Waarden")}</h3>
+              <div className="interests-grid">
+                {valueTopics.map(topic => renderTopicItem(topic, isEditingInterests && editedAnswers ? editedAnswers : userAnswers!))}
+              </div>
+
+              {/* Goals Section */}
+              <h3 className="interests-main-title mt-8">{t("Jouw Doelen")}</h3>
+              <div className="interests-grid">
+                {goalTopics.map(topic => renderTopicItem(topic, isEditingInterests && editedAnswers ? editedAnswers : userAnswers!))}
               </div>
 
               {/* Action Buttons */}
@@ -390,7 +411,7 @@ const Profile: React.FC = () => {
                       onClick={handleCancelEdit}
                       disabled={savingInterests}
                     >
-                      {t("Annuleren")}
+                      {t("cancel")}
                     </button>
                     <button
                       type="button"
@@ -398,7 +419,7 @@ const Profile: React.FC = () => {
                       onClick={handleSaveInterests}
                       disabled={savingInterests}
                     >
-                      {savingInterests ? t("Opslaan...") : t("Wijzigingen opslaan")}
+                      {savingInterests ? t("saving") : t("save_changes")}
                     </button>
                   </>
                 ) : (
@@ -407,7 +428,7 @@ const Profile: React.FC = () => {
                     className="btn btn-primary"
                     onClick={() => setIsEditingInterests(true)}
                   >
-                    {t("Interesses aanpassen")}
+                    {t("edit_interests")}
                   </button>
                 )}
               </div>

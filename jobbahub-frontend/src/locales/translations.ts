@@ -246,6 +246,9 @@ export const translationsList = {
 
     // Profile Page
     profile_page_title: { nl: "Mijn Profiel", en: "My Profile" },
+    "Jouw Interesses": { nl: "Jouw Interesses", en: "Your Interests" },
+    "Jouw Waarden": { nl: "Jouw Waarden", en: "Your Values" },
+    "Jouw Doelen": { nl: "Jouw Doelen", en: "Your Goals" },
     username_label: { nl: "Gebruikersnaam", en: "Username" },
     new_password_label: { nl: "Nieuw wachtwoord", en: "New password" },
     current_password_required: { nl: "Huidig wachtwoord is vereist.", en: "Current password is required." },
@@ -262,6 +265,9 @@ export const translationsList = {
     current_password_placeholder: { nl: "Huidig wachtwoord", en: "Current password" },
     cancel: { nl: "Annuleren", en: "Cancel" },
     confirm: { nl: "Bevestigen", en: "Confirm" },
+    edit_interests: { nl: "Interesses aanpassen", en: "Edit interests" },
+    interests_saved_success: { nl: "Interesses succesvol opgeslagen!", en: "Interests successfully saved!" },
+    interests_save_error: { nl: "Kon interesses niet opslaan", en: "Could not save interests" },
 
     // Dashboard
     personal_dashboard: { nl: "Persoonlijk Dashboard", en: "Personal Dashboard" },
