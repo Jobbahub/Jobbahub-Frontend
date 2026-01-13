@@ -82,7 +82,7 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
   const handleScoreChange = (topicId: string, score: number) => {
     // ✅ SECURITY: Validate score is within allowed range
     if (![-1, 0, 1].includes(score)) return;
-    
+
     setFormData(prev => ({
       ...prev,
       knoppen_input: {
@@ -95,11 +95,21 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
   const handleWeightToggle = (topicId: string) => {
     setFormData(prev => {
       const currentWeight = prev.knoppen_input[topicId].weight;
+      const newWeight = currentWeight === 2 ? 1 : 2;
+
+      // If setting to 2x (Important), auto-set score to 1 (Ja)
+      // Otherwise keep existing score
+      const newScore = newWeight === 2 ? 1 : prev.knoppen_input[topicId].score;
+
       return {
         ...prev,
         knoppen_input: {
           ...prev.knoppen_input,
-          [topicId]: { ...prev.knoppen_input[topicId], weight: currentWeight === 2 ? 1 : 2 }
+          [topicId]: {
+            ...prev.knoppen_input[topicId],
+            weight: newWeight,
+            score: newScore
+          }
         }
       };
     });
@@ -124,18 +134,18 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
   const handleSubmit = async () => {
     setLoading(true);
     setSubmitError(null);
-    
+
     try {
       // ✅ SECURITY: Sanitize all user input before sending to API
       const sanitizedData: VragenlijstData = {
-        keuze_taal: formData.keuze_taal 
-          ? sanitizeSelectValue(formData.keuze_taal, ALLOWED_TAAL) 
+        keuze_taal: formData.keuze_taal
+          ? sanitizeSelectValue(formData.keuze_taal, ALLOWED_TAAL)
           : null,
-        keuze_locatie: formData.keuze_locatie 
-          ? sanitizeSelectValue(formData.keuze_locatie, ALLOWED_LOCATIE) 
+        keuze_locatie: formData.keuze_locatie
+          ? sanitizeSelectValue(formData.keuze_locatie, ALLOWED_LOCATIE)
           : null,
-        keuze_punten: formData.keuze_punten !== null && ALLOWED_PUNTEN.includes(formData.keuze_punten) 
-          ? formData.keuze_punten 
+        keuze_punten: formData.keuze_punten !== null && ALLOWED_PUNTEN.includes(formData.keuze_punten)
+          ? formData.keuze_punten
           : null,
         open_antwoord: sanitizeInput(formData.open_antwoord),
         knoppen_input: formData.knoppen_input, // Already validated via handleScoreChange
@@ -253,9 +263,29 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
 
           <h2 className="form-title question-title">{topic.question}</h2>
           <div className="topic-btn-group">
-            <button type="button" className={`btn topic-btn btn-topic-choice ${currentScore === -1 ? 'active' : ''}`} onClick={() => handleScoreChange(topic.id, -1)}>{t("Nee")}</button>
-            <button type="button" className={`btn topic-btn btn-topic-choice ${currentScore === 0 ? 'active' : ''}`} onClick={() => handleScoreChange(topic.id, 0)}>{t("Neutraal")}</button>
-            <button type="button" className={`btn topic-btn btn-topic-choice ${currentScore === 1 ? 'active' : ''}`} onClick={() => handleScoreChange(topic.id, 1)}>{t("Ja")}</button>
+            <button
+              type="button"
+              disabled={isWeighted}
+              className={`btn topic-btn btn-topic-choice ${currentScore === -1 ? 'active' : ''} ${isWeighted ? 'btn-disabled-weighted' : ''}`}
+              onClick={() => !isWeighted && handleScoreChange(topic.id, -1)}
+            >
+              {t("Nee")}
+            </button>
+            <button
+              type="button"
+              disabled={isWeighted}
+              className={`btn topic-btn btn-topic-choice ${currentScore === 0 ? 'active' : ''} ${isWeighted ? 'btn-disabled-weighted' : ''}`}
+              onClick={() => !isWeighted && handleScoreChange(topic.id, 0)}
+            >
+              {t("Neutraal")}
+            </button>
+            <button
+              type="button"
+              className={`btn topic-btn btn-topic-choice ${currentScore === 1 ? 'active' : ''}`}
+              onClick={() => handleScoreChange(topic.id, 1)}
+            >
+              {t("Ja")}
+            </button>
           </div>
           <div className="nav-buttons-container">
             <button className="btn btn-secondary" onClick={prevQuestion}>← {t('previous')}</button>

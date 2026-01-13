@@ -4487,3 +4487,9 @@ textarea.form-input {
     display: none;
   }
 }
+.btn-disabled-weighted {
+  opacity: 0.3 !important;
+  cursor: not-allowed !important;
+  background-color: #e5e5e5 !important;
+  filter: grayscale(100%);
+}
