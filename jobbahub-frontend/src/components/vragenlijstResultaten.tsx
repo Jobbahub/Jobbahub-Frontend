@@ -102,8 +102,9 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
 
   return (
     <div className="page-wrapper">
-      <div className="page-hero">
+      <div className="page-hero" style={{ flexDirection: 'column' }}>
         <h1 className="page-hero-title hero-title-shadow">{t("Jouw Resultaten")}</h1>
+        <p style={{ marginTop: '15px', fontSize: '1rem', fontWeight: 400, opacity: 0.9, maxWidth: '750px', lineHeight: '1.6', marginInline: 'auto' }}>{t("result_advice_notice")}</p>
       </div>
 
       <div className="container" style={{ marginTop: '40px' }}>
