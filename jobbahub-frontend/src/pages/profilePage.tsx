@@ -140,29 +140,7 @@ const Profile: React.FC = () => {
     });
   };
 
-  const handleWeightToggle = (topicId: string) => {
-    if (!editedAnswers) return;
-    setEditedAnswers(prev => {
-      if (!prev) return prev;
-      const currentWeight = prev.knoppen_input[topicId]?.weight || 1;
-      const newWeight = currentWeight === 2 ? 1 : 2;
 
-      // If setting to 2x (Important), auto-set score to 1 (Ja)
-      const newScore = newWeight === 2 ? 1 : prev.knoppen_input[topicId]?.score;
-
-      return {
-        ...prev,
-        knoppen_input: {
-          ...prev.knoppen_input,
-          [topicId]: {
-            ...prev.knoppen_input[topicId],
-            weight: newWeight,
-            score: newScore
-          }
-        }
-      };
-    });
-  };
 
   const handleSaveInterests = async () => {
     if (!editedAnswers || !user || !questionnaireResults) return;
@@ -235,42 +213,28 @@ const Profile: React.FC = () => {
     const answer = answers.knoppen_input?.[topic.id];
     if (!answer) return null;
 
-    const isWeighted = answer.weight === 2;
-
     if (isEditingInterests && editedAnswers) {
       const editedAnswer = editedAnswers.knoppen_input?.[topic.id];
-      const editedIsWeighted = editedAnswer?.weight === 2;
 
       return (
         <div key={topic.id} className="interest-item interest-item-edit">
           <div className="interest-header">
             <span className="interest-label">
               {topic.label}
-              {topic.type === 'interest' && (
-                <button
-                  className={`weight-toggle-btn ${editedIsWeighted ? 'active' : ''}`}
-                  onClick={() => handleWeightToggle(topic.id)}
-                  title={t("Telt 2x mee")}
-                >
-                  ★ {editedIsWeighted ? '2x' : '1x'}
-                </button>
-              )}
             </span>
           </div>
           <div className="interest-score-buttons">
             <button
               type="button"
-              disabled={editedIsWeighted}
-              className={`btn topic-btn btn-topic-choice btn-small ${editedAnswer?.score === -1 ? 'active-negative' : ''} ${editedIsWeighted ? 'btn-disabled-weighted' : ''}`}
-              onClick={() => !editedIsWeighted && handleScoreChange(topic.id, -1)}
+              className={`btn topic-btn btn-topic-choice btn-small ${editedAnswer?.score === -1 ? 'active-negative' : ''}`}
+              onClick={() => handleScoreChange(topic.id, -1)}
             >
               {t("Nee")}
             </button>
             <button
               type="button"
-              disabled={editedIsWeighted}
-              className={`btn topic-btn btn-topic-choice btn-small ${editedAnswer?.score === 0 ? 'active-neutral' : ''} ${editedIsWeighted ? 'btn-disabled-weighted' : ''}`}
-              onClick={() => !editedIsWeighted && handleScoreChange(topic.id, 0)}
+              className={`btn topic-btn btn-topic-choice btn-small ${editedAnswer?.score === 0 ? 'active-neutral' : ''}`}
+              onClick={() => handleScoreChange(topic.id, 0)}
             >
               {t("Neutraal")}
             </button>
@@ -292,9 +256,6 @@ const Profile: React.FC = () => {
         <div className="interest-header">
           <span className="interest-label">
             {topic.label}
-            {isWeighted && topic.type === 'interest' && (
-              <span className="priority-badge-small">★ 2x</span>
-            )}
           </span>
         </div>
         <span

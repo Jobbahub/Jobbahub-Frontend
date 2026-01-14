@@ -60,8 +60,6 @@ Dit project gebruikt `.env` bestanden voor configuratie. Zorg dat de volgende va
 | :--- | :--- | :--- |
 | `VITE_BACKEND_URI` | **(Verplicht)** De base URL van de draaiende backend API. | `http://localhost:5000` |
 
-*Zie `.env.example` voor een startpunt.*
-
 ## 🔌 Backend Integratie
 
 De frontend communiceert met de backend via een REST API.

@@ -111,7 +111,21 @@ const Vragenlijst: React.FC = () => {
     <>
       <div className="page-content-inner">
         {saveError && (
-          <div className="container form-error" style={{ marginBottom: '20px', padding: '10px', background: '#fee2e2', color: '#b91c1c', borderRadius: '4px' }}>
+          <div className="container form-error" style={{
+            position: 'fixed',
+            top: '80px', // Below navbar
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1000,
+            width: '90%',
+            maxWidth: '600px',
+            marginBottom: '20px',
+            padding: '15px',
+            background: '#fee2e2',
+            color: '#b91c1c',
+            borderRadius: '8px',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+          }}>
             {saveError}
           </div>
         )}

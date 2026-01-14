@@ -4,7 +4,6 @@
 export interface KnoppenInput {
   [key: string]: {
     score: number;
-    weight: number;
   };
 }
 

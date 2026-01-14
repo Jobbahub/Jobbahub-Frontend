@@ -6,7 +6,6 @@ export interface ChartDataPoint {
     score: number; // -1, 0, 1 (1=Ja)
     id: string;
     color?: string; // Optional override
-    isWeighted?: boolean; // New: indicates 2x weighting
 }
 
 interface SliceData extends ChartDataPoint {
@@ -31,7 +30,7 @@ const ResultChart: React.FC<ResultChartProps> = ({ title, data }) => {
             .filter(d => d.score >= 0)
             .map(d => ({
                 ...d,
-                effectiveScore: d.score === 0 ? 0.5 : d.score * (d.isWeighted ? 2 : 1)
+                effectiveScore: d.score === 0 ? 0.5 : d.score
             }));
     }, [data]);
 
@@ -158,9 +157,6 @@ const ResultChart: React.FC<ResultChartProps> = ({ title, data }) => {
                                     </div>
                                     <div className="chart-tooltip-meta">
                                         {renderScoreBadge(activeData[hoveredIndex].score)}
-                                        {activeData[hoveredIndex].isWeighted && (
-                                            <span className="badge badge-weighted ml-1" style={{ fontSize: '0.7rem' }}>2x</span>
-                                        )}
                                         <span className="chart-tooltip-percent">
                                             {(slices[hoveredIndex].percent * 100).toFixed(0)}%
                                         </span>
@@ -189,11 +185,6 @@ const ResultChart: React.FC<ResultChartProps> = ({ title, data }) => {
                                     <span className="legend-label-wrapper">
                                         <span className="legend-text">{t(slice.label)}</span>
                                         {renderScoreBadge(slice.score)}
-                                        {slice.isWeighted && (
-                                            <span className="badge badge-weighted" style={{ fontSize: '0.7rem', padding: '2px 6px' }}>
-                                                2x
-                                            </span>
-                                        )}
                                     </span>
                                     <span className="legend-percent">{(slice.percent * 100).toFixed(0)}%</span>
                                 </li>

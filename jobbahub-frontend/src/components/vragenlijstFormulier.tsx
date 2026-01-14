@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import DOMPurify from 'dompurify';
 import LoadingSpinner from './LoadingSpinner';
 import { apiService, ApiError } from '../services/apiService';
@@ -40,6 +40,16 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
   const [topicIndex, setTopicIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Allowed values for select inputs
   const ALLOWED_TAAL = ['Nederlands', 'Engels'];
@@ -63,7 +73,8 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
     open_antwoord: '',
     knoppen_input: SHARED_TOPICS.reduce((acc, topic) => ({
       ...acc,
-      [topic.id]: { score: 0, weight: 1 }
+      ...acc,
+      [topic.id]: { score: 0 }
     }), {})
   }));
 
@@ -92,28 +103,7 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
     }));
   };
 
-  const handleWeightToggle = (topicId: string) => {
-    setFormData(prev => {
-      const currentWeight = prev.knoppen_input[topicId].weight;
-      const newWeight = currentWeight === 2 ? 1 : 2;
 
-      // If setting to 2x (Important), auto-set score to 1 (Ja)
-      // Otherwise keep existing score
-      const newScore = newWeight === 2 ? 1 : prev.knoppen_input[topicId].score;
-
-      return {
-        ...prev,
-        knoppen_input: {
-          ...prev.knoppen_input,
-          [topicId]: {
-            ...prev.knoppen_input[topicId],
-            weight: newWeight,
-            score: newScore
-          }
-        }
-      };
-    });
-  };
 
   const nextQuestion = () => {
     if (topicIndex < TOPICS.length - 1) {
@@ -188,51 +178,30 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
     );
   }
 
-  // Helper to render priority selection
-  const renderPrioritySelection = (title: string, subtitle: string, onNext: () => void, textBtnNext: string, onBack?: () => void) => {
-    const subjects = TOPICS.filter(t => t.type === 'interest');
+
+
+  // Step 1: Introduction
+  if (step === 1) {
     return (
       <div className="form-container form-container-wide">
-        <h2 className="form-title">{title}</h2>
-        <p className="form-description">{subtitle}</p>
+        <h2 className="form-title">{t('intro_title')}</h2>
+        <p className="form-description">{t('intro_subtitle')}</p>
 
-        <div className="priority-selection-grid">
-          {subjects.map(topic => {
-            const isSelected = formData.knoppen_input[topic.id]?.weight === 2;
-            return (
-              <div
-                key={topic.id}
-                onClick={() => handleWeightToggle(topic.id)}
-                className={`priority-card ${isSelected ? 'selected' : ''}`}
-              >
-                <div>{topic.label}</div>
-                {isSelected && (
-                  <span className="priority-badge">
-                    2x
-                  </span>
-                )}
-              </div>
-            );
-          })}
+        <div className="intro-image-placeholder" style={{
+          margin: '2rem 0',
+          display: 'flex',
+          justifyContent: 'center',
+          fontSize: '4rem'
+        }}>
+          🚀
         </div>
 
         <div className="nav-buttons-container">
-          {onBack && <button className="btn btn-secondary w-full btn-margin-right" onClick={onBack}>← {t('previous')}</button>}
-          <button className="btn btn-primary w-full" onClick={onNext}>
-            {textBtnNext}
+          <button className="btn btn-primary w-full" onClick={() => setStep(2)}>
+            {t('start_questionnaire')} →
           </button>
         </div>
       </div>
-    );
-  };
-
-  // Step 1: Priority Selection (Subjects)
-  if (step === 1) {
-    return renderPrioritySelection(
-      t('Intake Vragenlijst'),
-      t('priority_selection_intro'),
-      () => setStep(2),
-      t('next') + " →"
     );
   }
 
@@ -241,7 +210,6 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
     const topic = TOPICS[topicIndex];
     const currentScore = formData.knoppen_input[topic.id]?.score;
     const progressPercentage = ((topicIndex + 1) / TOPICS.length) * 100;
-    const isWeighted = formData.knoppen_input[topic.id]?.weight === 2;
 
     return (
       <div className="container question-container">
@@ -254,28 +222,21 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
         <div className="form-container form-container-full">
           <div className="question-header-row">
             <span className="question-counter">{t("Onderwerp")} {topicIndex + 1} {t("van")} {TOPICS.length}</span>
-            {isWeighted && (
-              <span className="badge badge-weighted">
-                {t("Telt 2x mee")}
-              </span>
-            )}
           </div>
 
           <h2 className="form-title question-title">{topic.question}</h2>
           <div className="topic-btn-group">
             <button
               type="button"
-              disabled={isWeighted}
-              className={`btn topic-btn btn-topic-choice ${currentScore === -1 ? 'active' : ''} ${isWeighted ? 'btn-disabled-weighted' : ''}`}
-              onClick={() => !isWeighted && handleScoreChange(topic.id, -1)}
+              className={`btn topic-btn btn-topic-choice ${currentScore === -1 ? 'active' : ''}`}
+              onClick={() => handleScoreChange(topic.id, -1)}
             >
               {t("Nee")}
             </button>
             <button
               type="button"
-              disabled={isWeighted}
-              className={`btn topic-btn btn-topic-choice ${currentScore === 0 ? 'active' : ''} ${isWeighted ? 'btn-disabled-weighted' : ''}`}
-              onClick={() => !isWeighted && handleScoreChange(topic.id, 0)}
+              className={`btn topic-btn btn-topic-choice ${currentScore === 0 ? 'active' : ''}`}
+              onClick={() => handleScoreChange(topic.id, 0)}
             >
               {t("Neutraal")}
             </button>
@@ -291,118 +252,169 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
             <button className="btn btn-secondary" onClick={prevQuestion}>← {t('previous')}</button>
             <button className="btn btn-primary" onClick={nextQuestion}>{t('next')} →</button>
           </div>
+
+          {/* Visual Timeline (Interactive & Paginated) */}
+          {/* Visual Timeline (Responsive & Interactive) */}
+          <div className="timeline-container">
+            {(() => {
+              const total = TOPICS.length;
+              let visibleTopics = TOPICS; // Default: Show all (Desktop)
+              let start = 0;
+
+              // Mobile: Sliding Window logic
+              if (isMobile) {
+                const windowSize = 5;
+                start = Math.max(0, topicIndex - Math.floor(windowSize / 2));
+                let end = Math.min(total, start + windowSize);
+
+                if (end - start < windowSize) {
+                  start = Math.max(0, end - windowSize);
+                }
+                visibleTopics = TOPICS.slice(start, Math.min(total, start + windowSize));
+              }
+
+              return (
+                <>
+                  {isMobile && start > 0 && <span style={{ color: '#9ca3af' }}>...</span>}
+
+                  {visibleTopics.map((t, i) => {
+                    const realIndex = isMobile ? start + i : i; // Correct index for map
+                    const score = formData.knoppen_input[t.id]?.score;
+
+                    let className = 'timeline-bubble';
+
+                    if (score === 1) className += ' answered-yes';
+                    else if (score === 0) className += ' answered-neutral';
+                    else if (score === -1) className += ' answered-no';
+                    else className += ' unanswered';
+
+                    // Current question highlight
+                    if (realIndex === topicIndex) {
+                      className += ' current';
+                    }
+
+                    return (
+                      <button
+                        key={t.id}
+                        type="button"
+                        onClick={() => setTopicIndex(realIndex)}
+                        title={`Ga naar vraag ${realIndex + 1}`}
+                        className={className}
+                      >
+                        {realIndex + 1}
+                      </button>
+                    );
+                  })}
+
+                  {isMobile && (start + visibleTopics.length) < total && <span style={{ color: '#9ca3af' }}>...</span>}
+                </>
+              );
+            })()}
+          </div>
         </div>
       </div>
     );
   }
 
-  // Step 3: Re-confirm Priorities
+
+
+  // Step 3: Final Preferences (Open Question & Metadata)
   if (step === 3) {
-    return renderPrioritySelection(
-      t("Nog even checken..."),
-      t("Wil je nog iets aanpassen aan je belangrijkste vakgebieden voordat we afronden?"),
-      () => setStep(4),
-      t("Verder naar afronding →"),
-      () => {
-        setTopicIndex(TOPICS.length - 1);
-        setStep(2);
-      }
+    return (
+      <div className="form-container form-container-wide">
+        <h2 className="form-title">{t('Persoonlijke Gegevens')}</h2>
+        <p className="form-description">{t("Heb je nog specifieke wensen?")}</p>
+        <div className="login-form">
+
+          {/* Voorkeuren */}
+          <div className="form-group-row-grid">
+            <div className="form-group">
+              <label className="form-label">{t("Taal")}</label>
+              <select
+                className="form-input"
+                value={formData.keuze_taal || ""}
+                onChange={(e) => handleChange('keuze_taal', e.target.value === "" ? null : e.target.value)}
+              >
+                <option value="">{t("Geen voorkeur")}</option>
+                <option value="Nederlands">{t("Nederlands")}</option>
+                <option value="Engels">{t("Engels")}</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="form-label">{t("Locatie")}</label>
+              <select
+                className="form-input"
+                value={formData.keuze_locatie || ""}
+                onChange={(e) => handleChange('keuze_locatie', e.target.value === "" ? null : e.target.value)}
+              >
+                <option value="">{t("Geen voorkeur")}</option>
+                <option value="Den Bosch">{t("Den Bosch")}</option>
+                <option value="Breda">{t("Breda")}</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="form-label">{t("Studiepunten")}</label>
+              <select
+                className="form-input"
+                value={formData.keuze_punten || ""}
+                onChange={(e) => handleChange('keuze_punten', e.target.value === "" ? null : parseInt(e.target.value))}
+              >
+                <option value="">{t("Geen voorkeur")}</option>
+                <option value={15}>{t("15 EC")}</option>
+                <option value={30}>{t("30 EC")}</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">{t("Jouw gedachten (Optioneel)")}</label>
+            <textarea
+              className="form-input"
+              rows={4}
+              maxLength={1000}
+              placeholder={t("Bijvoorbeeld: Ik wil graag iets doen met AI en duurzaamheid...")}
+              value={formData.open_antwoord}
+              onChange={(e) => handleTextChange('open_antwoord', e.target.value)}
+            />
+            <small className="text-muted">{formData.open_antwoord.length}/1000</small>
+          </div>
+          <div className="nav-buttons-container">
+            {submitError && (
+              <div style={{
+                position: 'fixed',
+                top: '20px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                backgroundColor: '#fee2e2',
+                color: '#991b1b',
+                padding: '12px 24px',
+                borderRadius: '8px',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                zIndex: 9999,
+                border: '1px solid #fecaca',
+                fontWeight: 500,
+                minWidth: '300px',
+                textAlign: 'center',
+                animation: 'fadeIn 0.3s ease-in-out'
+              }}>
+                {t(submitError)}
+                <button
+                  onClick={() => setSubmitError(null)}
+                  style={{ marginLeft: '15px', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '16px', color: '#991b1b' }}
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+            <button className="btn btn-secondary w-full btn-margin-right" onClick={() => setStep(2)}>← {t('previous')}</button>
+            <button className="btn btn-primary w-full" onClick={handleSubmit}>{t('submit')}</button>
+          </div>
+        </div>
+      </div>
     );
   }
 
-  // Step 4: Final Preferences (Open Question & Metadata)
-  return (
-    <div className="form-container form-container-wide">
-      <h2 className="form-title">{t('Persoonlijke Gegevens')}</h2>
-      <p className="form-description">{t("Heb je nog specifieke wensen?")}</p>
-      <div className="login-form">
-
-        {/* Voorkeuren */}
-        <div className="form-group-row-grid">
-          <div className="form-group">
-            <label className="form-label">{t("Taal")}</label>
-            <select
-              className="form-input"
-              value={formData.keuze_taal || ""}
-              onChange={(e) => handleChange('keuze_taal', e.target.value === "" ? null : e.target.value)}
-            >
-              <option value="">{t("Geen voorkeur")}</option>
-              <option value="Nederlands">{t("Nederlands")}</option>
-              <option value="Engels">{t("Engels")}</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <label className="form-label">{t("Locatie")}</label>
-            <select
-              className="form-input"
-              value={formData.keuze_locatie || ""}
-              onChange={(e) => handleChange('keuze_locatie', e.target.value === "" ? null : e.target.value)}
-            >
-              <option value="">{t("Geen voorkeur")}</option>
-              <option value="Den Bosch">{t("Den Bosch")}</option>
-              <option value="Breda">{t("Breda")}</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <label className="form-label">{t("Studiepunten")}</label>
-            <select
-              className="form-input"
-              value={formData.keuze_punten || ""}
-              onChange={(e) => handleChange('keuze_punten', e.target.value === "" ? null : parseInt(e.target.value))}
-            >
-              <option value="">{t("Geen voorkeur")}</option>
-              <option value={15}>{t("15 EC")}</option>
-              <option value={30}>{t("30 EC")}</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="form-group">
-          <label className="form-label">{t("Jouw gedachten (Optioneel)")}</label>
-          <textarea
-            className="form-input"
-            rows={4}
-            maxLength={1000}
-            placeholder={t("Bijvoorbeeld: Ik wil graag iets doen met AI en duurzaamheid...")}
-            value={formData.open_antwoord}
-            onChange={(e) => handleTextChange('open_antwoord', e.target.value)}
-          />
-          <small className="text-muted">{formData.open_antwoord.length}/1000</small>
-        </div>
-        <div className="nav-buttons-container">
-          {submitError && (
-            <div style={{
-              position: 'fixed',
-              top: '20px',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              backgroundColor: '#fee2e2',
-              color: '#991b1b',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-              zIndex: 9999,
-              border: '1px solid #fecaca',
-              fontWeight: 500,
-              minWidth: '300px',
-              textAlign: 'center',
-              animation: 'fadeIn 0.3s ease-in-out'
-            }}>
-              {t(submitError)}
-              <button
-                onClick={() => setSubmitError(null)}
-                style={{ marginLeft: '15px', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '16px', color: '#991b1b' }}
-              >
-                ✕
-              </button>
-            </div>
-          )}
-          <button className="btn btn-secondary w-full btn-margin-right" onClick={() => setStep(3)}>← {t('previous')}</button>
-          <button className="btn btn-primary w-full" onClick={handleSubmit}>{t('submit')}</button>
-        </div>
-      </div>
-    </div>
-  );
+  return null;
 };
 
 export default VragenlijstFormulier;
