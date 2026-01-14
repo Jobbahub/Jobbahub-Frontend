@@ -4631,3 +4631,51 @@ textarea.form-input {
     gap: 16px;
   }
 }
+
+/* Layout Spacing */
+.about-container-spacing {
+  margin-top: 40px;
+}
+
+/* Casus Tab Specifics */
+.casus-spacing {
+  margin-bottom: 15px;
+}
+
+.casus-list-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.casus-list-padding {
+  padding-left: 20px;
+}
+
+.list-item-spacing {
+  margin-bottom: 8px;
+}
+
+/* User Stories Tab Specifics */
+.story-intro-spacing {
+  margin-bottom: 20px;
+}
+
+.user-story-item {
+  margin-bottom: 25px;
+}
+
+.user-story-item .bold {
+  font-weight: bold;
+}
+
+.story-list-style {
+  padding-left: 20px;
+  font-size: 0.9rem;
+}
+
+/* Overige hergebruikte classes uit eerdere stappen */
+.about-text.italic {
+  font-style: italic;
+}
