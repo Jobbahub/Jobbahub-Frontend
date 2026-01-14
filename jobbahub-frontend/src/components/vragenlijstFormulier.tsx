@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import DOMPurify from 'dompurify';
 import LoadingSpinner from './LoadingSpinner';
 import { apiService, ApiError } from '../services/apiService';
@@ -40,6 +40,16 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
   const [topicIndex, setTopicIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Allowed values for select inputs
   const ALLOWED_TAAL = ['Nederlands', 'Engels'];
@@ -241,6 +251,65 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
           <div className="nav-buttons-container">
             <button className="btn btn-secondary" onClick={prevQuestion}>← {t('previous')}</button>
             <button className="btn btn-primary" onClick={nextQuestion}>{t('next')} →</button>
+          </div>
+
+          {/* Visual Timeline (Interactive & Paginated) */}
+          {/* Visual Timeline (Responsive & Interactive) */}
+          <div className="timeline-container">
+            {(() => {
+              const total = TOPICS.length;
+              let visibleTopics = TOPICS; // Default: Show all (Desktop)
+              let start = 0;
+
+              // Mobile: Sliding Window logic
+              if (isMobile) {
+                const windowSize = 5;
+                start = Math.max(0, topicIndex - Math.floor(windowSize / 2));
+                let end = Math.min(total, start + windowSize);
+
+                if (end - start < windowSize) {
+                  start = Math.max(0, end - windowSize);
+                }
+                visibleTopics = TOPICS.slice(start, Math.min(total, start + windowSize));
+              }
+
+              return (
+                <>
+                  {isMobile && start > 0 && <span style={{ color: '#9ca3af' }}>...</span>}
+
+                  {visibleTopics.map((t, i) => {
+                    const realIndex = isMobile ? start + i : i; // Correct index for map
+                    const score = formData.knoppen_input[t.id]?.score;
+
+                    let className = 'timeline-bubble';
+
+                    if (score === 1) className += ' answered-yes';
+                    else if (score === 0) className += ' answered-neutral';
+                    else if (score === -1) className += ' answered-no';
+                    else className += ' unanswered';
+
+                    // Current question highlight
+                    if (realIndex === topicIndex) {
+                      className += ' current';
+                    }
+
+                    return (
+                      <button
+                        key={t.id}
+                        type="button"
+                        onClick={() => setTopicIndex(realIndex)}
+                        title={`Ga naar vraag ${realIndex + 1}`}
+                        className={className}
+                      >
+                        {realIndex + 1}
+                      </button>
+                    );
+                  })}
+
+                  {isMobile && (start + visibleTopics.length) < total && <span style={{ color: '#9ca3af' }}>...</span>}
+                </>
+              );
+            })()}
           </div>
         </div>
       </div>

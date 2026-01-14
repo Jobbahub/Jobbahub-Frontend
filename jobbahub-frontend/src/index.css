@@ -621,6 +621,87 @@ button {
   margin-bottom: 30px;
 }
 
+/* --- Vragenlijst Timeline --- */
+.timeline-container {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  /* Ensure items wrap on smaller desktop screens if needed */
+}
+
+.timeline-bubble {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  box-shadow: none;
+}
+
+/* Light Mode Defaults */
+.timeline-bubble.unanswered {
+  background-color: #f3f4f6;
+  border-color: #e5e7eb;
+  color: #6b7280;
+}
+
+.timeline-bubble.answered-yes {
+  background-color: #22c55e;
+  /* Green */
+  color: #ffffff;
+}
+
+.timeline-bubble.answered-neutral {
+  background-color: #fbbf24;
+  /* Amber */
+  color: #ffffff;
+}
+
+.timeline-bubble.answered-no {
+  background-color: #ef4444;
+  /* Red */
+  color: #ffffff;
+}
+
+.timeline-bubble.current {
+  border-color: #3b82f6;
+  /* Blue */
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+  transform: scale(1.15);
+}
+
+.timeline-bubble.current.unanswered {
+  background-color: #ffffff;
+}
+
+/* Dark Mode Overrides */
+[data-theme='dark'] .timeline-bubble.unanswered {
+  background-color: #1f2937;
+  /* Darker gray */
+  border-color: #374151;
+  /* Border for contrast */
+  color: #9ca3af;
+}
+
+[data-theme='dark'] .timeline-bubble.current.unanswered {
+  background-color: #111827;
+  /* Very dark for current */
+  border-color: #60a5fa;
+  /* Lighter blue for dark mode */
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.3);
+}
+
 .search-input {
   width: 100%;
   max-width: 600px;
