@@ -120,8 +120,7 @@ const Dashboard: React.FC = () => {
           id,
           label: topic ? t(topic.label) : id,
           score: userAnswers.knoppen_input[id].score,
-          color: colorMap[id],
-          isWeighted: userAnswers.knoppen_input[id].weight === 2
+          color: colorMap[id]
         };
       })
       .sort((a, b) => b.score - a.score);

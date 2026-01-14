@@ -11,6 +11,9 @@ export const translationsList = {
 
     // Vragenlijst (Keys)
     questionnaire_title: { nl: "Intake Vragenlijst", en: "Intake Questionnaire" },
+    intro_title: { nl: "Welkom bij de Jobbahub Intake", en: "Welcome to the Jobbahub Intake" },
+    intro_subtitle: { nl: "We gaan je een paar vragen stellen om je interesses in kaart te brengen. Dit duurt ongeveer 5 minuten.", en: "We are going to ask you a few questions to map your interests. This will take about 5 minutes." },
+    start_questionnaire: { nl: "Start Vragenlijst", en: "Start Questionnaire" },
     priority_selection_intro: { nl: "Klik op de onderwerpen die jij extra belangrijk vindt. Deze tellen dan dubbel (2x) mee in je resultaat.", en: "Click on the subjects that are extra important to you. These will count double (2x) in your result." },
     questionnaire_intro: { nl: "Vul deze vragenlijst in zodat wij je beter kunnen helpen.", en: "Please fill out this questionnaire so we can help you better." },
     personal_details: { nl: "Persoonlijke Gegevens", en: "Personal Details" },
