@@ -4756,7 +4756,251 @@ textarea.form-input {
   font-size: 0.9rem;
 }
 
+[data-theme="dark"] .recently-viewed-title {
+  color: var(--text-color);
+}
+
+[data-theme="dark"] .recently-viewed-card {
+  background-color: var(--surface-color);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .recently-viewed-card:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .recently-viewed-card-title {
+  color: var(--text-color);
+}
+
+[data-theme="dark"] .recently-viewed-location {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .recently-viewed-card-arrow {
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .recently-viewed-card:hover .recently-viewed-card-arrow {
+  color: var(--primary-color);
+}
+
+/* ========================================
+   RESPONSIVE STYLES
+   ======================================== */
+
+@media (max-width: 768px) {
+  .recently-viewed-section {
+    margin-top: 40px;
+    padding: 30px 0;
+  }
+
+  .recently-viewed-title {
+    font-size: 1.25rem;
+  }
+
+  .recently-viewed-card {
+    padding: 12px 16px;
+  }
+
+  .recently-viewed-card-title {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .recently-viewed-card-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .recently-viewed-card-arrow {
+    display: none;
+  }
+}
+
+.btn-disabled-weighted {
+  opacity: 0.3 !important;
+  cursor: not-allowed !important;
+  background-color: #e5e5e5 !important;
+  filter: grayscale(100%);
+}
+
+/* ========================================
+   RELATED MODULES SECTION STYLES
+   Add these to your index.css file
+   ======================================== */
+
+.related-modules-section {
+  margin-top: 60px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border-color);
+}
+
+.related-modules-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+}
+
+.related-modules-subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 24px;
+}
+
+.related-modules-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+/* ========================================
+   DARK MODE STYLES
+   ======================================== */
+
+[data-theme="dark"] .related-modules-section {
+  border-top-color: var(--border-color);
+}
+
+[data-theme="dark"] .related-modules-title {
+  color: var(--text-color);
+}
+
+[data-theme="dark"] .related-modules-subtitle {
+  color: var(--text-muted);
+}
+
+/* ========================================
+   RESPONSIVE STYLES
+   ======================================== */
+
+@media (max-width: 1024px) {
+  .related-modules-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .related-modules-section {
+    margin-top: 40px;
+    padding-top: 30px;
+  }
+
+  .related-modules-title {
+    font-size: 1.25rem;
+  }
+
+  .related-modules-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .related-modules-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+/* Layout Spacing */
+.about-container-spacing {
+  margin-top: 40px;
+}
+
+/* Casus Tab Specifics */
+.casus-spacing {
+  margin-bottom: 15px;
+}
+
+.casus-list-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.casus-list-padding {
+  padding-left: 20px;
+}
+
+.list-item-spacing {
+  margin-bottom: 8px;
+}
+
+/* User Stories Tab Specifics */
+.story-intro-spacing {
+  margin-bottom: 20px;
+}
+
+.user-story-item {
+  margin-bottom: 25px;
+}
+
+.user-story-item .bold {
+  font-weight: bold;
+}
+
+.story-list-style {
+  padding-left: 20px;
+  font-size: 0.9rem;
+}
+
 /* Overige hergebruikte classes uit eerdere stappen */
 .about-text.italic {
   font-style: italic;
+}
+
+/* Wireframes Section */
+.wireframes-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.pdf-viewer-container {
+  width: 100%;
+  height: 800px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color, #e2e8f0);
+}
+
+.pdf-viewer {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.download-link-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 1rem;
+}
+
+.btn-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-accent, #6366f1);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-download:hover {
+  background-color: var(--primary-accent-hover, #4f46e5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }

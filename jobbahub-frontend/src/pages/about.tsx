@@ -85,7 +85,7 @@ const About: React.FC = () => {
 
                 <div className="user-stories-container">
                   <div className="user-story-item">
-                    <h3 className="about-subheading bold">1. {t("Modules Opslaan (Shortlist)")}</h3>
+                    <h3 className="about-subheading bold">{t("1. Modules Opslaan (Shortlist)")}</h3>
                     <p className="about-text italic">{t("Als student wil ik favoriete modules kunnen opslaan in een shortlist, zodat ik ze later gemakkelijk kan terugvinden.")}</p>
                     <ul className="about-list story-list-style">
                       <li>{t("Ingelogde gebruikers kunnen modules markeren als favoriet via de backend API.")}</li>
@@ -96,7 +96,7 @@ const About: React.FC = () => {
                   </div>
 
                   <div className="user-story-item">
-                    <h3 className="about-subheading bold">2. {t("Suggesties op basis van Profiel")}</h3>
+                    <h3 className="about-subheading bold">{t("2. Suggesties op basis van Profiel")}</h3>
                     <p className="about-text italic">{t("Als student wil ik suggesties ontvangen op basis van een vragenlijst die aansluit bij mijn doelen.")}</p>
                     <ul className="about-list story-list-style">
                       <li>{t("Nieuwe gebruikers krijgen een uitnodiging voor de vragenlijst op de homepagina.")}</li>
@@ -107,7 +107,7 @@ const About: React.FC = () => {
                   </div>
 
                   <div className="user-story-item">
-                    <h3 className="about-subheading bold">3. {t("Module Overzicht")}</h3>
+                    <h3 className="about-subheading bold">{t("3. Module Overzicht")}</h3>
                     <p className="about-text italic">{t("Als student wil ik een overzicht zien van alle beschikbare modules om een eerste selectie te maken.")}</p>
                     <ul className="about-list story-list-style">
                       <li>{t("Alle modules worden via een API-call opgehaald en getoond in de frontend.")}</li>
@@ -117,7 +117,7 @@ const About: React.FC = () => {
                   </div>
 
                   <div className="user-story-item">
-                    <h3 className="about-subheading bold">4. {t("Detailpagina Inzien")}</h3>
+                    <h3 className="about-subheading bold">{t("4. Detailpagina Inzien")}</h3>
                     <p className="about-text italic">{t("Als student wil ik een volledige detailpagina van een module kunnen inzien, zodat ik de inhoud, leeruitkomsten en instapvoorwaarden goed kan begrijpen.")}</p>
                     <ul className="about-list story-list-style">
                       <li>{t("Bij het klikken op een module opent een detailpagina met specifieke gegevens uit de backend.")}</li>
@@ -126,7 +126,7 @@ const About: React.FC = () => {
                   </div>
 
                   <div className="user-story-item">
-                    <h3 className="about-subheading bold">5. {t("Zoeken en Filteren")}</h3>
+                    <h3 className="about-subheading bold">{t("5. Zoeken en Filteren")}</h3>
                     <p className="about-text italic">{t("Als student wil ik kunnen zoeken en filteren op thema om snel relevante opties te vinden.")}</p>
                     <ul className="about-list story-list-style">
                       <li>{t("Zoekbalk aanwezig voor trefwoorden en filters voor specifieke modulethema's.")}</li>
@@ -138,11 +138,27 @@ const About: React.FC = () => {
             )}
 
             {activeTab === 'wireframes' && (
-              <div>
+              <div className="wireframes-container">
                 <h2 className="about-heading">{t("Wireframes")}</h2>
                 <p className="about-text">
-                  {t("Hier komen de wireframes voor het project.")}
+                  {t("Bekijk hier de wireframes van Jobbahub.")}
                 </p>
+                <div className="pdf-viewer-container">
+                  <iframe
+                    src="/images/Wireframe2.pdf"
+                    className="pdf-viewer"
+                    title="Jobbahub Wireframes"
+                  />
+                </div>
+                <div className="download-link-container">
+                  <a
+                    href="/images/Wireframe2.pdf"
+                    download="Jobbahub_Wireframes.pdf"
+                    className="btn-download"
+                  >
+                    <span>📥</span> {t("Download Wireframes")}
+                  </a>
+                </div>
               </div>
             )}
           </div>

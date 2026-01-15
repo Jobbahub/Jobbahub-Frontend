@@ -86,7 +86,7 @@ export const translationsList = {
     // About Page
     "About": { nl: "Over ons", en: "About" },
     "Casus": { nl: "Casus", en: "Case Study" },
-    "User stories": { nl: "User stories", en: "User Stories" },
+    "User stories": { nl: "User Stories", en: "User Stories" },
     "Wireframes": { nl: "Wireframes", en: "Wireframes" },
     "About Jobbahub": { nl: "Over Jobbahub", en: "About Jobbahub" },
     "Jobbahub is een platform voor studenten om keuzemodules te vinden en te kiezen die passen bij hun interesses en studie.": { nl: "Jobbahub is een platform voor studenten om keuzemodules te vinden en te kiezen die passen bij hun interesses en studie.", en: "Jobbahub is a platform for students to find and choose elective modules that match their interests and studies." },
@@ -94,6 +94,130 @@ export const translationsList = {
     "Hier komt de casus beschrijving voor het project.": { nl: "Hier komt de casus beschrijving voor het project.", en: "Here comes the case description for the project." },
     "Hier komen de user stories voor het project.": { nl: "Hier komen de user stories voor het project.", en: "Here come the user stories for the project." },
     "Hier komen de wireframes voor het project.": { nl: "Hier komen de wireframes voor het project.", en: "Here come the wireframes for the project." },
+    "Bekijk hier de wireframes van Jobbahub.": { nl: "Bekijk hier de wireframes van Jobbahub.", en: "View the Jobbahub wireframes here." },
+    "Download Wireframes": { nl: "Download Wireframes", en: "Download Wireframes" },
+
+    // Casus Section
+    "Casus: Avans KeuzeKompas": { nl: "Casus: Avans KeuzeKompas", en: "Case Study: Avans KeuzeKompas" },
+    "Aanleiding:": { nl: "Aanleiding:", en: "Background:" },
+    "Binnen de Ambitie 2025 beweegt Avans Hogeschool naar modulair onderwijs. Studenten hebben hierbij de vrijheid om voor een aanzienlijk deel hun eigen koers te vallen via vrije keuzemodules (VKM). Met een aanbod van honderden modules is er behoefte aan een overzichtelijke student journey en betere begeleiding bij het maken van deze keuzes.": {
+        nl: "Binnen de Ambitie 2025 beweegt Avans Hogeschool naar modulair onderwijs. Studenten hebben hierbij de vrijheid om voor een aanzienlijk deel hun eigen koers te vallen via vrije keuzemodules (VKM). Met een aanbod van honderden modules is er behoefte aan een overzichtelijke student journey en betere begeleiding bij het maken van deze keuzes.",
+        en: "Within the Ambition 2025, Avans University of Applied Sciences is moving towards modular education. Students have the freedom to determine a significant part of their own course through free elective modules (VKM). With an offering of hundreds of modules, there is a need for a clear student journey and better guidance in making these choices."
+    },
+    "De Opdracht:": { nl: "De Opdracht:", en: "The Assignment:" },
+    "Het doel is de realisatie van een toegankelijke en gebruiksvriendelijke webapplicatie die bachelorstudenten ondersteunt bij het oriënteren op en kiezen van deze modules. De focus ligt hierbij op het 'intern kompas': het maken van keuzes op basis van persoonlijke interesses, doelen en waarden.": {
+        nl: "Het doel is de realisatie van een toegankelijke en gebruiksvriendelijke webapplicatie die bachelorstudenten ondersteunt bij het oriënteren op en kiezen van deze modules. De focus ligt hierbij op het 'intern kompas': het maken van keuzes op basis van persoonlijke interesses, doelen en waarden.",
+        en: "The goal is the realization of an accessible and user-friendly web application that supports bachelor students in orienting themselves on and choosing these modules. The focus here is on the 'internal compass': making choices based on personal interests, goals, and values."
+    },
+    "Kernfunctionaliteiten en Eisen:": { nl: "Kernfunctionaliteiten en Eisen:", en: "Core Functionalities and Requirements:" },
+    "Ondersteuning van het keuzeproces door inzicht te geven in het intern kompas.": {
+        nl: "Ondersteuning van het keuzeproces door inzicht te geven in het intern kompas.",
+        en: "Support for the choice process by providing insight into the internal compass."
+    },
+    "Toegang tot het volledige aanbod van vrije keuzemodules met uitgebreide filtermogelijkheden (zoals vakgebied, locatie en tijdsinvestering).": {
+        nl: "Toegang tot het volledige aanbod van vrije keuzemodules met uitgebreide filtermogelijkheden (zoals vakgebied, locatie en tijdsinvestering).",
+        en: "Access to the full range of free elective modules with extensive filtering options (such as field of study, location, and time investment)."
+    },
+    "Inzet van AI om gepersonaliseerde aanbevelingen te doen die aansluiten bij het profiel van de student.": {
+        nl: "Inzet van AI om gepersonaliseerde aanbevelingen te doen die aansluiten bij het profiel van de student.",
+        en: "Use of AI to provide personalized recommendations that align with the student's profile."
+    },
+    "Onderdeel van blended begeleiding: een naadloze combinatie van de digitale tool en persoonlijke gesprekken met de studieloopbaanbegeleider.": {
+        nl: "Onderdeel van blended begeleiding: een naadloze combinatie van de digitale tool en persoonlijke gesprekken met de studieloopbaanbegeleider.",
+        en: "Part of blended guidance: a seamless combination of the digital tool and personal conversations with the study career counselor."
+    },
+
+    // User Stories Section
+    "User Stories & Requirements": { nl: "User Stories & Requirements", en: "User Stories & Requirements" },
+    "Voor de ontwikkeling van het KeuzeKompas zijn de volgende user stories en kwaliteitseisen gedefinieerd om de functionaliteit en herbruikbaarheid te waarborgen.": {
+        nl: "Voor de ontwikkeling van het KeuzeKompas zijn de volgende user stories en kwaliteitseisen gedefinieerd om de functionaliteit en herbruikbaarheid te waarborgen.",
+        en: "For the development of the KeuzeKompas, the following user stories and quality requirements have been defined to ensure functionality and reusability."
+    },
+    "1. Modules Opslaan (Shortlist)": { nl: "1. Modules Opslaan (Shortlist)", en: "1. Saving Modules (Shortlist)" },
+    "Als student wil ik favoriete modules kunnen opslaan in een shortlist, zodat ik ze later gemakkelijk kan terugvinden.": {
+        nl: "Als student wil ik favoriete modules kunnen opslaan in een shortlist, zodat ik ze later gemakkelijk kan terugvinden.",
+        en: "As a student I want to be able to save favorite modules in a shortlist, so that I can easily find them later."
+    },
+    "Ingelogde gebruikers kunnen modules markeren als favoriet via de backend API.": {
+        nl: "Ingelogde gebruikers kunnen modules markeren als favoriet via de backend API.",
+        en: "Logged-in users can mark modules as favorites via the backend API."
+    },
+    "De shortlist toont een overzicht van alle opgeslagen modules.": {
+        nl: "De shortlist toont een overzicht van alle opgeslagen modules.",
+        en: "The shortlist shows an overview of all saved modules."
+    },
+    "Modules kunnen eenvoudig uit de shortlist worden verwijderd.": {
+        nl: "Modules kunnen eenvoudig uit de shortlist worden verwijderd.",
+        en: "Modules can easily be removed from the shortlist."
+    },
+    "Niet-ingelogde gebruikers worden gevraagd in te loggen voor deze functie.": {
+        nl: "Niet-ingelogde gebruikers worden gevraagd in te loggen voor deze functie.",
+        en: "Non-logged-in users are asked to log in for this function."
+    },
+    "2. Suggesties op basis van Profiel": { nl: "2. Suggesties op basis van Profiel", en: "2. Suggestions based on Profile" },
+    "Als student wil ik suggesties ontvangen op basis van een vragenlijst die aansluit bij mijn doelen.": {
+        nl: "Als student wil ik suggesties ontvangen op basis van een vragenlijst die aansluit bij mijn doelen.",
+        en: "As a student I want to receive suggestions based on a questionnaire that aligns with my goals."
+    },
+    "Nieuwe gebruikers krijgen een uitnodiging voor de vragenlijst op de homepagina.": {
+        nl: "Nieuwe gebruikers krijgen een uitnodiging voor de vragenlijst op de homepagina.",
+        en: "New users receive an invitation for the questionnaire on the home page."
+    },
+    "Antwoorden worden opgeslagen in de profielinformatie voor gepersonaliseerde AI-matching.": {
+        nl: "Antwoorden worden opgeslagen in de profielinformatie voor gepersonaliseerde AI-matching.",
+        en: "Answers are saved in the profile information for personalized AI matching."
+    },
+    "Gebruikers kunnen hun profiel resetten om de vragenlijst opnieuw in te vullen.": {
+        nl: "Gebruikers kunnen hun profiel resetten om de vragenlijst opnieuw in te vullen.",
+        en: "Users can reset their profile to retake the questionnaire."
+    },
+    "De suggestiesectie toont alleen relevante modules na voltooiing van het profiel.": {
+        nl: "De suggestiesectie toont alleen relevante modules na voltooiing van het profiel.",
+        en: "The suggestions section only shows relevant modules after completion of the profile."
+    },
+    "3. Module Overzicht": { nl: "3. Module Overzicht", en: "3. Module Overview" },
+    "Als student wil ik een overzicht zien van alle beschikbare modules om een eerste selectie te maken.": {
+        nl: "Als student wil ik een overzicht zien van alle beschikbare modules om een eerste selectie te maken.",
+        en: "As a student I want to see an overview of all available modules to make an initial selection."
+    },
+    "Alle modules worden via een API-call opgehaald en getoond in de frontend.": {
+        nl: "Alle modules worden via een API-call opgehaald en getoond in de frontend.",
+        en: "All modules are retrieved via an API call and shown in the frontend."
+    },
+    "Het systeem toont een duidelijke melding als er geen modules beschikbaar zijn.": {
+        nl: "Het systeem toont een duidelijke melding als er geen modules beschikbaar zijn.",
+        en: "The system shows a clear message if no modules are available."
+    },
+    "De interface is getest met diverse datasets (leeg, enkel, en veel modules).": {
+        nl: "De interface is getest met diverse datasets (leeg, enkel, en veel modules).",
+        en: "The interface has been tested with various datasets (empty, single, and many modules)."
+    },
+    "4. Detailpagina Inzien": { nl: "4. Detailpagina Inzien", en: "4. View Detail Page" },
+    "Als student wil ik een volledige detailpagina van een module kunnen inzien, zodat ik de inhoud, leeruitkomsten en instapvoorwaarden goed kan begrijpen.": {
+        nl: "Als student wil ik een volledige detailpagina van een module kunnen inzien, zodat ik de inhoud, leeruitkomsten en instapvoorwaarden goed kan begrijpen.",
+        en: "As a student I want to be able to view a full detail page of a module, so that I can properly understand the content, learning outcomes, and entry requirements."
+    },
+    "Bij het klikken op een module opent een detailpagina met specifieke gegevens uit de backend.": {
+        nl: "Bij het klikken op een module opent een detailpagina met specifieke gegevens uit de backend.",
+        en: "Clicking on a module opens a detail page with specific data from the backend."
+    },
+    "Informatie bevat onder andere: Inhoud, Leeruitkomsten, Locatie en ECTS.": {
+        nl: "Informatie bevat onder andere: Inhoud, Leeruitkomsten, Locatie en ECTS.",
+        en: "Information includes: Content, Learning Outcomes, Location, and ECTS."
+    },
+    "5. Zoeken en Filteren": { nl: "5. Zoeken en Filteren", en: "5. Search and Filter" },
+    "Als student wil ik kunnen zoeken en filteren op thema om snel relevante opties te vinden.": {
+        nl: "Als student wil ik kunnen zoeken en filteren op thema om snel relevante opties te vinden.",
+        en: "As a student I want to be able to search and filter by theme to quickly find relevant options."
+    },
+    "Zoekbalk aanwezig voor trefwoorden en filters voor specifieke modulethema's.": {
+        nl: "Zoekbalk aanwezig voor trefwoorden en filters voor specifieke modulethema's.",
+        en: "Search bar present for keywords and filters for specific module themes."
+    },
+    "De lijst wordt direct bijgewerkt op basis van actieve filters en zoektermen.": {
+        nl: "De lijst wordt direct bijgewerkt op basis van actieve filters en zoektermen.",
+        en: "The list is updated immediately based on active filters and search terms."
+    },
 
     // Questionnaire
     "Intake Vragenlijst": { nl: "Intake Vragenlijst", en: "Intake Questionnaire" },
