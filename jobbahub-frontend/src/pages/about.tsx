@@ -117,11 +117,11 @@ const About: React.FC = () => {
                   </div>
 
                   <div className="user-story-item">
-                    <h3 className="about-subheading bold">4. {t("Detailinformatie (Popup)")}</h3>
-                    <p className="about-text italic">{t("Als student wil ik details inzien zoals leeruitkomsten en instapvoorwaarden in een overzichtelijke popup.")}</p>
+                    <h3 className="about-subheading bold">4. {t("Detailpagina Inzien")}</h3>
+                    <p className="about-text italic">{t("Als student wil ik een volledige detailpagina van een module kunnen inzien, zodat ik de inhoud, leeruitkomsten en instapvoorwaarden goed kan begrijpen.")}</p>
                     <ul className="about-list story-list-style">
-                      <li>{t("Bij het klikken op een module opent een popup met specifieke gegevens uit de backend.")}</li>
-                      <li>{t("Informatie bevat o.a.: Inhoud, Leeruitkomsten, Locatie en ECTS.")}</li>
+                      <li>{t("Bij het klikken op een module opent een detailpagina met specifieke gegevens uit de backend.")}</li>
+                      <li>{t("Informatie bevat onder andere: Inhoud, Leeruitkomsten, Locatie en ECTS.")}</li>
                     </ul>
                   </div>
 
