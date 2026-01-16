@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import VragenlijstResultaten from '../vragenlijstResultaten';
+import { AIRecommendation, ClusterRecommendation } from '../../services/apiService';
 
 jest.mock('../../context/LanguageContext', () => ({
   useLanguage: () => ({
@@ -28,7 +29,7 @@ jest.mock('../moduleCard', () => {
     isCluster?: boolean;
   }) {
     return (
-      <div 
+      <div
         data-testid={`module-card-${module.id}`}
         onClick={() => onClick(String(module.id))}
       >
@@ -65,35 +66,37 @@ describe('VragenlijstResultaten', () => {
     { _id: 'm3', id: 3, name: 'Cluster Module', studycredit: 15 },
   ];
 
-  const mockAiRecs = [
-    { 
-      name: 'Module One', 
-      match_percentage: 95, 
+  const mockAiRecs: AIRecommendation[] = [
+    {
+      name: 'Module One',
+      match_percentage: 95,
       waarom: 'Match op termen: AI, Tech',
-      category_scores: { q_tech: 0.8 }
+      category_scores: { q_tech: 0.8 },
+      studycredit: 15
     },
-    { 
-      name: 'Module Two', 
-      match_percentage: 80, 
+    {
+      name: 'Module Two',
+      match_percentage: 80,
       waarom: 'Good match',
-      category_scores: { q_health: 0.6 }
+      category_scores: { q_health: 0.6 },
+      studycredit: 30
     },
   ];
 
-  const mockClusterRecs = [
-    { name: 'Cluster Module', waarom: 'Popular in cluster' },
+  const mockClusterRecs: ClusterRecommendation[] = [
+    { name: 'Cluster Module', waarom: 'Popular in cluster', popularity_score: 90 },
   ];
 
   const mockUserAnswers = {
     keuze_taal: 'Nederlands',
     keuze_locatie: 'Breda',
     keuze_punten: 15,
-    open_antwoord: 'I want to learn AI',
+
     knoppen_input: {
-      q_tech: { score: 1, weight: 2 },
-      q_health: { score: 0, weight: 1 },
-      q_social: { score: 1, weight: 1 },
-      q_research: { score: -1, weight: 1 },
+      q_tech: { score: 1 },
+      q_health: { score: 0 },
+      q_social: { score: 1 },
+      q_research: { score: -1 },
     },
   };
 
@@ -130,9 +133,9 @@ describe('VragenlijstResultaten', () => {
     it('calls onRetry when clicked', () => {
       const onRetry = jest.fn();
       renderWithRouter(<VragenlijstResultaten {...defaultProps} onRetry={onRetry} />);
-      
+
       fireEvent.click(screen.getByText('Opnieuw invullen'));
-      
+
       expect(onRetry).toHaveBeenCalled();
     });
   });
@@ -140,23 +143,23 @@ describe('VragenlijstResultaten', () => {
   describe('AI recommendations', () => {
     it('renders AI recommended modules', () => {
       renderWithRouter(<VragenlijstResultaten {...defaultProps} />);
-      
+
       expect(screen.getByText('Module One')).toBeInTheDocument();
       expect(screen.getByText('Module Two')).toBeInTheDocument();
     });
 
     it('shows rank for recommendations', () => {
       renderWithRouter(<VragenlijstResultaten {...defaultProps} />);
-      
+
       expect(screen.getByText('#1')).toBeInTheDocument();
       expect(screen.getByText('#2')).toBeInTheDocument();
     });
 
     it('navigates to module detail when clicked', () => {
       renderWithRouter(<VragenlijstResultaten {...defaultProps} />);
-      
+
       fireEvent.click(screen.getByTestId('module-card-1'));
-      
+
       expect(mockNavigate).toHaveBeenCalledWith('/modules/1');
     });
   });
@@ -211,10 +214,7 @@ describe('VragenlijstResultaten', () => {
       expect(screen.getByText('15 EC')).toBeInTheDocument();
     });
 
-    it('displays user open answer', () => {
-      renderWithRouter(<VragenlijstResultaten {...defaultProps} />);
-      expect(screen.getByText(/"I want to learn AI"/)).toBeInTheDocument();
-    });
+
 
     it('shows "Geen voorkeur" for null preferences', () => {
       const answersWithNulls = {
@@ -223,9 +223,9 @@ describe('VragenlijstResultaten', () => {
         keuze_locatie: null,
         keuze_punten: null,
       };
-      
+
       renderWithRouter(<VragenlijstResultaten {...defaultProps} userAnswers={answersWithNulls} />);
-      
+
       const geenVoorkeurElements = screen.getAllByText('Geen voorkeur');
       expect(geenVoorkeurElements.length).toBe(3);
     });
@@ -251,7 +251,7 @@ describe('VragenlijstResultaten', () => {
   describe('explanation translation', () => {
     it('translates Dutch explanation prefix', () => {
       renderWithRouter(<VragenlijstResultaten {...defaultProps} />);
-      
+
       // The explanation should be shown
       const explanations = screen.getAllByTestId('explanation');
       expect(explanations.length).toBeGreaterThan(0);

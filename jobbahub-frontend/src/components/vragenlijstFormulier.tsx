@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import DOMPurify from 'dompurify';
+
 import LoadingSpinner from './LoadingSpinner';
 import { apiService, ApiError } from '../services/apiService';
 import type { VragenlijstData, AIRecommendation, ClusterRecommendation } from '../types/questionnaire';
@@ -19,13 +19,7 @@ interface VragenlijstFormulierProps {
 // Type for form field values
 type VragenlijstFieldValue = string | number | null;
 
-// ✅ SECURITY: Sanitize user input to prevent XSS
-const sanitizeInput = (input: string): string => {
-  return DOMPurify.sanitize(input, {
-    ALLOWED_TAGS: [], // No HTML tags allowed
-    ALLOWED_ATTR: [], // No attributes allowed
-  }).trim();
-};
+
 
 // ✅ SECURITY: Validate and sanitize select values
 const sanitizeSelectValue = (value: string, allowedValues: string[]): string | null => {
@@ -70,7 +64,6 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
     keuze_taal: null,
     keuze_locatie: null,
     keuze_punten: null,
-    open_antwoord: '',
     knoppen_input: SHARED_TOPICS.reduce((acc, topic) => ({
       ...acc,
       ...acc,
@@ -82,13 +75,7 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  // ✅ SECURITY: Sanitized handler for text input
-  const handleTextChange = (field: keyof VragenlijstData, value: string) => {
-    // Limit input length to prevent DoS
-    const maxLength = 1000;
-    const truncatedValue = value.slice(0, maxLength);
-    setFormData(prev => ({ ...prev, [field]: truncatedValue }));
-  };
+
 
   const handleScoreChange = (topicId: string, score: number) => {
     // ✅ SECURITY: Validate score is within allowed range
@@ -137,7 +124,6 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
         keuze_punten: formData.keuze_punten !== null && ALLOWED_PUNTEN.includes(formData.keuze_punten)
           ? formData.keuze_punten
           : null,
-        open_antwoord: sanitizeInput(formData.open_antwoord),
         knoppen_input: formData.knoppen_input, // Already validated via handleScoreChange
       };
 
@@ -366,18 +352,7 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
             </div>
           </div>
 
-          <div className="form-group">
-            <label className="form-label">{t("Jouw gedachten (Optioneel)")}</label>
-            <textarea
-              className="form-input"
-              rows={4}
-              maxLength={1000}
-              placeholder={t("Bijvoorbeeld: Ik wil graag iets doen met AI en duurzaamheid...")}
-              value={formData.open_antwoord}
-              onChange={(e) => handleTextChange('open_antwoord', e.target.value)}
-            />
-            <small className="text-muted">{formData.open_antwoord.length}/1000</small>
-          </div>
+
           <div className="nav-buttons-container">
             {submitError && (
               <div style={{
@@ -410,7 +385,7 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
             <button className="btn btn-primary w-full" onClick={handleSubmit}>{t('submit')}</button>
           </div>
         </div>
-      </div>
+      </div >
     );
   }
 

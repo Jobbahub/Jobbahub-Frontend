@@ -11,7 +11,6 @@ export interface VragenlijstData {
   keuze_taal: string | null;
   keuze_locatie: string | null;
   keuze_punten: number | null;
-  open_antwoord: string;
   knoppen_input: KnoppenInput;
 }
 

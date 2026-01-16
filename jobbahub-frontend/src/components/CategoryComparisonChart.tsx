@@ -5,7 +5,6 @@ import { TOPICS } from '../data/constants';
 interface VragenlijstKnoppenInput {
     [key: string]: {
         score: number;
-        weight: number;
     };
 }
 
@@ -25,7 +24,7 @@ const CategoryComparisonChart: React.FC<CategoryComparisonChartProps> = ({
     limit = 3
 }) => {
     const { t } = useLanguage();
-    
+
     // ✅ FIX: Moved useState BEFORE any conditional returns
     // React Hooks must be called in the same order every render
     const [hoveredLabel, setHoveredLabel] = useState<string | null>(null);

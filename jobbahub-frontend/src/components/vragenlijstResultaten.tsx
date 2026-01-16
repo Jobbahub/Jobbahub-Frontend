@@ -94,7 +94,7 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
           label: topic ? t(topic.label) : id,
           score: userAnswers.knoppen_input[id].score,
           color: colorMap[id], // Assign unique global color
-          isWeighted: userAnswers.knoppen_input[id].weight === 2
+
         };
       })
       .sort((a, b) => b.score - a.score); // Sort by score descending for better visualization
@@ -197,14 +197,7 @@ const VragenlijstResultaten: React.FC<VragenlijstResultatenProps> = ({ aiRecs, c
                     <span>{userAnswers.keuze_punten ? `${userAnswers.keuze_punten} EC` : t("Geen voorkeur")}</span>
                   </li>
                 </ul>
-                {userAnswers.open_antwoord && (
-                  <div className="profile-answer-block">
-                    <span className="profile-answer-label">{t("Jouw Toelichting")}:</span>
-                    <div className="profile-answer-text">
-                      "{userAnswers.open_antwoord}"
-                    </div>
-                  </div>
-                )}
+
               </div>
 
               {/* Column 2: Interests Chart */}
