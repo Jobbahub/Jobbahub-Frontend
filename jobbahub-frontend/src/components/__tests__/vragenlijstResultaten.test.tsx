@@ -43,7 +43,7 @@ jest.mock('../moduleCard', () => {
 });
 
 // Mock ResultChart
-jest.mock('../ResultChart', () => {
+jest.mock('../resultChart', () => {
   return function MockResultChart({ title }: { title: string }) {
     return <div data-testid="result-chart">{title}</div>;
   };

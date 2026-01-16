@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import RecentlyViewed from '../RecentlyViewed';
+import RecentlyViewed from '../recentlyViewed';
 
 // Mock dependencies
 jest.mock('../../context/LanguageContext', () => ({
@@ -10,7 +10,7 @@ jest.mock('../../context/LanguageContext', () => ({
   }),
 }));
 
-jest.mock('../LoadingSpinner', () => {
+jest.mock('../loadingSpinner', () => {
   return function MockLoadingSpinner() {
     return <div data-testid="loading-spinner">Loading...</div>;
   };
@@ -56,7 +56,7 @@ describe('RecentlyViewed', () => {
     it('renders nothing when no recently viewed modules', async () => {
       mockRecentlyViewedIds = [];
       const { container } = renderWithRouter(<RecentlyViewed />);
-      
+
       await waitFor(() => {
         expect(container.querySelector('.recently-viewed-section')).not.toBeInTheDocument();
       });
@@ -67,7 +67,7 @@ describe('RecentlyViewed', () => {
     it('shows loading spinner while fetching', () => {
       mockRecentlyViewedIds = ['1', '2'];
       renderWithRouter(<RecentlyViewed />);
-      
+
       expect(screen.getByTestId('loading-spinner')).toBeInTheDocument();
     });
   });
@@ -79,7 +79,7 @@ describe('RecentlyViewed', () => {
 
     it('renders section title', async () => {
       renderWithRouter(<RecentlyViewed />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Laatst bekeken')).toBeInTheDocument();
       });
@@ -87,7 +87,7 @@ describe('RecentlyViewed', () => {
 
     it('renders recently viewed modules', async () => {
       renderWithRouter(<RecentlyViewed />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Module One')).toBeInTheDocument();
         expect(screen.getByText('Module Two')).toBeInTheDocument();
@@ -96,7 +96,7 @@ describe('RecentlyViewed', () => {
 
     it('shows study credits for each module', async () => {
       renderWithRouter(<RecentlyViewed />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('15 EC')).toBeInTheDocument();
         expect(screen.getByText('30 EC')).toBeInTheDocument();
@@ -105,7 +105,7 @@ describe('RecentlyViewed', () => {
 
     it('shows location when available', async () => {
       renderWithRouter(<RecentlyViewed />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Breda')).toBeInTheDocument();
         expect(screen.getByText('Den Bosch')).toBeInTheDocument();
@@ -114,14 +114,14 @@ describe('RecentlyViewed', () => {
 
     it('navigates to module detail when clicked', async () => {
       renderWithRouter(<RecentlyViewed />);
-      
+
       await waitFor(() => {
         expect(screen.getByText('Module One')).toBeInTheDocument();
       });
-      
+
       const card = screen.getByText('Module One').closest('.recently-viewed-card');
       fireEvent.click(card!);
-      
+
       expect(mockNavigate).toHaveBeenCalledWith('/modules/1');
     });
   });
@@ -130,7 +130,7 @@ describe('RecentlyViewed', () => {
     it('excludes specified module from list', async () => {
       mockRecentlyViewedIds = ['1', '2', '3'];
       renderWithRouter(<RecentlyViewed excludeModuleId="1" />);
-      
+
       await waitFor(() => {
         expect(screen.queryByText('Module One')).not.toBeInTheDocument();
         expect(screen.getByText('Module Two')).toBeInTheDocument();
@@ -143,7 +143,7 @@ describe('RecentlyViewed', () => {
     it('limits to 5 modules maximum', async () => {
       mockRecentlyViewedIds = ['1', '2', '3', '1', '2', '3'];
       renderWithRouter(<RecentlyViewed />);
-      
+
       await waitFor(() => {
         const cards = document.querySelectorAll('.recently-viewed-card');
         expect(cards.length).toBeLessThanOrEqual(5);
@@ -155,7 +155,7 @@ describe('RecentlyViewed', () => {
     it('displays modules in the order they were viewed', async () => {
       mockRecentlyViewedIds = ['2', '1'];
       renderWithRouter(<RecentlyViewed />);
-      
+
       await waitFor(() => {
         const cards = document.querySelectorAll('.recently-viewed-card');
         expect(cards[0]).toHaveTextContent('Module Two');

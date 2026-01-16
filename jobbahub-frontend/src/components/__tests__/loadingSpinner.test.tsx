@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import LoadingSpinner from '../LoadingSpinner';
+import LoadingSpinner from '../loadingSpinner';
 
 describe('LoadingSpinner', () => {
   it('renders without crashing', () => {

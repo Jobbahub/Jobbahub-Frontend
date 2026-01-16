@@ -15,7 +15,7 @@ import ElectiveModules from "../pages/modules";
 import ModuleDetail from "../pages/moduleDetail";
 import Favorites from "../pages/favorites";
 import Vragenlijst from "../pages/vragenlijst";
-import GlobalErrorBoundary from "../components/GlobalErrorBoundary";
+import GlobalErrorBoundary from "../components/globalErrorBoundary";
 import ErrorPage from "../pages/errorPage";
 import { AuthProvider, useAuth } from "../context/authContext";
 import Profile from "../pages/profilePage";

@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import CategoryComparisonChart from '../CategoryComparisonChart';
+import CategoryComparisonChart from '../categoryComparisonChart';
 
 jest.mock('../../context/LanguageContext', () => ({
   useLanguage: () => ({
@@ -102,20 +102,20 @@ describe('CategoryComparisonChart', () => {
   describe('tooltip behavior', () => {
     it('shows tooltip on label hover', () => {
       const { container } = render(<CategoryComparisonChart {...defaultProps} />);
-      
+
       const label = screen.getByText('Technology').closest('.module-focus-label');
       fireEvent.mouseEnter(label!);
-      
+
       expect(container.querySelector('.custom-tooltip')).toBeInTheDocument();
     });
 
     it('hides tooltip on mouse leave', () => {
       const { container } = render(<CategoryComparisonChart {...defaultProps} />);
-      
+
       const label = screen.getByText('Technology').closest('.module-focus-label');
       fireEvent.mouseEnter(label!);
       fireEvent.mouseLeave(label!);
-      
+
       expect(container.querySelector('.custom-tooltip')).not.toBeInTheDocument();
     });
   });
@@ -152,15 +152,15 @@ describe('CategoryComparisonChart', () => {
         q_research: 0.7,
         q_extra: 0.6,
       };
-      
+
       render(
-        <CategoryComparisonChart 
-          moduleScores={manyScores} 
+        <CategoryComparisonChart
+          moduleScores={manyScores}
           userAnswers={defaultUserAnswers}
           limit={2}
         />
       );
-      
+
       const rows = document.querySelectorAll('.module-focus-tr');
       expect(rows.length).toBeLessThanOrEqual(2);
     });
@@ -169,10 +169,10 @@ describe('CategoryComparisonChart', () => {
   describe('sorting', () => {
     it('sorts categories by module score descending', () => {
       render(<CategoryComparisonChart {...defaultProps} />);
-      
+
       const rows = document.querySelectorAll('.module-focus-tr');
       const firstRowText = rows[0]?.textContent;
-      
+
       // Technology has highest score (0.8), should be first
       expect(firstRowText).toContain('Technology');
     });
@@ -182,7 +182,7 @@ describe('CategoryComparisonChart', () => {
     it('uses green for high scores', () => {
       const { container } = render(<CategoryComparisonChart {...defaultProps} />);
       const fills = container.querySelectorAll('.module-focus-bar-fill');
-      
+
       // At least one bar should have green color for 80% score
       const hasGreen = Array.from(fills).some(
         fill => (fill as HTMLElement).style.backgroundColor === 'rgb(34, 197, 94)'

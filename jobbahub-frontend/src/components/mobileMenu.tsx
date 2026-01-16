@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
-import ThemeToggle from './ThemeToggle';
-import LanguageSwitcher from './LanguageSwitcher';
+import ThemeToggle from './themeToggle';
+import LanguageSwitcher from './languageSwitcher';
 import type { User } from '../types/questionnaire';
 
 interface MobileMenuProps {

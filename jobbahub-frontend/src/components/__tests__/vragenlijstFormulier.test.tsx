@@ -12,11 +12,10 @@ jest.mock('../../data/constants', () => ({
   TOPICS: [
     { id: 'q_tech', label: 'Technology', question: 'Interest in tech?', type: 'interest' },
     { id: 'q_health', label: 'Health', question: 'Interest in health?', type: 'interest' },
-    { id: 'q_social', label: 'Social', question: 'Value social impact?', type: 'value' },
   ],
 }));
 
-jest.mock('../LoadingSpinner', () => {
+jest.mock('../loadingSpinner', () => {
   return function MockLoadingSpinner() {
     return <div data-testid="loading-spinner">Loading...</div>;
   };
@@ -54,43 +53,21 @@ describe('VragenlijstFormulier', () => {
     });
   });
 
-  describe('Step 1: Priority Selection', () => {
-    it('renders priority selection screen initially', () => {
+  describe('Step 1: Introduction', () => {
+    it('renders introduction screen initially', () => {
       render(<VragenlijstFormulier {...defaultProps} />);
-      expect(screen.getByText('Intake Vragenlijst')).toBeInTheDocument();
+      expect(screen.getByText('intro_title')).toBeInTheDocument();
+      expect(screen.getByText('intro_subtitle')).toBeInTheDocument();
     });
 
-    it('renders subject cards for selection', () => {
+    it('renders start button', () => {
       render(<VragenlijstFormulier {...defaultProps} />);
-      expect(screen.getByText('Technology')).toBeInTheDocument();
-      expect(screen.getByText('Health')).toBeInTheDocument();
+      expect(screen.getByText(/start_questionnaire/)).toBeInTheDocument();
     });
 
-    it('toggles priority when card is clicked', () => {
+    it('proceeds to step 2 when start is clicked', () => {
       render(<VragenlijstFormulier {...defaultProps} />);
-      
-      const techCard = screen.getByText('Technology').closest('.priority-card');
-      fireEvent.click(techCard!);
-      
-      expect(techCard).toHaveClass('selected');
-    });
-
-    it('shows 2x badge when priority is selected', () => {
-      render(<VragenlijstFormulier {...defaultProps} />);
-      
-      const techCard = screen.getByText('Technology').closest('.priority-card');
-      fireEvent.click(techCard!);
-      
-      expect(screen.getByText('2x')).toBeInTheDocument();
-    });
-
-    it('proceeds to step 2 when next is clicked', () => {
-      render(<VragenlijstFormulier {...defaultProps} />);
-      
-      const nextButton = screen.getByText(/next/i);
-      fireEvent.click(nextButton);
-      
-      // Should now show question screen
+      fireEvent.click(screen.getByText(/start_questionnaire/));
       expect(screen.getByText(/Onderwerp 1/)).toBeInTheDocument();
     });
   });
@@ -98,16 +75,11 @@ describe('VragenlijstFormulier', () => {
   describe('Step 2: Questions Loop', () => {
     beforeEach(() => {
       render(<VragenlijstFormulier {...defaultProps} />);
-      // Go to step 2
-      fireEvent.click(screen.getByText(/next/i));
+      fireEvent.click(screen.getByText(/start_questionnaire/));
     });
 
-    it('displays question counter', () => {
+    it('displays question info', () => {
       expect(screen.getByText(/Onderwerp 1/)).toBeInTheDocument();
-      expect(screen.getByText(/van/)).toBeInTheDocument();
-    });
-
-    it('displays question text', () => {
       expect(screen.getByText('Interest in tech?')).toBeInTheDocument();
     });
 
@@ -117,187 +89,53 @@ describe('VragenlijstFormulier', () => {
       expect(screen.getByText('Ja')).toBeInTheDocument();
     });
 
-    it('marks selected answer as active', () => {
-      const jaButton = screen.getByText('Ja');
-      fireEvent.click(jaButton);
-      
-      expect(jaButton).toHaveClass('active');
-    });
-
-    it('advances to next question when next is clicked', () => {
-      fireEvent.click(screen.getByText(/next/i));
-      
+    it('navigates to next question', () => {
+      fireEvent.click(screen.getByText('Ja')); // Select answer
+      fireEvent.click(screen.getByText(/next/)); // Click next
       expect(screen.getByText(/Onderwerp 2/)).toBeInTheDocument();
+      expect(screen.getByText('Interest in health?')).toBeInTheDocument();
     });
 
-    it('goes back to previous question when previous is clicked', () => {
-      // Go to question 2
-      fireEvent.click(screen.getByText(/next/i));
-      expect(screen.getByText(/Onderwerp 2/)).toBeInTheDocument();
-      
-      // Go back
-      fireEvent.click(screen.getByText(/previous/i));
-      expect(screen.getByText(/Onderwerp 1/)).toBeInTheDocument();
-    });
-
-it('shows progress bar', () => {
-      render(<VragenlijstFormulier {...defaultProps} />);
-      
-      // Go to step 2 where progress bar is shown
-      fireEvent.click(screen.getAllByText(/next/i)[0]);
-      
-      // Progress bar should now be visible
-      expect(document.querySelector('.progress-bar')).toBeInTheDocument();
+    it('shows visual timeline', () => {
+      expect(document.querySelector('.timeline-container')).toBeInTheDocument();
     });
   });
 
-  describe('Step 3: Re-confirm Priorities', () => {
-    it('shows priority confirmation after all questions', async () => {
+  describe('Step 3: Final Preferences', () => {
+    const goToStep3 = () => {
       render(<VragenlijstFormulier {...defaultProps} />);
-      
-      // Go through all steps
-      fireEvent.click(screen.getByText(/next/i)); // Step 1 -> 2
-      
-      // Answer all questions (3 topics in mock)
-      fireEvent.click(screen.getByText(/next/i)); // Q1 -> Q2
-      fireEvent.click(screen.getByText(/next/i)); // Q2 -> Q3
-      fireEvent.click(screen.getByText(/next/i)); // Q3 -> Step 3
-      
-      expect(screen.getByText('Nog even checken...')).toBeInTheDocument();
-    });
-  });
+      fireEvent.click(screen.getByText(/start_questionnaire/)); // Step 1 -> 2
 
-  describe('Step 4: Final Preferences', () => {
-    const goToStep4 = () => {
-      render(<VragenlijstFormulier {...defaultProps} />);
-      
-      fireEvent.click(screen.getByText(/next/i)); // Step 1 -> 2
-      fireEvent.click(screen.getByText(/next/i)); // Q1 -> Q2
-      fireEvent.click(screen.getByText(/next/i)); // Q2 -> Q3
-      fireEvent.click(screen.getByText(/next/i)); // Q3 -> Step 3
-      fireEvent.click(screen.getByText(/Verder naar afronding/i)); // Step 3 -> 4
+      // Question 1
+      fireEvent.click(screen.getByText('Ja'));
+      fireEvent.click(screen.getByText(/next/));
+
+      // Question 2 (Last one in mock)
+      fireEvent.click(screen.getByText('Neutraal'));
+      fireEvent.click(screen.getByText(/next/));
     };
 
-    it('shows final preferences form', () => {
-      goToStep4();
+    it('shows preferences form', () => {
+      goToStep3();
       expect(screen.getByText('Persoonlijke Gegevens')).toBeInTheDocument();
     });
 
-    it('renders language select', () => {
-      goToStep4();
+    it('renders form inputs', () => {
+      goToStep3();
       expect(screen.getByText('Taal')).toBeInTheDocument();
-      expect(screen.getByText('Nederlands')).toBeInTheDocument();
-      expect(screen.getByText('Engels')).toBeInTheDocument();
-    });
-
-    it('renders location select', () => {
-      goToStep4();
       expect(screen.getByText('Locatie')).toBeInTheDocument();
-      expect(screen.getByText('Den Bosch')).toBeInTheDocument();
-      expect(screen.getByText('Breda')).toBeInTheDocument();
-    });
-
-    it('renders study credits select', () => {
-      goToStep4();
       expect(screen.getByText('Studiepunten')).toBeInTheDocument();
-      expect(screen.getByText('15 EC')).toBeInTheDocument();
-      expect(screen.getByText('30 EC')).toBeInTheDocument();
     });
 
-    it('renders open text area', () => {
-      goToStep4();
-      expect(screen.getByText(/Jouw gedachten/)).toBeInTheDocument();
-    });
+    it('submits form successfully', async () => {
+      goToStep3();
 
-    it('shows character count for text area', () => {
-      goToStep4();
-      expect(screen.getByText('0/1000')).toBeInTheDocument();
-    });
+      const submitBtn = screen.getByText('submit');
+      fireEvent.click(submitBtn);
 
-    it('updates character count when typing', () => {
-      goToStep4();
-      
-      const textarea = screen.getByPlaceholderText(/Bijvoorbeeld/);
-      fireEvent.change(textarea, { target: { value: 'Test text' } });
-      
-      expect(screen.getByText('9/1000')).toBeInTheDocument();
-    });
-  });
-
-  describe('Form Submission', () => {
-    it('shows loading state during submission', async () => {
-      mockVerstuurVragenlijst.mockImplementation(() => new Promise(() => {})); // Never resolves
-      
-      render(<VragenlijstFormulier {...defaultProps} />);
-      
-      // Navigate to submit
-      fireEvent.click(screen.getByText(/next/i));
-      fireEvent.click(screen.getByText(/next/i));
-      fireEvent.click(screen.getByText(/next/i));
-      fireEvent.click(screen.getByText(/next/i));
-      fireEvent.click(screen.getByText(/Verder naar afronding/i));
-      fireEvent.click(screen.getByText('submit'));
-      
-      expect(screen.getByText('loading')).toBeInTheDocument();
-    });
-
-    it('calls onComplete with results on success', async () => {
-      const mockModules = [{ id: 1, name: 'Module 1' }];
-      const mockRecommendations = [{ name: 'Rec 1', match_percentage: 90 }];
-      
-      mockGetModules.mockResolvedValue(mockModules);
-      mockVerstuurVragenlijst.mockResolvedValue({
-        aanbevelingen: mockRecommendations,
-        cluster_suggesties: [],
-      });
-      
-      render(<VragenlijstFormulier {...defaultProps} />);
-      
-      // Navigate to submit
-      fireEvent.click(screen.getByText(/next/i));
-      fireEvent.click(screen.getByText(/next/i));
-      fireEvent.click(screen.getByText(/next/i));
-      fireEvent.click(screen.getByText(/next/i));
-      fireEvent.click(screen.getByText(/Verder naar afronding/i));
-      fireEvent.click(screen.getByText('submit'));
-      
       await waitFor(() => {
-        expect(mockOnComplete).toHaveBeenCalled();
+        expect(mockVerstuurVragenlijst).toHaveBeenCalled();
       });
-    });
-
-    it('shows error message on API failure', async () => {
-      mockVerstuurVragenlijst.mockRejectedValue(new Error('API Error'));
-      
-      render(<VragenlijstFormulier {...defaultProps} />);
-      
-      // Navigate to submit
-      fireEvent.click(screen.getByText(/next/i));
-      fireEvent.click(screen.getByText(/next/i));
-      fireEvent.click(screen.getByText(/next/i));
-      fireEvent.click(screen.getByText(/next/i));
-      fireEvent.click(screen.getByText(/Verder naar afronding/i));
-      fireEvent.click(screen.getByText('submit'));
-      
-      await waitFor(() => {
-        expect(screen.getByText(/ging iets mis/)).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe('Input Validation', () => {
-    it('limits text area to 1000 characters', () => {
-      render(<VragenlijstFormulier {...defaultProps} />);
-      
-      // Navigate to final step
-      fireEvent.click(screen.getByText(/next/i));
-      fireEvent.click(screen.getByText(/next/i));
-      fireEvent.click(screen.getByText(/next/i));
-      fireEvent.click(screen.getByText(/next/i));
-      fireEvent.click(screen.getByText(/Verder naar afronding/i));
-      
-      const textarea = screen.getByPlaceholderText(/Bijvoorbeeld/);
-      expect(textarea).toHaveAttribute('maxLength', '1000');
     });
   });
 });

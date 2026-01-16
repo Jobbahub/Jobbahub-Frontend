@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import MobileMenu from '../MobileMenu';
+import MobileMenu from '../mobileMenu';
 
 jest.mock('../../context/LanguageContext', () => ({
   useLanguage: () => ({
@@ -9,13 +9,13 @@ jest.mock('../../context/LanguageContext', () => ({
   }),
 }));
 
-jest.mock('../ThemeToggle', () => {
+jest.mock('../themeToggle', () => {
   return function MockThemeToggle() {
     return <button data-testid="theme-toggle">Theme</button>;
   };
 });
 
-jest.mock('../LanguageSwitcher', () => {
+jest.mock('../languageSwitcher', () => {
   return function MockLanguageSwitcher() {
     return <button data-testid="language-switcher">Lang</button>;
   };
@@ -95,9 +95,9 @@ describe('MobileMenu', () => {
     it('calls onClose when a link is clicked', () => {
       const onClose = jest.fn();
       renderWithRouter(<MobileMenu {...defaultProps} onClose={onClose} />);
-      
+
       fireEvent.click(screen.getByText('nav_modules'));
-      
+
       expect(onClose).toHaveBeenCalled();
     });
   });
@@ -106,10 +106,10 @@ describe('MobileMenu', () => {
     it('calls onClose when backdrop is clicked', () => {
       const onClose = jest.fn();
       const { container } = renderWithRouter(<MobileMenu {...defaultProps} onClose={onClose} />);
-      
+
       const backdrop = container.querySelector('.mobile-menu-backdrop');
       fireEvent.click(backdrop!);
-      
+
       expect(onClose).toHaveBeenCalled();
     });
   });
@@ -133,9 +133,9 @@ describe('MobileMenu', () => {
     it('login link closes menu when clicked', () => {
       const onClose = jest.fn();
       renderWithRouter(<MobileMenu {...defaultProps} onClose={onClose} user={null} />);
-      
+
       fireEvent.click(screen.getByText('login'));
-      
+
       expect(onClose).toHaveBeenCalled();
     });
   });
@@ -159,18 +159,18 @@ describe('MobileMenu', () => {
     it('calls onLogout when logout button clicked', () => {
       const onLogout = jest.fn();
       renderWithRouter(<MobileMenu {...defaultProps} user={mockUser} onLogout={onLogout} />);
-      
+
       fireEvent.click(screen.getByText('logout'));
-      
+
       expect(onLogout).toHaveBeenCalled();
     });
 
     it('calls onClose when logout button clicked', () => {
       const onClose = jest.fn();
       renderWithRouter(<MobileMenu {...defaultProps} user={mockUser} onClose={onClose} />);
-      
+
       fireEvent.click(screen.getByText('logout'));
-      
+
       expect(onClose).toHaveBeenCalled();
     });
 

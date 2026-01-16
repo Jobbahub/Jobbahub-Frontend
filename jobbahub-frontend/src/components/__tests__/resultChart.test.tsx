@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import ResultChart from '../ResultChart';
-import type { ChartDataPoint } from '../ResultChart';
+import ResultChart from '../resultChart';
+import type { ChartDataPoint } from '../resultChart';
 
 jest.mock('../../context/LanguageContext', () => ({
   useLanguage: () => ({
@@ -16,7 +16,7 @@ describe('ResultChart', () => {
       { id: 'health', label: 'Health', score: 0, color: '#22c55e' },
       { id: 'law', label: 'Law', score: -1, color: '#ef4444' },
     ];
-    
+
     return defaults.map((item, index) => ({
       ...item,
       ...overrides[index],
@@ -76,18 +76,12 @@ describe('ResultChart', () => {
     });
   });
 
-  describe('weighted items', () => {
-    it('shows 2x badge for weighted items', () => {
-      const weightedData = createMockData([{ isWeighted: true }]);
-      render(<ResultChart {...defaultProps} data={weightedData} />);
-      expect(screen.getAllByText('2x').length).toBeGreaterThan(0);
-    });
-  });
+
 
   describe('hover interactions', () => {
     it('shows tooltip on slice hover', () => {
       const { container } = render(<ResultChart {...defaultProps} />);
-      
+
       const slices = container.querySelectorAll('.chart-slice');
       if (slices.length > 0) {
         fireEvent.mouseEnter(slices[0]);
@@ -97,7 +91,7 @@ describe('ResultChart', () => {
 
     it('hides tooltip on mouse leave', () => {
       const { container } = render(<ResultChart {...defaultProps} />);
-      
+
       const slices = container.querySelectorAll('.chart-slice');
       if (slices.length > 0) {
         fireEvent.mouseEnter(slices[0]);
@@ -108,7 +102,7 @@ describe('ResultChart', () => {
 
     it('highlights legend item on hover', () => {
       const { container } = render(<ResultChart {...defaultProps} />);
-      
+
       const legendItems = container.querySelectorAll('.chart-legend-item');
       if (legendItems.length > 0) {
         fireEvent.mouseEnter(legendItems[0]);

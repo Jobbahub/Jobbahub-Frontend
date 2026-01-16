@@ -4,7 +4,7 @@ import { IChoiceModule } from '../types';
 import { apiService } from '../services/apiService';
 import { useLanguage } from '../context/LanguageContext';
 import useRecentlyViewed from '../hooks/useRecentlyViewed';
-import LoadingSpinner from './LoadingSpinner';
+import LoadingSpinner from './loadingSpinner';
 
 interface RecentlyViewedProps {
   excludeModuleId?: string; // Optionally exclude current module from the list

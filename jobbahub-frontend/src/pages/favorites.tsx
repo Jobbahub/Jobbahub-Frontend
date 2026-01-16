@@ -5,7 +5,7 @@ import ModuleGrid from '../components/moduleGrid';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 import { useLanguage } from '../context/LanguageContext';
-import RecentlyViewed from '../components/RecentlyViewed';
+import RecentlyViewed from '../components/recentlyViewed';
 
 const Favorites: React.FC = () => {
     const [favoriteModules, setFavoriteModules] = useState<IChoiceModule[]>([]);

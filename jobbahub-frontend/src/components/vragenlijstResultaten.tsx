@@ -5,7 +5,7 @@ import { AIRecommendation, ClusterRecommendation, VragenlijstData } from '../ser
 import { IChoiceModule } from '../types';
 import { TOPICS } from '../data/constants';
 import ModuleCard from './moduleCard';
-import ResultChart, { ChartDataPoint } from './ResultChart';
+import ResultChart, { ChartDataPoint } from './resultChart';
 
 interface VragenlijstResultatenProps {
   aiRecs: AIRecommendation[];

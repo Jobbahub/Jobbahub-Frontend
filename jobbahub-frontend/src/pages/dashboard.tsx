@@ -6,9 +6,9 @@ import { apiService, AIRecommendation, VragenlijstData } from '../services/apiSe
 import { IChoiceModule } from '../types';
 import { TOPICS } from '../data/constants';
 import ModuleCard from '../components/moduleCard';
-import ResultChart, { ChartDataPoint } from '../components/ResultChart';
-import LoadingSpinner from '../components/LoadingSpinner';
-import RecentlyViewed from '../components/RecentlyViewed';
+import ResultChart, { ChartDataPoint } from '../components/resultChart';
+import LoadingSpinner from '../components/loadingSpinner';
+import RecentlyViewed from '../components/recentlyViewed';
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();

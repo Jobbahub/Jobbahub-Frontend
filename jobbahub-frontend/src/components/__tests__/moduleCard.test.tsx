@@ -14,7 +14,7 @@ jest.mock('../../utils/imageUtils', () => ({
 }));
 
 // Mock CategoryComparisonChart
-jest.mock('../CategoryComparisonChart', () => {
+jest.mock('../categoryComparisonChart', () => {
   return function MockCategoryComparisonChart() {
     return <div data-testid="category-comparison-chart">Chart</div>;
   };
@@ -80,10 +80,10 @@ describe('ModuleCard', () => {
     it('calls onClick with module id when card is clicked', () => {
       const onClick = jest.fn();
       render(<ModuleCard {...defaultProps} onClick={onClick} />);
-      
+
       const card = screen.getByText('Test Module').closest('.card');
       fireEvent.click(card!);
-      
+
       expect(onClick).toHaveBeenCalledWith('123');
     });
   });
@@ -91,8 +91,8 @@ describe('ModuleCard', () => {
   describe('favorite functionality', () => {
     it('shows favorite button when authenticated', () => {
       render(
-        <ModuleCard 
-          {...defaultProps} 
+        <ModuleCard
+          {...defaultProps}
           isAuthenticated={true}
           onToggleFavorite={jest.fn()}
         />
@@ -109,8 +109,8 @@ describe('ModuleCard', () => {
 
     it('shows empty heart when not favorited', () => {
       render(
-        <ModuleCard 
-          {...defaultProps} 
+        <ModuleCard
+          {...defaultProps}
           isAuthenticated={true}
           onToggleFavorite={jest.fn()}
           isFavorite={false}
@@ -121,8 +121,8 @@ describe('ModuleCard', () => {
 
     it('shows filled heart when favorited', () => {
       render(
-        <ModuleCard 
-          {...defaultProps} 
+        <ModuleCard
+          {...defaultProps}
           isAuthenticated={true}
           onToggleFavorite={jest.fn()}
           isFavorite={true}
@@ -134,16 +134,16 @@ describe('ModuleCard', () => {
     it('calls onToggleFavorite when favorite button clicked', () => {
       const onToggleFavorite = jest.fn();
       render(
-        <ModuleCard 
-          {...defaultProps} 
+        <ModuleCard
+          {...defaultProps}
           isAuthenticated={true}
           onToggleFavorite={onToggleFavorite}
         />
       );
-      
+
       const favoriteButton = screen.getByTitle(/favorieten/i);
       fireEvent.click(favoriteButton);
-      
+
       expect(onToggleFavorite).toHaveBeenCalledWith('test-module-1');
     });
 
@@ -151,17 +151,17 @@ describe('ModuleCard', () => {
       const onClick = jest.fn();
       const onToggleFavorite = jest.fn();
       render(
-        <ModuleCard 
-          {...defaultProps} 
+        <ModuleCard
+          {...defaultProps}
           onClick={onClick}
           isAuthenticated={true}
           onToggleFavorite={onToggleFavorite}
         />
       );
-      
+
       const favoriteButton = screen.getByTitle(/favorieten/i);
       fireEvent.click(favoriteButton);
-      
+
       expect(onToggleFavorite).toHaveBeenCalled();
       expect(onClick).not.toHaveBeenCalled();
     });
@@ -214,12 +214,12 @@ describe('ModuleCard', () => {
 
     it('expands tags when toggle button is clicked', () => {
       render(<ModuleCard {...defaultProps} />);
-      
+
       expect(screen.queryByText('AI')).not.toBeInTheDocument();
-      
+
       const toggleButton = screen.getByTitle(/tags/i);
       fireEvent.click(toggleButton);
-      
+
       expect(screen.getByText('AI')).toBeInTheDocument();
       expect(screen.getByText('Machine Learning')).toBeInTheDocument();
     });
@@ -235,15 +235,15 @@ describe('ModuleCard', () => {
     it('renders chart when categoryScores and userAnswers provided', () => {
       const categoryScores = { q_tech: 0.8 };
       const userAnswers = { knoppen_input: { q_tech: { score: 1, weight: 1 } } };
-      
+
       render(
-        <ModuleCard 
-          {...defaultProps} 
+        <ModuleCard
+          {...defaultProps}
           categoryScores={categoryScores}
           userAnswers={userAnswers as any}
         />
       );
-      
+
       expect(screen.getByTestId('category-comparison-chart')).toBeInTheDocument();
     });
 
@@ -257,9 +257,9 @@ describe('ModuleCard', () => {
     it('uses fallback image on error', () => {
       render(<ModuleCard {...defaultProps} />);
       const image = screen.getByAltText('Test Module') as HTMLImageElement;
-      
+
       fireEvent.error(image);
-      
+
       expect(image.src).toBe('data:image/png;base64,fallback');
     });
   });

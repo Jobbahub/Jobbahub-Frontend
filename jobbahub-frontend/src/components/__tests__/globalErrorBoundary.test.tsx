@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import GlobalErrorBoundary from '../GlobalErrorBoundary';
+import GlobalErrorBoundary from '../globalErrorBoundary';
 
 // Mock ErrorPage component
 jest.mock('../../pages/errorPage', () => {
@@ -49,7 +49,7 @@ describe('GlobalErrorBoundary', () => {
           <ThrowError shouldThrow={false} />
         </GlobalErrorBoundary>
       );
-      
+
       expect(screen.getByTestId('child-content')).toBeInTheDocument();
       expect(screen.getByText('Child content rendered')).toBeInTheDocument();
     });
@@ -61,7 +61,7 @@ describe('GlobalErrorBoundary', () => {
           <div data-testid="child-2">Second</div>
         </GlobalErrorBoundary>
       );
-      
+
       expect(screen.getByTestId('child-1')).toBeInTheDocument();
       expect(screen.getByTestId('child-2')).toBeInTheDocument();
     });
@@ -74,7 +74,7 @@ describe('GlobalErrorBoundary', () => {
           <ThrowError shouldThrow={true} />
         </GlobalErrorBoundary>
       );
-      
+
       expect(screen.getByTestId('error-page')).toBeInTheDocument();
     });
 
@@ -84,7 +84,7 @@ describe('GlobalErrorBoundary', () => {
           <ThrowError shouldThrow={true} />
         </GlobalErrorBoundary>
       );
-      
+
       expect(screen.getByText('Oeps! Er ging iets fout.')).toBeInTheDocument();
     });
 
@@ -94,7 +94,7 @@ describe('GlobalErrorBoundary', () => {
           <ThrowError shouldThrow={true} />
         </GlobalErrorBoundary>
       );
-      
+
       expect(screen.getByText(/Er is een onverwachte fout opgetreden/)).toBeInTheDocument();
     });
 
@@ -104,7 +104,7 @@ describe('GlobalErrorBoundary', () => {
           <ThrowError shouldThrow={true} />
         </GlobalErrorBoundary>
       );
-      
+
       expect(screen.getByText('APP_CRASH')).toBeInTheDocument();
     });
 
@@ -114,7 +114,7 @@ describe('GlobalErrorBoundary', () => {
           <ThrowError shouldThrow={true} />
         </GlobalErrorBoundary>
       );
-      
+
       expect(console.error).toHaveBeenCalled();
     });
 
@@ -124,7 +124,7 @@ describe('GlobalErrorBoundary', () => {
           <ThrowError shouldThrow={true} />
         </GlobalErrorBoundary>
       );
-      
+
       expect(screen.queryByTestId('child-content')).not.toBeInTheDocument();
     });
   });
@@ -136,7 +136,7 @@ describe('GlobalErrorBoundary', () => {
           <ThrowError shouldThrow={true} />
         </GlobalErrorBoundary>
       );
-      
+
       expect(screen.getByText('Retry')).toBeInTheDocument();
     });
 
@@ -146,7 +146,7 @@ describe('GlobalErrorBoundary', () => {
           <ThrowError shouldThrow={true} />
         </GlobalErrorBoundary>
       );
-      
+
       const retryButton = screen.getByText('Retry');
       // Just verify the button is clickable - actual reload is tested via integration
       expect(retryButton).toBeEnabled();
@@ -154,11 +154,11 @@ describe('GlobalErrorBoundary', () => {
     });
   });
 
-describe('static getDerivedStateFromError', () => {
+  describe('static getDerivedStateFromError', () => {
     it('returns hasError true and captures error', () => {
       const error = new Error('Test');
       const result = (GlobalErrorBoundary as any).getDerivedStateFromError(error);
-      
+
       expect(result).toEqual({
         hasError: true,
         error: error,

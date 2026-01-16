@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 
-import LoadingSpinner from './LoadingSpinner';
+import LoadingSpinner from './loadingSpinner';
 import { apiService, ApiError } from '../services/apiService';
 import type { VragenlijstData, AIRecommendation, ClusterRecommendation } from '../types/questionnaire';
 import { IChoiceModule } from '../types';
@@ -173,12 +173,7 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
         <h2 className="form-title">{t('intro_title')}</h2>
         <p className="form-description">{t('intro_subtitle')}</p>
 
-        <div className="intro-image-placeholder" style={{
-          margin: '2rem 0',
-          display: 'flex',
-          justifyContent: 'center',
-          fontSize: '4rem'
-        }}>
+        <div className="intro-image-placeholder">
           🚀
         </div>
 
@@ -199,9 +194,6 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
 
     return (
       <div className="container question-container">
-        <div className="flex justify-end mb-4 absolute top-4 right-4">
-          {/* Language switcher placeholder */}
-        </div>
         <div className="progress-bar">
           <div className="progress-fill" style={{ width: `${progressPercentage}%` }}></div>
         </div>
@@ -355,27 +347,11 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
 
           <div className="nav-buttons-container">
             {submitError && (
-              <div style={{
-                position: 'fixed',
-                top: '20px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                backgroundColor: '#fee2e2',
-                color: '#991b1b',
-                padding: '12px 24px',
-                borderRadius: '8px',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                zIndex: 9999,
-                border: '1px solid #fecaca',
-                fontWeight: 500,
-                minWidth: '300px',
-                textAlign: 'center',
-                animation: 'fadeIn 0.3s ease-in-out'
-              }}>
+              <div className="error-banner">
                 {t(submitError)}
                 <button
                   onClick={() => setSubmitError(null)}
-                  style={{ marginLeft: '15px', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '16px', color: '#991b1b' }}
+                  className="error-close-btn"
                 >
                   ✕
                 </button>

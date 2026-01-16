@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FALLBACK_IMAGE_DATA_URI } from '../utils/imageUtils';
 import { useLanguage } from '../context/LanguageContext';
 import { IChoiceModule } from '../types';
-import CategoryComparisonChart from './CategoryComparisonChart';
+import CategoryComparisonChart from './categoryComparisonChart';
 import type { VragenlijstData } from '../types/questionnaire';
 
 interface ModuleCardProps {

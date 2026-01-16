@@ -8,7 +8,7 @@ import Pagination from "../components/modulePagination";
 import ModuleSearch from "../components/moduleSearch";
 import ModuleFilter from "../components/moduleFilter";
 import { useAuth } from "../context/authContext";
-import RecentlyViewed from "../components/RecentlyViewed";
+import RecentlyViewed from "../components/recentlyViewed";
 
 const ITEMS_PER_PAGE = 9;
 

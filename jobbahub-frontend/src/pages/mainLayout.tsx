@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import { useAuth } from '../context/authContext';
 import { useLanguage } from '../context/LanguageContext';
-import ThemeToggle from '../components/ThemeToggle';
-import LanguageSwitcher from '../components/LanguageSwitcher';
-import MobileMenu from '../components/MobileMenu';
+import ThemeToggle from '../components/themeToggle';
+import LanguageSwitcher from '../components/languageSwitcher';
+import MobileMenu from '../components/mobileMenu';
 
 const MainLayout: React.FC = () => {
   const { user, logout } = useAuth();

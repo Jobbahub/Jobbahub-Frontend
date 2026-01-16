@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import RecentlyViewed from '../components/RecentlyViewed';
+import RecentlyViewed from '../components/recentlyViewed';
 
 const Home: React.FC = () => {
   const { t } = useLanguage();
