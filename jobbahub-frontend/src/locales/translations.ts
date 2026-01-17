@@ -399,6 +399,11 @@ export const translationsList = {
     edit_interests: { nl: "Interesses aanpassen", en: "Edit interests" },
     interests_saved_success: { nl: "Interesses succesvol opgeslagen!", en: "Interests successfully saved!" },
     interests_save_error: { nl: "Kon interesses niet opslaan", en: "Could not save interests" },
+    questionnaire_not_filled: { nl: "Je hebt de vragenlijst nog niet ingevuld.", en: "You haven't filled out the questionnaire yet." },
+    fill_questionnaire_btn: { nl: "Vragenlijst invullen", en: "Fill out questionnaire" },
+    account_blocked_timer: { nl: "Account is geblokkeerd. Probeer het opnieuw over:", en: "Account is blocked. Try again in:" },
+    login_disclaimer: { nl: "Let op: Na 3 mislukte pogingen wordt je account voor 3 minuten geblokkeerd.", en: "Note: After 3 failed attempts, your account will be blocked for 3 minutes." },
+
 
     // Dashboard
     personal_dashboard: { nl: "Persoonlijk Dashboard", en: "Personal Dashboard" },

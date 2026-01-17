@@ -108,9 +108,11 @@ const handleResponse = async <T>(
     // Only show detailed errors in development
     if (isDev) {
       try {
-        const errorData: { message?: string } = await response.json();
+        const errorData: { message?: string, error?: string } = await response.json();
         if (errorData.message) {
           errorMessage = errorData.message;
+        } else if (errorData.error) {
+          errorMessage = errorData.error;
         }
       } catch {
         // JSON parsing failed, use generic message
@@ -153,7 +155,7 @@ export const apiService = {
     if (!email || !wachtwoord) {
       throw new ApiError('Email en wachtwoord zijn verplicht', 400);
     }
-    
+
     const url = validateApiUrl('/api/auth/login');
     const response = await fetchWithTimeout(url, {
       method: 'POST',
@@ -181,7 +183,7 @@ export const apiService = {
     if (!/^[a-zA-Z0-9_-]+$/.test(moduleId)) {
       throw new ApiError('Ongeldig module ID', 400);
     }
-    
+
     const url = validateApiUrl('/api/favorites');
     const response = await fetchWithTimeout(url, {
       method: 'POST',
@@ -196,7 +198,7 @@ export const apiService = {
     if (!/^[a-zA-Z0-9_-]+$/.test(moduleId)) {
       throw new ApiError('Ongeldig module ID', 400);
     }
-    
+
     const url = validateApiUrl(`/api/favorites/${encodeURIComponent(moduleId)}`);
     const response = await fetchWithTimeout(url, {
       method: 'DELETE',
@@ -251,7 +253,7 @@ export const apiService = {
     if (!data.currentPassword) {
       throw new ApiError('Huidig wachtwoord is verplicht', 400);
     }
-    
+
     const url = validateApiUrl('/api/auth/change-credentials');
     const response = await fetchWithTimeout(url, {
       method: 'PATCH',

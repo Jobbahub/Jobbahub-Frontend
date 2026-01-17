@@ -346,12 +346,12 @@ const Profile: React.FC = () => {
 
           {!hasQuestionnaireResults ? (
             <div className="no-questionnaire-message">
-              <p>{t("Je hebt de vragenlijst nog niet ingevuld.")}</p>
+              <p>{t("questionnaire_not_filled")}</p>
               <button
                 className="btn btn-primary"
                 onClick={() => navigate('/vragenlijst')}
               >
-                {t("Vragenlijst invullen")}
+                {t("fill_questionnaire_btn")}
               </button>
             </div>
           ) : (

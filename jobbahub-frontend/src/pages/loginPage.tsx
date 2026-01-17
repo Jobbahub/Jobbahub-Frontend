@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/authContext';
 import { useLanguage } from '../context/LanguageContext';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +13,55 @@ const Login: React.FC = () => {
   const [wachtwoord, setWachtwoord] = useState('');
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [lockoutTimer, setLockoutTimer] = useState<number | null>(null);
+
+  // Check for existing lockout on mount
+  useEffect(() => {
+    const storedEmail = localStorage.getItem('lockoutEmail');
+    const storedError = localStorage.getItem('lockoutError');
+    const storedLockout = localStorage.getItem('loginLockoutEnds');
+
+    if (storedLockout) {
+      const endTime = parseInt(storedLockout, 10);
+      const now = Date.now();
+      if (endTime > now) {
+        setLockoutTimer(Math.ceil((endTime - now) / 1000));
+        // Restore context if lockout is still active
+        if (storedEmail) setEmail(storedEmail);
+        if (storedError) setFormError(storedError);
+      } else {
+        // Expired while away
+        localStorage.removeItem('loginLockoutEnds');
+        localStorage.removeItem('lockoutEmail');
+        localStorage.removeItem('lockoutError');
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (lockoutTimer !== null && lockoutTimer > 0) {
+      interval = setInterval(() => {
+        setLockoutTimer((prev) => {
+          if (prev !== null && prev > 1) {
+            return prev - 1;
+          }
+          // Timer finished
+          localStorage.removeItem('loginLockoutEnds');
+          localStorage.removeItem('lockoutEmail');
+          localStorage.removeItem('lockoutError');
+          return null;
+        });
+      }, 1000);
+    } else if (lockoutTimer === 0) {
+      setLockoutTimer(null);
+      setFormError(null);
+      localStorage.removeItem('loginLockoutEnds');
+      localStorage.removeItem('lockoutEmail');
+      localStorage.removeItem('lockoutError');
+    }
+    return () => clearInterval(interval);
+  }, [lockoutTimer]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,6 +77,17 @@ const Login: React.FC = () => {
         : err instanceof Error
           ? err.message
           : t("Inloggen mislukt. Controleer je gegevens.");
+
+      const errorLower = errorMessage.toLowerCase();
+      if (errorLower.includes('geblokkeerd') || errorLower.includes('rate limit') || errorLower.includes('inlogpogingen') || errorLower.includes('too many') || errorLower.includes('lock')) {
+        const lockoutDuration = 180; // 3 minutes
+        setLockoutTimer(lockoutDuration);
+        const endTime = Date.now() + lockoutDuration * 1000;
+        localStorage.setItem('loginLockoutEnds', endTime.toString());
+        localStorage.setItem('lockoutEmail', email);
+        localStorage.setItem('lockoutError', errorMessage);
+      }
+
       setFormError(errorMessage);
     } finally {
       setLoading(false);
@@ -46,6 +106,11 @@ const Login: React.FC = () => {
         {formError && (
           <div className="form-error">
             {formError}
+            {lockoutTimer !== null && (
+              <div style={{ marginTop: '10px', fontWeight: 'bold' }}>
+                {t("account_blocked_timer")} {Math.floor(lockoutTimer / 60)}:{(lockoutTimer % 60).toString().padStart(2, '0')}
+              </div>
+            )}
           </div>
         )}
 
@@ -80,10 +145,14 @@ const Login: React.FC = () => {
             />
           </div>
 
+          <div className="form-note" style={{ fontSize: '0.85rem', color: '#666', marginBottom: '1rem', fontStyle: 'italic' }}>
+            {t("login_disclaimer")}
+          </div>
+
           <button
             type="submit"
-            className={`btn btn-primary w-full ${loading ? 'btn-disabled' : ''}`}
-            disabled={loading}
+            className={`btn btn-primary w-full ${loading || lockoutTimer !== null ? 'btn-disabled' : ''}`}
+            disabled={loading || lockoutTimer !== null}
           >
             {loading ? t("Bezig met inloggen...") : t("Inloggen")}
           </button>
