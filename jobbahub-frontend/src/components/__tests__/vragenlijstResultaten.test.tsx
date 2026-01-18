@@ -103,6 +103,7 @@ describe('VragenlijstResultaten', () => {
   const defaultProps = {
     aiRecs: mockAiRecs,
     clusterRecs: mockClusterRecs,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     dbModules: mockDbModules as any,
     userAnswers: mockUserAnswers,
     onRetry: jest.fn(),

@@ -240,6 +240,7 @@ describe('ModuleCard', () => {
         <ModuleCard
           {...defaultProps}
           categoryScores={categoryScores}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           userAnswers={userAnswers as any}
         />
       );

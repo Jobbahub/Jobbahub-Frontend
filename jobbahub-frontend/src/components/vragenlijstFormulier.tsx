@@ -243,7 +243,7 @@ const VragenlijstFormulier: React.FC<VragenlijstFormulierProps> = ({ onComplete 
               if (isMobile) {
                 const windowSize = 5;
                 start = Math.max(0, topicIndex - Math.floor(windowSize / 2));
-                let end = Math.min(total, start + windowSize);
+                const end = Math.min(total, start + windowSize);
 
                 if (end - start < windowSize) {
                   start = Math.max(0, end - windowSize);

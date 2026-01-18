@@ -157,6 +157,7 @@ describe('GlobalErrorBoundary', () => {
   describe('static getDerivedStateFromError', () => {
     it('returns hasError true and captures error', () => {
       const error = new Error('Test');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = (GlobalErrorBoundary as any).getDerivedStateFromError(error);
 
       expect(result).toEqual({
