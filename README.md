@@ -40,10 +40,7 @@ Volg deze stappen om het project op je eigen machine te starten:
     ```
 
 3.  **Configureer Environment Variables:**
-    Maak een nieuw bestand genaamd `.env` aan in de root van het project (naast `package.json`). Je kunt hiervoor het voorbeeld gebruiken:
-    ```bash
-    cp .env.example .env
-    ```
+    Maak een nieuw bestand genaamd `.env` aan in de root van het project (naast `package.json`).
     Vul de juiste backend URL in (zie kopje [Environment Variables](#-environment-variables)).
 
 4.  **Start de Development Server:**
